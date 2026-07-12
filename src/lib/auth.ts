@@ -25,38 +25,11 @@ export const auth = betterAuth({
       role: {
         type: "string",
         default: "user",
-        required: true,
-        input: false, // Cannot be set by user during registration
-      },
-      phone: {
-        type: "string",
-        required: false,
-      },
-      district: {
-        type: "string",
-        required: false,
-      },
-      bloodGroup: {
-        type: "string",
-        required: false,
-      },
-      isDonor: {
-        type: "boolean",
-        default: false,
+        enum: ["user", "admin"],
+        input: false,
         required: true,
       },
-      lastDonationDate: {
-        type: "date",
-        required: false,
-      },
-      dateOfBirth: {
-        type: "date",
-        required: false,
-      },
-      weight: {
-        type: "number",
-        required: false,
-      },
+      // add more fields here
     },
   },
   plugins: [jwt()],
