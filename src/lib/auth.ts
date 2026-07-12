@@ -1,0 +1,63 @@
+import { betterAuth } from "better-auth";
+import { MongoClient } from "mongodb";
+import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { jwt } from "better-auth/plugins";
+
+const client = new MongoClient(process.env.MONGODB_URI as string);
+const db = client.db("bloodos");
+
+export const auth = betterAuth({
+  baseUrl: process.env.BETTER_AUTH_URL as string,
+  database: mongodbAdapter(db, {
+    client,
+  }),
+  emailAndPassword: {
+    enabled: true,
+  },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+  },
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        default: "user",
+        required: true,
+        input: false, // Cannot be set by user during registration
+      },
+      phone: {
+        type: "string",
+        required: false,
+      },
+      district: {
+        type: "string",
+        required: false,
+      },
+      bloodGroup: {
+        type: "string",
+        required: false,
+      },
+      isDonor: {
+        type: "boolean",
+        default: false,
+        required: true,
+      },
+      lastDonationDate: {
+        type: "date",
+        required: false,
+      },
+      dateOfBirth: {
+        type: "date",
+        required: false,
+      },
+      weight: {
+        type: "number",
+        required: false,
+      },
+    },
+  },
+  plugins: [jwt()],
+});
