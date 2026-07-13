@@ -61,8 +61,8 @@ export default function HomePage() {
           Req 16.6: Hero height in viewport units
           Req 16.7: Animated stat counters via framer-motion
        =================================================================== */}
-      <section className="relative flex min-h-[60vh] items-center justify-center bg-gradient-to-b from-background to-muted/20 px-4 py-16 sm:min-h-[65vh] sm:py-20 lg:min-h-[70vh]">
-        <div className="container mx-auto max-w-screen-xl">
+      <section className="relative flex min-h-[60vh] items-center justify-center bg-linear-to-b from-background to-muted/20 px-4 py-16 sm:min-h-[65vh] sm:py-20 lg:min-h-[70vh]">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col items-center justify-center gap-8 text-center">
             {/* Hero Headline - Fraunces font, large scale */}
             <motion.div
@@ -158,7 +158,7 @@ export default function HomePage() {
           Explains the 3-step process for both requesters and donors
        =================================================================== */}
       <section className="border-t border-border bg-background px-4 py-16 sm:py-20 lg:py-24">
-        <div className="container mx-auto max-w-screen-xl">
+        <div className="container mx-auto max-w-7xl">
           <motion.div
             className="mb-12 text-center"
             initial={{ opacity: 0, y: 20 }}
@@ -308,7 +308,7 @@ export default function HomePage() {
                       Offer to Help
                     </h4>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Click "I Can Help" on compatible requests. The requester
+                      Click &quot;I Can Help&quot; on compatible requests. The requester
                       can accept your offer and reveal contact details to
                       coordinate the donation.
                     </p>
@@ -332,7 +332,7 @@ export default function HomePage() {
           Prominent section encouraging user action
        =================================================================== */}
       <section className="border-t border-border bg-muted/30 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-screen-xl">
+        <div className="container mx-auto max-w-7xl">
           <motion.div
             className="flex flex-col items-center justify-center gap-8 text-center"
             initial={{ opacity: 0, y: 20 }}
