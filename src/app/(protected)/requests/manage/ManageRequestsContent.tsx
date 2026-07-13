@@ -1,0 +1,672 @@
+"use client";
+
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import {
+  Eye,
+  CheckCircle2,
+  XCircle,
+  Trash2,
+  Plus,
+  AlertTriangle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { BloodGroupBadge } from "@/components/shared/BloodGroupBadge";
+import { Pagination } from "@/components/shared/Pagination";
+import { cn } from "@/lib/utils";
+import type {
+  BloodRequest,
+  PaginatedResponse,
+  RequestStatus,
+} from "@/types/shared";
+
+/**
+ * ManageRequestsContent — Client component for managing user's blood requests
+ *
+ * Features:
+ * - Fetches user's requests from GET /api/requests/mine
+ * - Table view with Patient, Blood Group, Status, Date, Actions columns
+ * - Actions: View Details, Mark Fulfilled, Cancel, Delete
+ * - Delete requires confirmation dialog
+ * - Status transitions via PATCH /api/requests/:id/status
+ * - Pagination for > 10 requests
+ * - Empty, loading, and error states
+ *
+ * Design:
+ * - Table layout (not card grid)
+ * - Monospace for dates and IDs
+ * - Compact spacing per civic infrastructure aesthetic
+ */
+
+const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+interface ManageRequestsState {
+  requests: BloodRequest[];
+  pagination: Omit<PaginatedResponse<BloodRequest>, "data">;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function ManageRequestsContent() {
+  const router = useRouter();
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [state, setState] = React.useState<ManageRequestsState>({
+    requests: [],
+    pagination: {
+      page: 1,
+      limit: 10,
+      totalPages: 1,
+      totalCount: 0,
+      hasNextPage: false,
+      hasPrevPage: false,
+    },
+    isLoading: true,
+    error: null,
+  });
+
+  // Delete confirmation dialog state
+  const [deleteDialog, setDeleteDialog] = React.useState<{
+    isOpen: boolean;
+    requestId: string | null;
+    patientName: string | null;
+  }>({
+    isOpen: false,
+    requestId: null,
+    patientName: null,
+  });
+
+  // Loading state for actions
+  const [actionLoading, setActionLoading] = React.useState<string | null>(
+    null
+  );
+
+  // Fetch requests
+  const fetchRequests = React.useCallback(async (page: number) => {
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/api/requests/mine?page=${page}&limit=10`,
+        {
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch requests");
+      }
+
+      const data: PaginatedResponse<BloodRequest> = await response.json();
+
+      setState({
+        requests: data.data,
+        pagination: {
+          page: data.page,
+          limit: data.limit,
+          totalPages: data.totalPages,
+          totalCount: data.totalCount,
+          hasNextPage: data.hasNextPage,
+          hasPrevPage: data.hasPrevPage,
+        },
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to load requests",
+      }));
+    }
+  }, []);
+
+  // Load requests on mount and page change
+  React.useEffect(() => {
+    fetchRequests(currentPage);
+  }, [currentPage, fetchRequests]);
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Handle status change (Mark Fulfilled / Cancel)
+  const handleStatusChange = async (
+    requestId: string,
+    newStatus: RequestStatus
+  ) => {
+    setActionLoading(requestId);
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/api/requests/${requestId}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to update status");
+      }
+
+      toast.success(
+        `Request ${newStatus === "fulfilled" ? "marked as fulfilled" : "cancelled"} successfully`
+      );
+
+      // Refresh the list
+      fetchRequests(currentPage);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update status"
+      );
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Handle delete (after confirmation)
+  const handleDelete = async () => {
+    if (!deleteDialog.requestId) return;
+
+    setActionLoading(deleteDialog.requestId);
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/api/requests/${deleteDialog.requestId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to delete request");
+      }
+
+      toast.success("Request deleted successfully");
+
+      // Close dialog
+      setDeleteDialog({ isOpen: false, requestId: null, patientName: null });
+
+      // Refresh the list
+      // If we're on a page > 1 and this was the last item, go to previous page
+      if (
+        state.requests.length === 1 &&
+        currentPage > 1
+      ) {
+        setCurrentPage(currentPage - 1);
+      } else {
+        fetchRequests(currentPage);
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to delete request"
+      );
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Open delete confirmation dialog
+  const openDeleteDialog = (requestId: string, patientName: string) => {
+    setDeleteDialog({
+      isOpen: true,
+      requestId,
+      patientName,
+    });
+  };
+
+  // Close delete confirmation dialog
+  const closeDeleteDialog = () => {
+    setDeleteDialog({ isOpen: false, requestId: null, patientName: null });
+  };
+
+  // Loading state
+  if (state.isLoading && state.requests.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="border-b border-border bg-card">
+          <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold">Manage Requests</h1>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  View and manage your blood donation requests
+                </p>
+              </div>
+              <Button onClick={() => router.push("/requests/add")}>
+                <Plus className="mr-2 h-4 w-4" />
+                New Request
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+              <p className="mt-4 text-sm text-muted-foreground">
+                Loading requests...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (state.error && state.requests.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="border-b border-border bg-card">
+          <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold">Manage Requests</h1>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  View and manage your blood donation requests
+                </p>
+              </div>
+              <Button onClick={() => router.push("/requests/add")}>
+                <Plus className="mr-2 h-4 w-4" />
+                New Request
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
+            <h2 className="text-xl font-semibold mb-2">
+              Failed to Load Requests
+            </h2>
+            <p className="text-muted-foreground mb-4">{state.error}</p>
+            <Button onClick={() => fetchRequests(currentPage)}>
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (!state.isLoading && state.requests.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="border-b border-border bg-card">
+          <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold">Manage Requests</h1>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  View and manage your blood donation requests
+                </p>
+              </div>
+              <Button onClick={() => router.push("/requests/add")}>
+                <Plus className="mr-2 h-4 w-4" />
+                New Request
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="rounded-full bg-muted p-3 mb-4">
+              <AlertTriangle className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h2 className="text-xl font-semibold mb-2">
+              No Requests Found
+            </h2>
+            <p className="text-muted-foreground mb-6 max-w-md">
+              You haven&apos;t posted any blood donation requests yet. Create
+              your first request to get started.
+            </p>
+            <Button onClick={() => router.push("/requests/add")}>
+              <Plus className="mr-2 h-4 w-4" />
+              Create Request
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b border-border bg-card">
+        <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold">Manage Requests</h1>
+              <p className="mt-2 text-sm text-muted-foreground">
+                View and manage your blood donation requests
+              </p>
+            </div>
+            <Button onClick={() => router.push("/requests/add")}>
+              <Plus className="mr-2 h-4 w-4" />
+              New Request
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="rounded-lg border border-border bg-card overflow-hidden">
+          {/* Desktop table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border bg-muted/50">
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Patient
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Blood Group
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Status
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Date
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {state.requests.map((request) => {
+                  const isActionLoading = actionLoading === request._id;
+                  const canFulfill =
+                    request.status === "open" ||
+                    request.status === "in_progress";
+                  const canCancel =
+                    request.status === "open" ||
+                    request.status === "in_progress";
+
+                  return (
+                    <tr
+                      key={request._id}
+                      className="hover:bg-muted/30 transition-colors"
+                    >
+                      <td className="px-4 py-4">
+                        <div className="font-medium">{request.patientName}</div>
+                        <div className="text-sm text-muted-foreground font-mono tabular-data">
+                          {request.hospitalName}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <BloodGroupBadge bloodGroup={request.bloodGroup} />
+                      </td>
+                      <td className="px-4 py-4">
+                        <StatusBadge status={request.status} />
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="text-sm font-mono tabular-data">
+                          {new Date(request.neededByDate).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            }
+                          )}
+                        </div>
+                        <div className="text-xs text-muted-foreground font-mono tabular-data">
+                          Created{" "}
+                          {new Date(request.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              router.push(`/requests/${request._id}`)
+                            }
+                            disabled={isActionLoading}
+                          >
+                            <Eye className="h-4 w-4" />
+                            <span className="sr-only">View Details</span>
+                          </Button>
+
+                          {canFulfill && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                handleStatusChange(request._id, "fulfilled")
+                              }
+                              disabled={isActionLoading}
+                              className="text-teal hover:text-teal hover:bg-teal/10"
+                            >
+                              <CheckCircle2 className="h-4 w-4" />
+                              <span className="sr-only">Mark Fulfilled</span>
+                            </Button>
+                          )}
+
+                          {canCancel && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                handleStatusChange(request._id, "cancelled")
+                              }
+                              disabled={isActionLoading}
+                              className="text-ochre hover:text-ochre hover:bg-ochre/10"
+                            >
+                              <XCircle className="h-4 w-4" />
+                              <span className="sr-only">Cancel</span>
+                            </Button>
+                          )}
+
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              openDeleteDialog(request._id, request.patientName)
+                            }
+                            disabled={isActionLoading}
+                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete</span>
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="md:hidden divide-y divide-border">
+            {state.requests.map((request) => {
+              const isActionLoading = actionLoading === request._id;
+              const canFulfill =
+                request.status === "open" || request.status === "in_progress";
+              const canCancel =
+                request.status === "open" || request.status === "in_progress";
+
+              return (
+                <div key={request._id} className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold truncate">
+                        {request.patientName}
+                      </h3>
+                      <p className="text-sm text-muted-foreground font-mono tabular-data truncate">
+                        {request.hospitalName}
+                      </p>
+                    </div>
+                    <StatusBadge status={request.status} />
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <BloodGroupBadge bloodGroup={request.bloodGroup} />
+                    <div className="text-sm font-mono tabular-data text-muted-foreground">
+                      {new Date(request.neededByDate).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        }
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => router.push(`/requests/${request._id}`)}
+                      disabled={isActionLoading}
+                      className="flex-1"
+                    >
+                      <Eye className="mr-2 h-4 w-4" />
+                      View
+                    </Button>
+
+                    {canFulfill && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          handleStatusChange(request._id, "fulfilled")
+                        }
+                        disabled={isActionLoading}
+                        className="flex-1"
+                      >
+                        <CheckCircle2 className="mr-2 h-4 w-4" />
+                        Fulfill
+                      </Button>
+                    )}
+
+                    {canCancel && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          handleStatusChange(request._id, "cancelled")
+                        }
+                        disabled={isActionLoading}
+                        className="flex-1"
+                      >
+                        <XCircle className="mr-2 h-4 w-4" />
+                        Cancel
+                      </Button>
+                    )}
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        openDeleteDialog(request._id, request.patientName)
+                      }
+                      disabled={isActionLoading}
+                      className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Pagination */}
+        {state.pagination.totalPages > 1 && (
+          <div className="mt-6">
+            <Pagination
+              metadata={state.pagination}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialog.isOpen} onOpenChange={closeDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Request</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete the request for{" "}
+              <span className="font-semibold text-foreground">
+                {deleteDialog.patientName}
+              </span>
+              ? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={closeDeleteDialog}
+              disabled={actionLoading !== null}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={actionLoading !== null}
+            >
+              {actionLoading ? (
+                <>
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Request
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
