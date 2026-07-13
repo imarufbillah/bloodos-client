@@ -84,7 +84,7 @@ GET /api/donors?bloodGroup=A+&district=Dhaka&page=1&limit=12
 // Check authentication
 if (!session) {
   toast.error("Please sign in...")
-  router.push("/sign-in?callbackUrl=/donors")
+  router.push("/signin?callbackUrl=/donors")
   return
 }
 ↓
@@ -178,7 +178,7 @@ All filters are synced to URL query params for:
 ### Requesting Contact (Protected)
 1. User clicks "Request Contact" button
 2. Check session state:
-   - **Not authenticated**: Redirect to `/sign-in?callbackUrl=/donors`
+   - **Not authenticated**: Redirect to `/signin?callbackUrl=/donors`
    - **Authenticated**: Proceed to API request
 3. API call with session token in `Authorization` header
 4. Success: Toast notification + contact info sent to notifications panel
