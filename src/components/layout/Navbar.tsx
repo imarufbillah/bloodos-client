@@ -247,7 +247,7 @@ export function Navbar() {
             ) : (
               <>
                 <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-                  <Link href="/auth/signin">Sign In</Link>
+                  <Link href="/signin">Sign In</Link>
                 </Button>
                 <Button size="sm">
                   <Link href="/requests/add">Post a Request</Link>
@@ -356,7 +356,7 @@ export function Navbar() {
                       variant="outline"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <Link href="/auth/signin">Sign In</Link>
+                      <Link href="/signin">Sign In</Link>
                     </Button>
                     <Button onClick={() => setMobileMenuOpen(false)}>
                       <Link href="/requests/add">Post a Request</Link>

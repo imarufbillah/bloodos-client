@@ -148,7 +148,7 @@ export default function RequestDetailsContent({
   const handleHelp = async () => {
     if (!isAuthenticated) {
       toast.error("Please sign in to respond to requests");
-      router.push(`/sign-in?redirect=/requests/${request._id}`);
+      router.push(`/signin?redirect=/requests/${request._id}`);
       return;
     }
 

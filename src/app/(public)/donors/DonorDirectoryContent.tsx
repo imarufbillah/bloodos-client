@@ -202,7 +202,7 @@ export default function DonorDirectoryContent() {
         description: "You&apos;ll be redirected to the login page",
       });
       // Redirect to login with return URL
-      router.push(`/sign-in?callbackUrl=${encodeURIComponent("/donors")}`);
+      router.push(`/signin?callbackUrl=${encodeURIComponent("/donors")}`);
       return;
     }
 
@@ -324,7 +324,7 @@ export default function DonorDirectoryContent() {
               !filters.bloodGroups.length &&
               !filters.districts.length && (
                 <Button
-                  onClick={() => router.push("/sign-up")}
+                  onClick={() => router.push("/signup")}
                   className="mt-4"
                 >
                   <UserPlus className="mr-2 h-4 w-4" />
