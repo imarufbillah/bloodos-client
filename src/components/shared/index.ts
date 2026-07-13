@@ -5,3 +5,6 @@
 
 export { Filters } from "./Filters";
 export type { FiltersProps, Urgency, SortOption } from "./Filters";
+
+export { Pagination } from "./Pagination";
+export type { PaginationProps } from "./Pagination";
