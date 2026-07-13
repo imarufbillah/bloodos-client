@@ -141,7 +141,7 @@ export function Filters({
         {/* Blood Group Filter */}
         {fields.bloodGroup && (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
               <Button variant="outline" size="sm" className="h-8 gap-1.5">
                 <span className="font-mono text-xs">
                   {value.bloodGroups?.length
@@ -180,7 +180,7 @@ export function Filters({
         {/* Urgency Filter */}
         {fields.urgency && (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
               <Button variant="outline" size="sm" className="h-8 gap-1.5">
                 <span className="text-xs">
                   {value.urgencies?.length
@@ -219,7 +219,7 @@ export function Filters({
         {/* District Filter */}
         {fields.district && (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
               <Button variant="outline" size="sm" className="h-8 gap-1.5">
                 <span className="text-xs">
                   {value.districts?.length
@@ -308,7 +308,7 @@ export function Filters({
       {/* Right side: sort dropdown */}
       {fields.sort && (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger>
             <Button variant="outline" size="sm" className="h-8 gap-1.5">
               <span className="text-xs">
                 {value.sort
