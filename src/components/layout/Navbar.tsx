@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { NotificationPanel } from "@/components/layout/NotificationPanel";
 import { useTheme } from "next-themes";
 import {
   Bell,
@@ -70,9 +71,6 @@ export function Navbar() {
 
   const user = session?.user as ExtendedUser | undefined;
   const isAdmin = user?.role === "admin";
-
-  // Notification bell slot - will be wired in Phase 8k
-  const unreadNotificationCount = 0; // Placeholder for now
 
   const handleSignOut = async () => {
     try {
@@ -164,29 +162,8 @@ export function Navbar() {
               <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
             ) : user ? (
               <>
-                {/* Notification Bell Slot */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative h-9 w-9"
-                  aria-label="Notifications"
-                  onClick={() => {
-                    // Will be wired to NotificationPanel in Phase 8k
-                    console.log("Notification panel - to be implemented in 8k");
-                  }}
-                >
-                  <Bell className="h-4 w-4" />
-                  {unreadNotificationCount > 0 && (
-                    <Badge
-                      variant="destructive"
-                      className="absolute -right-1 -top-1 h-5 min-w-5 items-center justify-center rounded-full p-0 text-[10px] font-medium"
-                    >
-                      {unreadNotificationCount > 99
-                        ? "99+"
-                        : unreadNotificationCount}
-                    </Badge>
-                  )}
-                </Button>
+                {/* Notification Panel */}
+                <NotificationPanel />
 
                 {/* User Menu */}
                 <DropdownMenu>
@@ -295,22 +272,7 @@ export function Navbar() {
           </Button>
 
           {user && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative h-9 w-9"
-              aria-label="Notifications"
-            >
-              <Bell className="h-4 w-4" />
-              {unreadNotificationCount > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="absolute -right-1 -top-1 h-5 min-w-5 items-center justify-center rounded-full p-0 text-[10px] font-medium"
-                >
-                  {unreadNotificationCount > 99 ? "99+" : unreadNotificationCount}
-                </Badge>
-              )}
-            </Button>
+            <NotificationPanel className="mr-2" />
           )}
 
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
