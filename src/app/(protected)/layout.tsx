@@ -4,11 +4,14 @@
  * Protected routes layout
  * Ensures user is authenticated before accessing protected pages (Req 1.7, 20.2)
  * Redirects unauthenticated users to login
+ * Includes Navbar and Footer for authenticated pages
  */
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 export default function ProtectedLayout({
   children,
@@ -40,5 +43,11 @@ export default function ProtectedLayout({
     );
   }
 
-  return <>{children}</>;
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </div>
+  );
 }

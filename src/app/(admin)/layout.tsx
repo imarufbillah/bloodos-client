@@ -4,11 +4,14 @@
  * Admin-only routes layout
  * Ensures user has admin role before accessing admin pages (Req 18.2)
  * Redirects non-admin users to home
+ * Includes Navbar and Footer for admin pages
  */
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 export default function AdminLayout({
   children,
@@ -46,5 +49,11 @@ export default function AdminLayout({
     );
   }
 
-  return <>{children}</>;
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </div>
+  );
 }
