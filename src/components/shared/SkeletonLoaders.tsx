@@ -35,7 +35,7 @@ interface SkeletonProps {
 /**
  * Base skeleton primitive - reusable for any skeleton shape
  */
-function Skeleton({ className, noPulse = false }: SkeletonProps) {
+export function Skeleton({ className, noPulse = false }: SkeletonProps) {
   return (
     <div
       className={cn(
@@ -467,18 +467,4 @@ export function ProfileSectionSkeleton({ className }: { className?: string }) {
   );
 }
 
-// ============================================================================
-// Exports
-// ============================================================================
-
-export {
-  Skeleton,
-  RequestCardSkeleton,
-  DonorCardSkeleton,
-  RequestsGridSkeleton,
-  DonorsGridSkeleton,
-  TableRowSkeleton,
-  TableSkeleton,
-  RequestDetailSkeleton,
-  ProfileSectionSkeleton,
-};
+// Note: All components are exported individually with their declarations above
