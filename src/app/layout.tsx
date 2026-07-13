@@ -3,6 +3,7 @@ import { Public_Sans, Fraunces, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/sonner";
 
 const publicSans = Public_Sans({
@@ -48,6 +49,7 @@ export default function RootLayout({
         >
           <Navbar />
           <main className="flex-1">{children}</main>
+          <Footer />
           <Toaster />
         </ThemeProvider>
       </body>
