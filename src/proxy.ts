@@ -1,57 +1,71 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Routes that require authentication
-const protectedRoutes = [
-  "/requests/add",
-  "/requests/manage",
-  "/profile",
-  "/admin",
-];
-
-// Routes that should redirect to home if already authenticated
-const authRoutes = ["/auth/signin", "/auth/signup"];
+/**
+ * Phase 8m — Proxy for auth redirects and route protection
+ * 
+ * In Next.js 16, middleware.ts has been renamed to proxy.ts with the
+ * exported function renamed from `middleware` to `proxy`.
+ * 
+ * Reference: https://nextjs.org/docs/messages/middleware-to-proxy
+ *
+ * 1. Redirects /login → /signin (per unit 8m naming conflict resolution)
+ * 2. Protects routes in (protected) and (admin) route groups (per Req 1.7)
+ * 3. Preserves the original URL as callbackUrl for post-auth redirect
+ */
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Check if the route is protected
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
+  // 1. Redirect /login → /signin
+  if (pathname === "/login") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/signin";
+    return NextResponse.redirect(url);
+  }
+
+  // 2. Check authentication for protected routes
+  // Note: better-auth stores session in cookies; we check for the presence
+  // of the auth cookie to determine if user is authenticated.
+  const authCookie = request.cookies.get("better-auth.session_token");
+  const isAuthenticated = !!authCookie;
+
+  // Define protected path prefixes
+  const protectedPaths = ["/profile", "/requests/add", "/requests/manage"];
+  const adminPaths = ["/admin"];
+
+  const isProtectedPath = protectedPaths.some((path) =>
+    pathname.startsWith(path)
   );
+  const isAdminPath = adminPaths.some((path) => pathname.startsWith(path));
 
-  // Check if the route is an auth route
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
-
-  // Get session from cookie (better-auth sets this)
-  const sessionCookie = request.cookies.get("better-auth.session_token");
-  const hasSession = !!sessionCookie;
-
-  // Redirect to signin if accessing protected route without session
-  if (isProtectedRoute && !hasSession) {
-    const signInUrl = new URL("/auth/signin", request.url);
-    signInUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(signInUrl);
+  // 3. Redirect unauthenticated users from protected routes
+  if ((isProtectedPath || isAdminPath) && !isAuthenticated) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/signin";
+    // Preserve the original URL for redirect after sign-in
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
   }
 
-  // Redirect to home if accessing auth routes with active session
-  if (isAuthRoute && hasSession) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  // 4. For admin routes, we let the page component check the role
+  // (better-auth doesn't expose role in cookies by default, so we
+  // verify role server-side in the page component)
 
   return NextResponse.next();
 }
 
+// Apply proxy to all routes except static files and API routes
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * Match all request paths except:
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - public files (e.g., images)
+     * - public folder files
+     * - api routes (handled by better-auth directly)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*|).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|api).*)",
   ],
 };
