@@ -2,7 +2,7 @@
  * Public Routes Layout
  * 
  * Route group for public-facing pages that don't require authentication.
- * Includes Navbar and Footer from Phase 7a/7b.
+ * Includes Navbar and Footer that wrap all public pages.
  */
 
 import { Navbar } from "@/components/layout/Navbar";
@@ -14,10 +14,10 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
-    </>
+    </div>
   );
 }

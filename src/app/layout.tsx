@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Public_Sans, Fraunces, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "@/components/ui/sonner";
 
 const publicSans = Public_Sans({
@@ -37,19 +35,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${publicSans.variable} ${fraunces.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${publicSans.variable} ${fraunces.variable} ${plexMono.variable} antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-screen">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          {children}
           <Toaster />
         </ThemeProvider>
       </body>
