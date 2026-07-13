@@ -12,7 +12,7 @@ const protectedRoutes = [
 // Routes that should redirect to home if already authenticated
 const authRoutes = ["/auth/signin", "/auth/signup"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check if the route is protected
