@@ -258,6 +258,22 @@ export interface BloodRequest {
 }
 
 // ============================================================================
+// Donor Interface (Client representation)
+// ============================================================================
+
+export interface Donor {
+  _id: string;
+  name: string;
+  bloodGroup: BloodGroup;
+  district: District;
+  phone: string; // Masked by default (Req 17.5)
+  email?: string; // Masked by default
+  lastDonationDate: string | null; // ISO date string
+  isDonor: boolean;
+  createdAt: string; // ISO date string
+}
+
+// ============================================================================
 // Sort Options
 // ============================================================================
 
