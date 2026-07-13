@@ -1,6 +1,7 @@
 /**
- * Shared types, enums, and constants for BloodOS
- * Mirrored from server to ensure consistency
+ * Shared types, enums, and constants for BloodOS (Client)
+ * Mirrored from bloodos-server/src/types/shared.ts
+ * Keep in sync with backend types
  */
 
 // ============================================================================
@@ -113,50 +114,6 @@ export type District = (typeof District)[keyof typeof District];
 export const DISTRICTS = Object.values(District);
 
 // ============================================================================
-// Blood Compatibility Matrix (Req 2.4)
-// ============================================================================
-
-/**
- * Maps each blood group to the blood groups that can donate to it
- * Based on standard blood compatibility rules
- */
-export const BLOOD_COMPATIBILITY: Record<BloodGroup, BloodGroup[]> = {
-  [BloodGroup.A_POSITIVE]: [
-    BloodGroup.A_POSITIVE,
-    BloodGroup.A_NEGATIVE,
-    BloodGroup.O_POSITIVE,
-    BloodGroup.O_NEGATIVE,
-  ],
-  [BloodGroup.A_NEGATIVE]: [BloodGroup.A_NEGATIVE, BloodGroup.O_NEGATIVE],
-  [BloodGroup.B_POSITIVE]: [
-    BloodGroup.B_POSITIVE,
-    BloodGroup.B_NEGATIVE,
-    BloodGroup.O_POSITIVE,
-    BloodGroup.O_NEGATIVE,
-  ],
-  [BloodGroup.B_NEGATIVE]: [BloodGroup.B_NEGATIVE, BloodGroup.O_NEGATIVE],
-  [BloodGroup.AB_POSITIVE]: [
-    // Universal receiver
-    BloodGroup.A_POSITIVE,
-    BloodGroup.A_NEGATIVE,
-    BloodGroup.B_POSITIVE,
-    BloodGroup.B_NEGATIVE,
-    BloodGroup.AB_POSITIVE,
-    BloodGroup.AB_NEGATIVE,
-    BloodGroup.O_POSITIVE,
-    BloodGroup.O_NEGATIVE,
-  ],
-  [BloodGroup.AB_NEGATIVE]: [
-    BloodGroup.A_NEGATIVE,
-    BloodGroup.B_NEGATIVE,
-    BloodGroup.AB_NEGATIVE,
-    BloodGroup.O_NEGATIVE,
-  ],
-  [BloodGroup.O_POSITIVE]: [BloodGroup.O_POSITIVE, BloodGroup.O_NEGATIVE],
-  [BloodGroup.O_NEGATIVE]: [BloodGroup.O_NEGATIVE], // Universal donor
-};
-
-// ============================================================================
 // Request Status Enum (Req 3.1-3.9)
 // ============================================================================
 
@@ -223,6 +180,19 @@ export type NotificationType =
 export const NOTIFICATION_TYPES = Object.values(NotificationType);
 
 // ============================================================================
+// User Role Enum (Req 1.8)
+// ============================================================================
+
+export const UserRole = {
+  USER: "user",
+  ADMIN: "admin",
+} as const;
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole];
+
+export const USER_ROLES = Object.values(UserRole);
+
+// ============================================================================
 // Admin Action Type Enum (Req 10.1)
 // ============================================================================
 
@@ -240,19 +210,6 @@ export type AdminActionType =
   (typeof AdminActionType)[keyof typeof AdminActionType];
 
 export const ADMIN_ACTION_TYPES = Object.values(AdminActionType);
-
-// ============================================================================
-// User Role Enum (Req 1.8)
-// ============================================================================
-
-export const UserRole = {
-  USER: "user",
-  ADMIN: "admin",
-} as const;
-
-export type UserRole = (typeof UserRole)[keyof typeof UserRole];
-
-export const USER_ROLES = Object.values(UserRole);
 
 // ============================================================================
 // Error Response Type (Req 11.1)
@@ -279,42 +236,26 @@ export interface PaginatedResponse<T> {
 }
 
 // ============================================================================
-// User Extension Fields (Req 1.8)
+// Blood Request Interface (Client representation)
 // ============================================================================
 
-export interface UserExtension {
-  role: UserRole;
-  phone: string;
-  district: District;
+export interface BloodRequest {
+  _id: string;
+  userId: string;
+  patientName: string;
   bloodGroup: BloodGroup;
-  isDonor: boolean;
-  lastDonationDate: Date | null;
+  unitsNeeded: number;
+  hospitalName: string;
+  hospitalAddress: string;
+  district: District;
+  urgency: Urgency;
+  status: RequestStatus;
+  neededByDate: string; // ISO date string
+  contactPhone: string;
+  additionalNotes?: string;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
 }
-
-// ============================================================================
-// Ineligibility Reasons (Req 2.5-2.8)
-// ============================================================================
-
-export const IneligibilityReason = {
-  AGE_REQUIREMENT: "age_requirement",
-  WEIGHT_REQUIREMENT: "weight_requirement",
-  COOLDOWN_REQUIREMENT: "cooldown_requirement",
-  BLOOD_TYPE_INCOMPATIBLE: "blood_type_incompatible",
-} as const;
-
-export type IneligibilityReason =
-  (typeof IneligibilityReason)[keyof typeof IneligibilityReason];
-
-// ============================================================================
-// Contact Type Enum (Req 4)
-// ============================================================================
-
-export const ContactType = {
-  PHONE: "phone",
-  EMAIL: "email",
-} as const;
-
-export type ContactType = (typeof ContactType)[keyof typeof ContactType];
 
 // ============================================================================
 // Sort Options
