@@ -122,17 +122,10 @@ export function AddRequestForm() {
       const validated = createRequestSchema.parse(data);
 
       // Submit to API
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/requests`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // Include cookies for JWT
-          body: JSON.stringify(validated),
-        }
-      );
+      const response = await apiFetch("/api/requests", {
+        method: "POST",
+        body: JSON.stringify(validated),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
