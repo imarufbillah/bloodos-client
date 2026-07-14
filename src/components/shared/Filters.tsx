@@ -94,9 +94,16 @@ export function Filters({
 }: FiltersProps) {
   const [searchInput, setSearchInput] = React.useState(value.search ?? "");
   const [isSearchPending, setIsSearchPending] = React.useState(false);
+  const isFirstRender = React.useRef(true);
 
   // Debounced search handler — Req 21.5 (300ms), Req 16.14 (visible pending state)
   React.useEffect(() => {
+    // Skip setting pending on first render
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     setIsSearchPending(true);
     const timeout = setTimeout(() => {
       onChange({ ...value, search: searchInput });
@@ -105,7 +112,6 @@ export function Filters({
 
     return () => {
       clearTimeout(timeout);
-      setIsSearchPending(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchInput]);
@@ -277,7 +283,7 @@ export function Filters({
                         });
                       }}
                     >
-                      <span className="text-sm">{district}</span>
+                      <span className="text-sm text-muted-foreground">{district}</span>
                     </DropdownMenuCheckboxItem>
                   ))}
                 </div>
