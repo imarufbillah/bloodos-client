@@ -12,6 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -150,16 +151,10 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`relative h-9 w-9 ${className}`}
-            aria-label={`Notifications${
-              unreadCount > 0 ? ` (${unreadCount} unread)` : ""
-            }`}
-          />
-        }
+        className={`relative h-9 w-9 inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${className}`}
+        aria-label={`Notifications${
+          unreadCount > 0 ? ` (${unreadCount} unread)` : ""
+        }`}
       >
         {unreadCount > 0 ? (
           <BellDot className="h-4 w-4" />
@@ -180,19 +175,21 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
         className="w-[360px] sm:w-[420px]"
         sideOffset={8}
       >
-        <DropdownMenuLabel className="flex items-center justify-between pb-2">
-          <span className="font-semibold">Notifications</span>
-          {unreadCount > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={markAllAsRead}
-              className="h-7 text-xs text-muted-foreground hover:text-foreground"
-            >
-              Mark all read
-            </Button>
-          )}
-        </DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="flex items-center justify-between pb-2">
+            <span className="font-semibold">Notifications</span>
+            {unreadCount > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={markAllAsRead}
+                className="h-7 text-xs text-muted-foreground hover:text-foreground"
+              >
+                Mark all read
+              </Button>
+            )}
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
 
         <ScrollArea className="h-[400px]">
