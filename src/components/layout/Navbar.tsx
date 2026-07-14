@@ -13,6 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import {
   Sheet,
@@ -168,14 +169,8 @@ export function Navbar() {
                 {/* User Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    render={
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-9 w-9 rounded-full"
-                        aria-label="User menu"
-                      />
-                    }
+                    className="h-9 w-9 rounded-full inline-flex items-center justify-center transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    aria-label="User menu"
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-crimson text-paper text-xs font-medium">
@@ -184,25 +179,27 @@ export function Navbar() {
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          {user.name || "User"}
-                        </p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                          {user.email}
-                        </p>
-                        {isAdmin && (
-                          <Badge
-                            variant="outline"
-                            className="mt-1 w-fit text-[10px]"
-                          >
-                            <Shield className="mr-1 h-3 w-3" />
-                            Admin
-                          </Badge>
-                        )}
-                      </div>
-                    </DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel className="font-normal">
+                        <div className="flex flex-col space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {user.name || "User"}
+                          </p>
+                          <p className="text-xs leading-none text-muted-foreground">
+                            {user.email}
+                          </p>
+                          {isAdmin && (
+                            <Badge
+                              variant="outline"
+                              className="mt-1 w-fit text-[10px]"
+                            >
+                              <Shield className="mr-1 h-3 w-3" />
+                              Admin
+                            </Badge>
+                          )}
+                        </div>
+                      </DropdownMenuLabel>
+                    </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
                       <Link
@@ -277,14 +274,8 @@ export function Navbar() {
 
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9"
-                  aria-label="Open menu"
-                />
-              }
+              className="h-9 w-9 inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
             </SheetTrigger>
