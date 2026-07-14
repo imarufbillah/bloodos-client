@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { SignInForm } from "@/components/forms/SignInForm";
+import { redirect } from "next/navigation";
 
 /**
  * Phase 8m — Sign In Page
@@ -21,12 +22,18 @@ export const metadata: Metadata = {
 };
 
 interface SignInPageProps {
-  searchParams: Promise<{ callbackUrl?: string }>;
+  searchParams: Promise<{ callbackUrl?: string; redirect?: string }>;
 }
 
 async function SignInContent({ searchParams }: SignInPageProps) {
   const params = await searchParams;
   const callbackUrl = params.callbackUrl;
+  const redirectParam = params.redirect;
+
+  // If we have callbackUrl but no redirect param, normalize to use redirect
+  if (callbackUrl && !redirectParam) {
+    redirect(`/signin?redirect=${encodeURIComponent(callbackUrl)}`);
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
@@ -40,7 +47,7 @@ async function SignInContent({ searchParams }: SignInPageProps) {
         </div>
 
         {/* Sign In Form */}
-        <SignInForm callbackUrl={callbackUrl} />
+        <SignInForm callbackUrl={redirectParam || callbackUrl} />
 
         {/* Divider */}
         <div className="relative">

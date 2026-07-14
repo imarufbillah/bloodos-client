@@ -10,8 +10,8 @@ import { signUpSchema, type SignUpInput } from "@/lib/validators/auth.schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import GoogleAuth from "@/components/auth/GoogleAuth";
 import { FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
-import { FcGoogle } from "react-icons/fc";
 
 /**
  * Phase 8m — Sign Up Form
@@ -28,7 +28,6 @@ interface SignUpFormProps {
 export function SignUpForm({ callbackUrl }: SignUpFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rateLimitError, setRateLimitError] = useState<{
@@ -96,20 +95,6 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
     }
   };
 
-  const handleGoogleSignUp = async () => {
-    try {
-      setIsGoogleLoading(true);
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: callbackUrl || "/profile",
-      });
-    } catch (error) {
-      console.error("Google sign up error:", error);
-      toast.error("Failed to sign up with Google. Please try again.");
-      setIsGoogleLoading(false);
-    }
-  };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {/* Rate limit error banner */}
@@ -121,16 +106,7 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
       )}
 
       {/* Google Sign Up Button */}
-      <Button
-        type="button"
-        variant="outline"
-        className="w-full"
-        onClick={handleGoogleSignUp}
-        disabled={isGoogleLoading || isLoading || !!rateLimitError}
-      >
-        <FcGoogle className="h-5 w-5 mr-2" />
-        {isGoogleLoading ? "Connecting to Google..." : "Continue with Google"}
-      </Button>
+      <GoogleAuth />
 
       {/* Divider */}
       <div className="relative">
@@ -266,7 +242,7 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
       <Button
         type="submit"
         className="w-full"
-        disabled={isLoading || isGoogleLoading || !!rateLimitError}
+        disabled={isLoading || !!rateLimitError}
       >
         {isLoading ? "Creating account..." : "Create account"}
       </Button>

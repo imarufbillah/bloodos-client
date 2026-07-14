@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { SignUpForm } from "@/components/forms/SignUpForm";
+import { redirect } from "next/navigation";
 
 /**
  * Phase 8m — Sign Up Page
@@ -20,12 +21,22 @@ export const metadata: Metadata = {
 };
 
 interface SignUpPageProps {
-  searchParams: Promise<{ callbackUrl?: string }>;
+  searchParams: Promise<{ callbackUrl?: string; redirect?: string }>;
 }
 
 async function SignUpContent({ searchParams }: SignUpPageProps) {
   const params = await searchParams;
   const callbackUrl = params.callbackUrl;
+  const redirectParam = params.redirect;
+
+  // If we have callbackUrl but no redirect param, normalize to use redirect
+  // For signup, default redirect is /profile for completing user profile
+  if (callbackUrl && !redirectParam) {
+    redirect(`/signup?redirect=${encodeURIComponent(callbackUrl)}`);
+  } else if (!callbackUrl && !redirectParam) {
+    // Default for signup without any params
+    redirect(`/signup?redirect=${encodeURIComponent("/profile")}`);
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
@@ -39,7 +50,7 @@ async function SignUpContent({ searchParams }: SignUpPageProps) {
         </div>
 
         {/* Sign Up Form */}
-        <SignUpForm callbackUrl={callbackUrl} />
+        <SignUpForm callbackUrl={redirectParam || callbackUrl || "/profile"} />
 
         {/* Divider */}
         <div className="relative">
