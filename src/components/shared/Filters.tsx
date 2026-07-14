@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuLabel,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -141,20 +142,27 @@ export function Filters({
         {/* Blood Group Filter */}
         {fields.bloodGroup && (
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button variant="outline" size="sm" className="h-8 gap-1.5">
-                <span className="font-mono text-xs">
-                  {value.bloodGroups?.length
-                    ? `Blood (${value.bloodGroups.length})`
-                    : "Blood Group"}
-                </span>
-                <ChevronDownIcon className="size-3.5 text-muted-foreground" />
-              </Button>
+            <DropdownMenuTrigger
+              className={cn(
+                "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-input bg-background px-3 text-xs font-medium shadow-sm transition-colors",
+                "hover:bg-accent hover:text-accent-foreground",
+                "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                "disabled:pointer-events-none disabled:opacity-50"
+              )}
+            >
+              <span className="font-mono text-xs">
+                {value.bloodGroups?.length
+                  ? `Blood (${value.bloodGroups.length})`
+                  : "Blood Group"}
+              </span>
+              <ChevronDownIcon className="size-3.5 text-muted-foreground" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
-              <DropdownMenuLabel className="text-muted-foreground">
-                Select Blood Groups
-              </DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="text-muted-foreground">
+                  Select Blood Groups
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               {BLOOD_GROUPS.map((group) => (
                 <DropdownMenuCheckboxItem
@@ -180,20 +188,27 @@ export function Filters({
         {/* Urgency Filter */}
         {fields.urgency && (
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button variant="outline" size="sm" className="h-8 gap-1.5">
-                <span className="text-xs">
-                  {value.urgencies?.length
-                    ? `Urgency (${value.urgencies.length})`
-                    : "Urgency"}
-                </span>
-                <ChevronDownIcon className="size-3.5 text-muted-foreground" />
-              </Button>
+            <DropdownMenuTrigger
+              className={cn(
+                "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-input bg-background px-3 text-xs font-medium shadow-sm transition-colors",
+                "hover:bg-accent hover:text-accent-foreground",
+                "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                "disabled:pointer-events-none disabled:opacity-50"
+              )}
+            >
+              <span className="text-xs">
+                {value.urgencies?.length
+                  ? `Urgency (${value.urgencies.length})`
+                  : "Urgency"}
+              </span>
+              <ChevronDownIcon className="size-3.5 text-muted-foreground" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
-              <DropdownMenuLabel className="text-muted-foreground">
-                Select Urgency Levels
-              </DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="text-muted-foreground">
+                  Select Urgency Levels
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               {URGENCIES.map((urgency) => (
                 <DropdownMenuCheckboxItem
@@ -219,26 +234,35 @@ export function Filters({
         {/* District Filter */}
         {fields.district && (
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button variant="outline" size="sm" className="h-8 gap-1.5">
-                <span className="text-xs">
-                  {value.districts?.length
-                    ? `District (${value.districts.length})`
-                    : "District"}
-                </span>
-                <ChevronDownIcon className="size-3.5 text-muted-foreground" />
-              </Button>
+            <DropdownMenuTrigger
+              className={cn(
+                "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-input bg-background px-3 text-xs font-medium shadow-sm transition-colors",
+                "hover:bg-accent hover:text-accent-foreground",
+                "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                "disabled:pointer-events-none disabled:opacity-50"
+              )}
+            >
+              <span className="text-xs">
+                {value.districts?.length
+                  ? `District (${value.districts.length})`
+                  : "District"}
+              </span>
+              <ChevronDownIcon className="size-3.5 text-muted-foreground" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56 max-h-96 overflow-y-auto">
-              <DropdownMenuLabel className="text-muted-foreground">
-                Select Districts
-              </DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="text-muted-foreground">
+                  Select Districts
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               {Object.entries(DISTRICTS_BY_DIVISION).map(([division, districts]) => (
                 <div key={division}>
-                  <DropdownMenuLabel className="text-xs font-semibold text-foreground mt-1">
-                    {division}
-                  </DropdownMenuLabel>
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className="text-xs font-semibold text-foreground mt-1">
+                      {division}
+                    </DropdownMenuLabel>
+                  </DropdownMenuGroup>
                   {districts.map((district) => (
                     <DropdownMenuCheckboxItem
                       key={district}
@@ -308,20 +332,27 @@ export function Filters({
       {/* Right side: sort dropdown */}
       {fields.sort && (
         <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="outline" size="sm" className="h-8 gap-1.5">
-              <span className="text-xs">
-                {value.sort
-                  ? SORT_OPTIONS.find((opt) => opt.value === value.sort)?.label
-                  : "Sort By"}
-              </span>
-              <ChevronDownIcon className="size-3.5 text-muted-foreground" />
-            </Button>
+          <DropdownMenuTrigger
+            className={cn(
+              "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-input bg-background px-3 text-xs font-medium shadow-sm transition-colors",
+              "hover:bg-accent hover:text-accent-foreground",
+              "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+              "disabled:pointer-events-none disabled:opacity-50"
+            )}
+          >
+            <span className="text-xs">
+              {value.sort
+                ? SORT_OPTIONS.find((opt) => opt.value === value.sort)?.label
+                : "Sort By"}
+            </span>
+            <ChevronDownIcon className="size-3.5 text-muted-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel className="text-muted-foreground">
-              Sort By
-            </DropdownMenuLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-muted-foreground">
+                Sort By
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             {SORT_OPTIONS.map((option) => (
               <DropdownMenuCheckboxItem
