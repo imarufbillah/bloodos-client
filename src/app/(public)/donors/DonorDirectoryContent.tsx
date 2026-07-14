@@ -199,7 +199,7 @@ export default function DonorDirectoryContent() {
     // Check authentication (Req 17.11)
     if (!session?.user) {
       toast.error("Please sign in to request contact information", {
-        description: "You&apos;ll be redirected to the login page",
+        description: "You'll be redirected to the login page",
       });
       // Redirect to login with return URL
       router.push(`/signin?callbackUrl=${encodeURIComponent("/donors")}`);
