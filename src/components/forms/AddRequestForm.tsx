@@ -16,9 +16,13 @@
  * - Req 20.4: Zod validation mirrors backend validator
  * - Req 20.5: Submit to POST /api/requests
  * - Req 20.10: Success toast + redirect to /requests/manage
+ * 
+ * Phase 8n integration:
+ * - Check if user has completed profile (district, bloodGroup, phone)
+ * - Redirect to /onboarding if incomplete
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -46,8 +50,46 @@ interface FormErrors {
 export function AddRequestForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCheckingProfile, setIsCheckingProfile] = useState(true);
   const [errors, setErrors] = useState<FormErrors>({});
   const [selectedUrgency, setSelectedUrgency] = useState<Urgency | "">("");
+
+  // Check if user has completed required profile fields (Phase 8n)
+  useEffect(() => {
+    const checkProfileCompletion = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/me`,
+          {
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user profile");
+        }
+
+        const user = await response.json();
+
+        // Check if required fields are present
+        if (!user.district || !user.bloodGroup || !user.phone) {
+          toast.info("Please complete your profile first", {
+            description: "We need your district, blood group, and phone number to post requests.",
+          });
+          router.push("/onboarding");
+          return;
+        }
+
+        setIsCheckingProfile(false);
+      } catch (error) {
+        console.error("Profile check error:", error);
+        toast.error("Failed to verify profile");
+        setIsCheckingProfile(false);
+      }
+    };
+
+    checkProfileCompletion();
+  }, [router]);
 
   // Get minimum date (today) for date input
   const getMinDate = () => {
@@ -132,7 +174,16 @@ export function AddRequestForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Patient Information Section */}
+      {isCheckingProfile ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center space-y-2">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+            <p className="text-sm text-muted-foreground">Verifying profile...</p>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Patient Information Section */}
       <section className="space-y-4">
         <div className="border-b border-border pb-2">
           <h2 className="text-lg font-semibold">Patient Information</h2>
@@ -501,6 +552,8 @@ export function AddRequestForm() {
           {isSubmitting ? "Creating Request..." : "Post Blood Request"}
         </Button>
       </div>
+        </>
+      )}
     </form>
   );
 }
