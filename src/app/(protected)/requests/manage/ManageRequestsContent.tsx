@@ -390,9 +390,8 @@ export function ManageRequestsContent() {
               <tbody className="divide-y divide-border">
                 {state.requests.map((request) => {
                   const isActionLoading = actionLoading === request._id;
-                  const canFulfill =
-                    request.status === "open" ||
-                    request.status === "in_progress";
+                  // Can only fulfill from in_progress status (state machine rule)
+                  const canFulfill = request.status === "in_progress";
                   const canCancel =
                     request.status === "open" ||
                     request.status === "in_progress";
@@ -505,8 +504,8 @@ export function ManageRequestsContent() {
           <div className="md:hidden divide-y divide-border">
             {state.requests.map((request) => {
               const isActionLoading = actionLoading === request._id;
-              const canFulfill =
-                request.status === "open" || request.status === "in_progress";
+              // Can only fulfill from in_progress status (state machine rule)
+              const canFulfill = request.status === "in_progress";
               const canCancel =
                 request.status === "open" || request.status === "in_progress";
 
