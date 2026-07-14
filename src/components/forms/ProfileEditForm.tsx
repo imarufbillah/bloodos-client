@@ -82,10 +82,19 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
       // Validate with Zod
       const validated = updateProfileSchema.parse(formData);
 
+      // Filter out empty strings and undefined values
+      // Only send fields that have actual values
+      const payload: Record<string, any> = {};
+      if (validated.name) payload.name = validated.name;
+      if (validated.phone) payload.phone = validated.phone;
+      if (validated.district) payload.district = validated.district;
+      if (validated.bloodGroup) payload.bloodGroup = validated.bloodGroup;
+      if (validated.isDonor !== undefined) payload.isDonor = validated.isDonor;
+
       // Submit to API (Req 13.5)
       const response = await apiFetch("/api/users/me", {
         method: "PATCH",
-        body: JSON.stringify(validated),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -290,6 +299,7 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
             aria-invalid={!!errors.bloodGroup}
             aria-describedby={errors.bloodGroup ? "bloodGroup-error" : undefined}
           >
+            <option value="">Select blood group</option>
             {BLOOD_GROUPS.map((group) => (
               <option key={group} value={group}>
                 {group}
@@ -324,6 +334,7 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
             aria-invalid={!!errors.district}
             aria-describedby={errors.district ? "district-error" : undefined}
           >
+            <option value="">Select district</option>
             {DISTRICTS.map((district) => (
               <option key={district} value={district}>
                 {district}
