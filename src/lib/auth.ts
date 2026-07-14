@@ -57,5 +57,38 @@ export const auth = betterAuth({
       },
     },
   },
-  plugins: [jwt()],
+  plugins: [
+    jwt({
+      jwt: {
+        // Define the JWT payload structure to match backend expectations
+        definePayload: ({ user }) => {
+          return {
+            // Include session data with user object
+            session: {
+              userId: user.id,
+              user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                emailVerified: user.emailVerified,
+                image: user.image,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+                // Include custom fields
+                role: user.role,
+                phone: user.phone,
+                district: user.district,
+                bloodGroup: user.bloodGroup,
+                isDonor: user.isDonor,
+                lastDonationDate: user.lastDonationDate,
+                banned: user.banned || false,
+                banReason: user.banReason || null,
+                banExpiresAt: user.banExpiresAt || null,
+              },
+            },
+          };
+        },
+      },
+    }),
+  ],
 });
