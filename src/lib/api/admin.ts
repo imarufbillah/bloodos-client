@@ -3,6 +3,8 @@
  * Handles all admin-specific API calls (Req 18, 5f)
  */
 
+import { apiFetch } from "../api-client";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export interface AdminStats {
@@ -41,9 +43,7 @@ export interface AdminUser {
  * Fetch admin dashboard statistics (Req 18.4)
  */
 export async function getAdminStats(): Promise<AdminStats> {
-  const response = await fetch(`${API_BASE}/api/admin/stats`, {
-    credentials: "include",
-  });
+  const response = await apiFetch("/api/admin/stats");
 
   if (!response.ok) {
     throw new Error("Failed to fetch admin stats");
@@ -56,28 +56,23 @@ export async function getAdminStats(): Promise<AdminStats> {
  * Fetch requests pending moderation (Req 18.9)
  */
 export async function getModerationRequests(): Promise<ModerationRequest[]> {
-  const response = await fetch(`${API_BASE}/api/admin/requests`, {
-    credentials: "include",
-  });
+  const response = await apiFetch("/api/admin/requests?limit=100");
 
   if (!response.ok) {
     throw new Error("Failed to fetch moderation requests");
   }
 
-  return response.json();
+  const result = await response.json();
+  return result.data || [];
 }
 
 /**
  * Approve a blood request (admin action)
  */
 export async function approveRequest(requestId: string): Promise<void> {
-  const response = await fetch(
-    `${API_BASE}/api/admin/requests/${requestId}/approve`,
-    {
-      method: "PATCH",
-      credentials: "include",
-    }
-  );
+  const response = await apiFetch(`/api/admin/requests/${requestId}/approve`, {
+    method: "PATCH",
+  });
 
   if (!response.ok) {
     throw new Error("Failed to approve request");
@@ -91,15 +86,11 @@ export async function rejectRequest(
   requestId: string,
   reason: string
 ): Promise<void> {
-  const response = await fetch(
-    `${API_BASE}/api/admin/requests/${requestId}/reject`,
-    {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ reason }),
-    }
-  );
+  const response = await apiFetch(`/api/admin/requests/${requestId}/reject`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ reason }),
+  });
 
   if (!response.ok) {
     throw new Error("Failed to reject request");
@@ -110,9 +101,8 @@ export async function rejectRequest(
  * Delete a blood request (admin action, Req 18.12)
  */
 export async function deleteRequest(requestId: string): Promise<void> {
-  const response = await fetch(`${API_BASE}/api/requests/${requestId}`, {
+  const response = await apiFetch(`/api/requests/${requestId}`, {
     method: "DELETE",
-    credentials: "include",
   });
 
   if (!response.ok) {
@@ -124,15 +114,14 @@ export async function deleteRequest(requestId: string): Promise<void> {
  * Fetch all users for management (Req 5f)
  */
 export async function getUsers(): Promise<AdminUser[]> {
-  const response = await fetch(`${API_BASE}/api/admin/users`, {
-    credentials: "include",
-  });
+  const response = await apiFetch("/api/admin/users?limit=100");
 
   if (!response.ok) {
     throw new Error("Failed to fetch users");
   }
 
-  return response.json();
+  const result = await response.json();
+  return result.data || [];
 }
 
 /**
@@ -143,10 +132,9 @@ export async function toggleUserBan(
   banned: boolean,
   reason: string
 ): Promise<void> {
-  const response = await fetch(`${API_BASE}/api/admin/users/${userId}/ban`, {
+  const response = await apiFetch(`/api/admin/users/${userId}/ban`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    credentials: "include",
     body: JSON.stringify({ banned, reason }),
   });
 
@@ -162,10 +150,9 @@ export async function changeUserRole(
   userId: string,
   role: "user" | "admin"
 ): Promise<void> {
-  const response = await fetch(`${API_BASE}/api/admin/users/${userId}/role`, {
+  const response = await apiFetch(`/api/admin/users/${userId}/role`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    credentials: "include",
     body: JSON.stringify({ role }),
   });
 
@@ -178,13 +165,9 @@ export async function changeUserRole(
  * Verify a donation (Req 10.4)
  */
 export async function verifyDonation(donationId: string): Promise<void> {
-  const response = await fetch(
-    `${API_BASE}/api/admin/donations/${donationId}/verify`,
-    {
-      method: "PATCH",
-      credentials: "include",
-    }
-  );
+  const response = await apiFetch(`/api/admin/donations/${donationId}/verify`, {
+    method: "PATCH",
+  });
 
   if (!response.ok) {
     throw new Error("Failed to verify donation");
