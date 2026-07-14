@@ -49,10 +49,14 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
   const [hasMore, setHasMore] = React.useState(false);
   const limit = 10;
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  // Use useMemo to ensure unreadCount is always fresh and triggers re-render
+  const unreadCount = React.useMemo(
+    () => notifications.filter((n) => !n.isRead).length,
+    [notifications]
+  );
 
   // Define fetchNotifications before useEffect
-  const fetchNotifications = React.useCallback(async (pageNum: number) => {
+  const fetchNotifications = React.useCallback(async (pageNum: number, silent: boolean = false) => {
     if (!session?.user) return;
 
     setIsLoading(true);
@@ -77,21 +81,48 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
       setPage(pageNum);
     } catch (error) {
       console.error("Error fetching notifications:", error);
-      toast.error("Failed to load notifications");
+      if (!silent && isOpen) {
+        // Only show error toast if panel is open and not silent
+        toast.error("Failed to load notifications");
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [session?.user, limit]);
+  }, [session?.user, limit, isOpen]);
 
-  // Fetch notifications when panel opens
+  // Fetch notifications immediately on mount and when user logs in
+  React.useEffect(() => {
+    if (session?.user) {
+      fetchNotifications(1, true); // Silent fetch on mount
+    }
+  }, [session?.user, fetchNotifications]);
+
+  // Poll for new notifications every 30 seconds (when user is logged in)
+  React.useEffect(() => {
+    if (!session?.user) return;
+
+    const intervalId = setInterval(() => {
+      // Only fetch first page to check for new notifications (silent)
+      fetchNotifications(1, true);
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(intervalId);
+  }, [session?.user, fetchNotifications]);
+
+  // Refresh notifications when panel opens (to get latest)
   React.useEffect(() => {
     if (isOpen && session?.user) {
-      fetchNotifications(1);
+      fetchNotifications(1, false); // Non-silent fetch when opening
     }
   }, [isOpen, session?.user, fetchNotifications]);
 
   const markAsRead = async (notificationId: string) => {
     if (!session?.user) return;
+
+    // Optimistic update: immediately update UI before API call
+    setNotifications((prev) =>
+      prev.map((n) => (n._id === notificationId ? { ...n, isRead: true } : n))
+    );
 
     try {
       const response = await apiFetch(`/api/notifications/${notificationId}/read`, {
@@ -99,13 +130,12 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
       });
 
       if (!response.ok) {
+        // Revert optimistic update on failure
+        setNotifications((prev) =>
+          prev.map((n) => (n._id === notificationId ? { ...n, isRead: false } : n))
+        );
         throw new Error("Failed to mark notification as read");
       }
-
-      // Update local state
-      setNotifications((prev) =>
-        prev.map((n) => (n._id === notificationId ? { ...n, isRead: true } : n))
-      );
     } catch (error) {
       console.error("Error marking notification as read:", error);
       toast.error("Failed to mark notification as read");
@@ -115,17 +145,20 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
   const markAllAsRead = async () => {
     if (!session?.user) return;
 
+    // Optimistic update: immediately update UI before API call
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+
     try {
       const response = await apiFetch("/api/notifications/read-all", {
         method: "PATCH",
       });
 
       if (!response.ok) {
+        // Revert would be complex here, so just refetch on error
+        await fetchNotifications(1);
         throw new Error("Failed to mark all notifications as read");
       }
 
-      // Update local state
-      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
       toast.success("All notifications marked as read");
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
@@ -147,20 +180,20 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger
-        className={`relative h-9 w-9 inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${className}`}
+        className={`relative h-9 w-9 inline-flex items-center justify-center rounded-md transition-all hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${className}`}
         aria-label={`Notifications${
           unreadCount > 0 ? ` (${unreadCount} unread)` : ""
         }`}
       >
         {unreadCount > 0 ? (
-          <BellDot className="h-4 w-4" />
+          <BellDot className="h-4 w-4 animate-in fade-in-0 zoom-in-95 duration-150" />
         ) : (
-          <Bell className="h-4 w-4" />
+          <Bell className="h-4 w-4 animate-in fade-in-0 zoom-in-95 duration-150" />
         )}
         {unreadCount > 0 && (
           <Badge
             variant="destructive"
-            className="absolute -right-1 -top-1 h-5 min-w-5 items-center justify-center rounded-full p-0 text-[10px] font-medium"
+            className="absolute -right-1 -top-1 h-5 min-w-5 items-center justify-center rounded-full p-0 text-[10px] font-medium animate-in fade-in-0 zoom-in-95 duration-200"
           >
             {unreadCount > 99 ? "99+" : unreadCount}
           </Badge>
@@ -252,33 +285,45 @@ function NotificationItem({
   onMarkRead,
   onClose,
 }: NotificationItemProps) {
+  const [isOptimisticallyRead, setIsOptimisticallyRead] = React.useState(false);
   const icon = getNotificationIcon(notification.type);
   const link = getNotificationLink(notification);
+  
+  // Merge actual state with optimistic state
+  const isRead = notification.isRead || isOptimisticallyRead;
 
   const handleClick = () => {
-    if (!notification.isRead) {
+    if (!isRead) {
+      setIsOptimisticallyRead(true); // Immediate visual feedback
       onMarkRead(notification._id);
     }
     if (link) {
       onClose();
     }
   };
+  
+  const handleMarkReadClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsOptimisticallyRead(true); // Immediate visual feedback
+    onMarkRead(notification._id);
+  };
 
   const content = (
     <div
       className={`group relative flex gap-3 rounded-md p-3 transition-colors hover:bg-accent ${
-        !notification.isRead ? "bg-accent/50" : ""
+        !isRead ? "bg-accent/50" : ""
       }`}
     >
       {/* Unread indicator dot */}
-      {!notification.isRead && (
-        <div className="absolute left-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-crimson" />
+      {!isRead && (
+        <div className="absolute left-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-crimson animate-in fade-in-0 zoom-in-50 duration-200" />
       )}
 
       {/* Icon */}
       <div
-        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-          !notification.isRead ? "bg-crimson/10" : "bg-muted"
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
+          !isRead ? "bg-crimson/10" : "bg-muted"
         }`}
       >
         {icon}
@@ -298,16 +343,12 @@ function NotificationItem({
       </div>
 
       {/* Mark read button */}
-      {!notification.isRead && (
+      {!isRead && (
         <Button
           variant="ghost"
           size="icon"
           className="h-6 w-6 shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onMarkRead(notification._id);
-          }}
+          onClick={handleMarkReadClick}
           aria-label="Mark as read"
         >
           <X className="h-3 w-3" />
