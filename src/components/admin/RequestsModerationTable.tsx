@@ -2,19 +2,19 @@
  * Requests Moderation Table
  * Dense data table for admin moderation (Req 18.9-18.12)
  * Columns: ID, Patient, Blood Group, Status, Created, Actions
+ * Actions: Reject, View/Edit, Delete (no Approve since requests are auto-approved on creation)
  */
 
 "use client";
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { CheckCircle, XCircle, Edit, Trash2 } from "lucide-react";
+import { XCircle, Eye, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { BloodGroupBadge } from "@/components/shared/BloodGroupBadge";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import {
-  approveRequest,
   rejectRequest,
   deleteRequest,
   type ModerationRequest,
@@ -35,24 +35,8 @@ export function RequestsModerationTable({
   const [selectedRequest, setSelectedRequest] =
     useState<ModerationRequest | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState<
-    "approve" | "reject" | "delete"
-  >("delete");
+  const [dialogType, setDialogType] = useState<"reject" | "delete">("delete");
   const [isProcessing, setIsProcessing] = useState(false);
-
-  const handleApprove = async (request: ModerationRequest) => {
-    setIsProcessing(true);
-    try {
-      await approveRequest(request._id);
-      toast.success("Request approved successfully");
-      onRefresh();
-    } catch (error) {
-      toast.error("Failed to approve request");
-      console.error(error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
 
   const handleReject = async () => {
     if (!selectedRequest) return;
@@ -80,7 +64,7 @@ export function RequestsModerationTable({
 
   const openDialog = (
     request: ModerationRequest,
-    type: "approve" | "reject" | "delete"
+    type: "reject" | "delete"
   ) => {
     setSelectedRequest(request);
     setDialogType(type);
@@ -148,18 +132,9 @@ export function RequestsModerationTable({
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => handleApprove(request)}
-                        disabled={isProcessing}
-                        title="Approve"
-                      >
-                        <CheckCircle className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
                         onClick={() => openDialog(request, "reject")}
                         disabled={isProcessing}
-                        title="Reject"
+                        title="Reject Request"
                       >
                         <XCircle className="h-4 w-4" />
                       </Button>
@@ -167,19 +142,19 @@ export function RequestsModerationTable({
                         size="sm"
                         variant="ghost"
                         onClick={() =>
-                          router.push(`/requests/${request._id}/edit`)
+                          router.push(`/requests/${request._id}`)
                         }
                         disabled={isProcessing}
-                        title="Edit"
+                        title="View Details"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Eye className="h-4 w-4" />
                       </Button>
                       <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => openDialog(request, "delete")}
                         disabled={isProcessing}
-                        title="Delete"
+                        title="Delete Request"
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
@@ -196,26 +171,14 @@ export function RequestsModerationTable({
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         title={
-          dialogType === "delete"
-            ? "Delete Request"
-            : dialogType === "reject"
-              ? "Reject Request"
-              : "Approve Request"
+          dialogType === "delete" ? "Delete Request" : "Reject Request"
         }
         description={
           dialogType === "delete"
             ? "Are you sure you want to delete this blood request? This action cannot be undone."
-            : dialogType === "reject"
-              ? "Are you sure you want to reject this blood request?"
-              : "Are you sure you want to approve this blood request?"
+            : "Are you sure you want to reject this blood request?"
         }
-        confirmText={
-          dialogType === "delete"
-            ? "Delete"
-            : dialogType === "reject"
-              ? "Reject"
-              : "Approve"
-        }
+        confirmText={dialogType === "delete" ? "Delete" : "Reject"}
         variant={dialogType === "delete" ? "destructive" : "default"}
         onConfirm={dialogType === "delete" ? handleDelete : handleReject}
       />
