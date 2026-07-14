@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { authClient, useSession } from "@/lib/auth-client";
 import type { ExtendedUser } from "@/types/auth";
 import { Button } from "@/components/ui/button";
@@ -63,7 +63,6 @@ const adminLinks: NavLink[] = [
 
 export function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const { data: session, isPending } = useSession();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -73,9 +72,7 @@ export function Navbar() {
 
   const handleSignOut = async () => {
     try {
-      await authClient.signOut()
-      router.push("/");
-      router.refresh();
+      await authClient.signOut();
     } catch (error) {
       console.error("Sign out error:", error);
     }
