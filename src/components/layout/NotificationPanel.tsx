@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useSession } from "@/lib/auth-client";
+import { apiFetch } from "@/lib/api-client";
 import type { NotificationDto } from "@/types/dto/notification.dto";
 import type { PaginatedResponse } from "@/types/shared";
 import { NotificationType } from "@/types/shared";
@@ -24,7 +25,6 @@ import {
   AlertCircle,
   CheckCircle2,
   Droplet,
-  User,
   Shield,
   Clock,
   MessageSquare,
@@ -51,23 +51,14 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  // Fetch notifications when panel opens
-  React.useEffect(() => {
-    if (isOpen && session?.user) {
-      fetchNotifications(1);
-    }
-  }, [isOpen, session]);
-
-  const fetchNotifications = async (pageNum: number) => {
+  // Define fetchNotifications before useEffect
+  const fetchNotifications = React.useCallback(async (pageNum: number) => {
     if (!session?.user) return;
 
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `/api/notifications?page=${pageNum}&limit=${limit}`,
-        {
-          credentials: "include",
-        }
+      const response = await apiFetch(
+        `/api/notifications?page=${pageNum}&limit=${limit}`
       );
 
       if (!response.ok) {
@@ -90,15 +81,21 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [session?.user, limit]);
+
+  // Fetch notifications when panel opens
+  React.useEffect(() => {
+    if (isOpen && session?.user) {
+      fetchNotifications(1);
+    }
+  }, [isOpen, session?.user, fetchNotifications]);
 
   const markAsRead = async (notificationId: string) => {
     if (!session?.user) return;
 
     try {
-      const response = await fetch(`/api/notifications/${notificationId}/read`, {
+      const response = await apiFetch(`/api/notifications/${notificationId}/read`, {
         method: "PATCH",
-        credentials: "include",
       });
 
       if (!response.ok) {
@@ -119,9 +116,8 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
     if (!session?.user) return;
 
     try {
-      const response = await fetch("/api/notifications/read-all", {
+      const response = await apiFetch("/api/notifications/read-all", {
         method: "PATCH",
-        credentials: "include",
       });
 
       if (!response.ok) {
@@ -206,7 +202,7 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
                 No notifications yet
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
-                You'll see updates about your requests and responses here
+                You&apos;ll see updates about your requests and responses here
               </p>
             </div>
           ) : (
