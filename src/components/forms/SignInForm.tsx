@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
+import { FcGoogle } from "react-icons/fc";
 
 /**
  * Phase 8m — Sign In Form
@@ -26,6 +27,7 @@ interface SignInFormProps {
 export function SignInForm({ callbackUrl }: SignInFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rateLimitError, setRateLimitError] = useState<{
     message: string;
@@ -80,6 +82,20 @@ export function SignInForm({ callbackUrl }: SignInFormProps) {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsGoogleLoading(true);
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: callbackUrl || "/",
+      });
+    } catch (error) {
+      console.error("Google sign in error:", error);
+      toast.error("Failed to sign in with Google. Please try again.");
+      setIsGoogleLoading(false);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {/* Rate limit error banner */}
@@ -89,6 +105,30 @@ export function SignInForm({ callbackUrl }: SignInFormProps) {
           <p className="text-sm text-destructive">{rateLimitError.message}</p>
         </div>
       )}
+
+      {/* Google Sign In Button */}
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        onClick={handleGoogleSignIn}
+        disabled={isGoogleLoading || isLoading || !!rateLimitError}
+      >
+        <FcGoogle className="h-5 w-5 mr-2" />
+        {isGoogleLoading ? "Connecting to Google..." : "Continue with Google"}
+      </Button>
+
+      {/* Divider */}
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with email
+          </span>
+        </div>
+      </div>
 
       {/* Email field */}
       <div className="space-y-2">
@@ -149,7 +189,7 @@ export function SignInForm({ callbackUrl }: SignInFormProps) {
       <Button
         type="submit"
         className="w-full"
-        disabled={isLoading || !!rateLimitError}
+        disabled={isLoading || isGoogleLoading || !!rateLimitError}
       >
         {isLoading ? "Signing in..." : "Sign in"}
       </Button>

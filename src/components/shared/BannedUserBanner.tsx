@@ -22,7 +22,7 @@ export function BannedUserBanner() {
   return (
     <div className="bg-destructive/10 border-l-4 border-destructive px-4 py-3 mb-6">
       <div className="flex items-start gap-3">
-        <AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
+        <AlertCircle className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
         <div className="flex-1">
           <h3 className="font-semibold text-destructive mb-1">
             Account Suspended
