@@ -95,7 +95,7 @@ export function ResponseHistorySection({ userId }: ResponseHistorySectionProps) 
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/me/responses`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users/me/responses`,
           {
             credentials: "include",
           }

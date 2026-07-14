@@ -108,7 +108,7 @@ export function DonationHistorySection({
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/me/donations?page=${page}&limit=10`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/users/me/donations?page=${page}&limit=10`,
         {
           credentials: "include",
         }

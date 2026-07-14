@@ -83,7 +83,7 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
 
       // Submit to API (Req 13.5)
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/me`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
         {
           method: "PATCH",
           headers: {

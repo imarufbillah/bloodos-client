@@ -53,7 +53,7 @@ export function PostedRequestsSection({ userId }: PostedRequestsSectionProps) {
       try {
         // Fetch user's own requests
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/requests/mine`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/requests/mine`,
           {
             credentials: "include",
           }

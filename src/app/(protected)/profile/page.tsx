@@ -45,7 +45,7 @@ export default function ProfilePage() {
       try {
         // Fetch current user profile (Req 13.2)
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/me`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
           {
             credentials: "include",
           }
