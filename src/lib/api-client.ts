@@ -53,6 +53,7 @@ async function getAuthToken(): Promise<string | null> {
  * 2. Fetches JWT token from better-auth
  * 3. Includes token in Authorization header
  * 4. Makes the request to the backend
+ * 5. Handles banned user errors automatically
  * 
  * @param path - API endpoint path
  * @param options - Fetch options
@@ -94,7 +95,38 @@ export async function apiFetch(
     headers,
   };
 
-  return fetch(url, fetchOptions);
+  const response = await fetch(url, fetchOptions);
+
+  // Check for banned user (401 with suspension message)
+  if (!response.ok) {
+    // Try to parse error message
+    try {
+      const errorData = await response.clone().json();
+      const message = errorData.message || errorData.error || '';
+      
+      // Check if user is suspended/banned
+      if (
+        response.status === 401 &&
+        (message.includes('suspended') || 
+         message.includes('banned') || 
+         message.includes('Your account has been suspended'))
+      ) {
+        // Extract ban reason from message if present
+        const banReasonMatch = message.match(/suspended:\s*(.+)/i);
+        const banReason = banReasonMatch ? banReasonMatch[1] : message;
+        
+        // Redirect to suspended page with reason (avoid loop if already there)
+        if (typeof window !== 'undefined' && window.location.pathname !== '/suspended') {
+          const suspendedUrl = `/suspended?reason=${encodeURIComponent(banReason)}`;
+          window.location.href = suspendedUrl;
+        }
+      }
+    } catch {
+      // Ignore JSON parse errors
+    }
+  }
+
+  return response;
 }
 
 /**

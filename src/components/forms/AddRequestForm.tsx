@@ -33,6 +33,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { UrgencyBadge } from "@/components/shared/UrgencyBadge";
+import { BannedUserBanner } from "@/components/shared/BannedUserBanner";
 
 import {
   createRequestSchema,
@@ -43,6 +44,7 @@ import { BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { DISTRICTS } from "@/lib/constants/districts";
 import type { Urgency } from "@/types/shared";
 import { apiFetch } from "@/lib/api-client";
+import { useUserStatus } from "@/hooks/useUserStatus";
 
 interface FormErrors {
   [key: string]: string;
@@ -50,6 +52,7 @@ interface FormErrors {
 
 export function AddRequestForm() {
   const router = useRouter();
+  const { isBanned, canPerformActions } = useUserStatus();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCheckingProfile, setIsCheckingProfile] = useState(true);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -163,6 +166,9 @@ export function AddRequestForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Banned User Warning */}
+      <BannedUserBanner />
+
       {isCheckingProfile ? (
         <div className="flex items-center justify-center py-12">
           <div className="text-center space-y-2">
@@ -537,7 +543,7 @@ export function AddRequestForm() {
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || isBanned}>
           {isSubmitting ? "Creating Request..." : "Post Blood Request"}
         </Button>
       </div>

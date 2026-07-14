@@ -66,6 +66,17 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
       );
 
       if (!response.ok) {
+        // Check if it's a ban/suspension error (redirect will happen in apiFetch)
+        const errorData = await response.json().catch(() => ({}));
+        const message = errorData.message || '';
+        
+        // Don't throw error if it's a suspension (redirect is handling it)
+        if (response.status === 401 && 
+            (message.includes('suspended') || message.includes('banned'))) {
+          // apiFetch will handle redirect to /suspended
+          return;
+        }
+        
         throw new Error("Failed to fetch notifications");
       }
 

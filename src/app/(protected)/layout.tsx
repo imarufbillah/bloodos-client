@@ -4,6 +4,7 @@
  * Protected routes layout
  * Ensures user is authenticated before accessing protected pages (Req 1.7, 20.2)
  * Redirects unauthenticated users to login
+ * Ban checks are handled by API responses (backend checks fresh DB data)
  * Includes Navbar and Footer for authenticated pages
  */
 
