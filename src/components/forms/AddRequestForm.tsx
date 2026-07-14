@@ -42,6 +42,7 @@ import {
 import { BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { DISTRICTS } from "@/lib/constants/districts";
 import type { Urgency } from "@/types/shared";
+import { apiFetch } from "@/lib/api-client";
 
 interface FormErrors {
   [key: string]: string;
@@ -58,12 +59,7 @@ export function AddRequestForm() {
   useEffect(() => {
     const checkProfileCompletion = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/me`,
-          {
-            credentials: "include",
-          }
-        );
+        const response = await apiFetch("/api/users/me");
 
         if (!response.ok) {
           throw new Error("Failed to fetch user profile");
