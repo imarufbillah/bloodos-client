@@ -15,6 +15,7 @@ import {
 } from "@/lib/validators/onboarding.schema";
 import { BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { DISTRICTS_BY_DIVISION } from "@/lib/constants/districts";
+import { apiFetch } from "@/lib/api-client";
 
 /**
  * OnboardingForm Component
@@ -67,17 +68,10 @@ export function OnboardingForm() {
       }
 
       // Submit to backend
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/me`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // Include auth cookies
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await apiFetch("/api/users/me", {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      });
 
       if (!response.ok) {
         const error = await response.json();
