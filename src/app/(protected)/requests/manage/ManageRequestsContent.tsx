@@ -29,6 +29,7 @@ import type {
   PaginatedResponse,
   RequestStatus,
 } from "@/types/shared";
+import { apiFetch } from "@/lib/api-client";
 
 /**
  * ManageRequestsContent — Client component for managing user's blood requests
@@ -47,9 +48,6 @@ import type {
  * - Monospace for dates and IDs
  * - Compact spacing per civic infrastructure aesthetic
  */
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 interface ManageRequestsState {
   requests: BloodRequest[];
@@ -96,11 +94,8 @@ export function ManageRequestsContent() {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const response = await fetch(
-        `${BASE_URL}/api/requests/mine?page=${page}&limit=10`,
-        {
-          credentials: "include",
-        }
+      const response = await apiFetch(
+        `/api/requests/mine?page=${page}&limit=10`
       );
 
       if (!response.ok) {
@@ -153,17 +148,10 @@ export function ManageRequestsContent() {
     setActionLoading(requestId);
 
     try {
-      const response = await fetch(
-        `${BASE_URL}/api/requests/${requestId}/status`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ status: newStatus }),
-        }
-      );
+      const response = await apiFetch(`/api/requests/${requestId}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: newStatus }),
+      });
 
       if (!response.ok) {
         const error = await response.json();
@@ -192,13 +180,9 @@ export function ManageRequestsContent() {
     setActionLoading(deleteDialog.requestId);
 
     try {
-      const response = await fetch(
-        `${BASE_URL}/api/requests/${deleteDialog.requestId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const response = await apiFetch(`/api/requests/${deleteDialog.requestId}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         const error = await response.json();
