@@ -34,9 +34,7 @@ import {
   MapPinned,
 } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { apiFetch } from "@/lib/api-client";
 
 interface RequestDetailsContentProps {
   request: BloodRequest;
@@ -49,7 +47,7 @@ async function fetchRelatedRequests(
   requestId: string
 ): Promise<BloodRequest[]> {
   const response = await fetch(
-    `${API_BASE_URL}/api/requests/related/${requestId}`
+    `${process.env.NEXT_PUBLIC_API_URL}/api/requests/related/${requestId}`
   );
 
   if (!response.ok) {
@@ -62,25 +60,17 @@ async function fetchRelatedRequests(
 
 /**
  * Submit response to request
- * Note: Better-Auth handles authentication via cookies automatically
  */
 async function submitResponse(
   requestId: string
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/requests/${requestId}/respond`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // Send cookies for authentication
-        body: JSON.stringify({
-          message: "I can help with this blood donation request.",
-        }),
-      }
-    );
+    const response = await apiFetch(`/api/requests/${requestId}/respond`, {
+      method: "POST",
+      body: JSON.stringify({
+        message: "I can help with this blood donation request.",
+      }),
+    });
 
     const data = await response.json();
 
@@ -113,6 +103,8 @@ export default function RequestDetailsContent({
   >([]);
   const [isLoadingRelated, setIsLoadingRelated] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isDonor, setIsDonor] = React.useState<boolean>(false);
+  const [isCheckingDonor, setIsCheckingDonor] = React.useState(true);
 
   const isCritical = request.urgency === Urgency.CRITICAL;
   
@@ -128,9 +120,32 @@ export default function RequestDetailsContent({
   // Check if current user is the request owner
   const isOwner = session?.user?.id === request.userId;
   const isAuthenticated = !!session?.user;
-  // Note: isDonor field may not be in session type yet - will be fixed when auth schema is updated
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const isDonor = (session?.user as any)?.isDonor ?? false;
+
+  // Fetch current user's donor status from API
+  React.useEffect(() => {
+    const checkDonorStatus = async () => {
+      if (!isAuthenticated) {
+        setIsCheckingDonor(false);
+        setIsDonor(false);
+        return;
+      }
+
+      try {
+        const response = await apiFetch("/api/users/me");
+        if (response.ok) {
+          const userData = await response.json();
+          setIsDonor(userData.isDonor || false);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        setIsDonor(false);
+      } finally {
+        setIsCheckingDonor(false);
+      }
+    };
+
+    checkDonorStatus();
+  }, [isAuthenticated]);
 
   // Fetch related requests
   React.useEffect(() => {
