@@ -76,6 +76,7 @@ export async function apiFetch(
   // Get JWT token for authentication
   const token = await getAuthToken();
   
+  // Build headers - merge provided headers with defaults
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...options?.headers,
@@ -86,12 +87,14 @@ export async function apiFetch(
     (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
   }
   
-  const defaultOptions: RequestInit = {
+  // Merge options with defaults, ensuring headers are properly combined
+  const fetchOptions: RequestInit = {
+    ...options,
     credentials: 'include',
     headers,
   };
 
-  return fetch(url, { ...defaultOptions, ...options });
+  return fetch(url, fetchOptions);
 }
 
 /**

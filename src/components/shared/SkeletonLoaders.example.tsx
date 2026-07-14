@@ -172,6 +172,8 @@ export function AdminModerationTableExample() {
   React.useEffect(() => {
     const fetchRequests = async () => {
       setLoading(true);
+      // Note: This is example code. In production, use apiFetch from @/lib/api-client
+      // to ensure JWT token is included for authentication
       const response = await fetch("/api/admin/requests/pending");
       const data = await response.json();
       setRequests(data);
