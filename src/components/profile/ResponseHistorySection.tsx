@@ -35,6 +35,7 @@ import { Button } from "@/components/ui/button";
 import { UrgencyBadge } from "@/components/shared/UrgencyBadge";
 import type { UserResponseHistoryDto } from "@/types/dto/user.dto";
 import type { PaginatedResponse } from "@/types/shared";
+import { apiFetch } from "@/lib/api-client";
 
 interface ResponseHistorySectionProps {
   userId: string;
@@ -94,12 +95,7 @@ export function ResponseHistorySection({ userId }: ResponseHistorySectionProps) 
       setError(null);
 
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/users/me/responses`,
-          {
-            credentials: "include",
-          }
-        );
+        const response = await apiFetch("/api/users/me/responses");
 
         if (!response.ok) {
           throw new Error("Failed to load response history");

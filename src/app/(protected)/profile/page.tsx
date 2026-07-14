@@ -30,6 +30,7 @@ import { DonationHistorySection } from "@/components/profile/DonationHistorySect
 import { PostedRequestsSection } from "@/components/profile/PostedRequestsSection";
 import { ResponseHistorySection } from "@/components/profile/ResponseHistorySection";
 import type { UserDto } from "@/types/dto/user.dto";
+import { apiFetch } from "@/lib/api-client";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -44,12 +45,7 @@ export default function ProfilePage() {
 
       try {
         // Fetch current user profile (Req 13.2)
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
-          {
-            credentials: "include",
-          }
-        );
+        const response = await apiFetch("/api/users/me");
 
         if (!response.ok) {
           if (response.status === 401) {

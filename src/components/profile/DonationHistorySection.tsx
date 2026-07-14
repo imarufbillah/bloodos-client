@@ -35,6 +35,7 @@ import type {
   PaginatedResponse,
 } from "@/types/dto/user.dto";
 import type { PaginatedResponse as PaginatedResponseType } from "@/types/shared";
+import { apiFetch } from "@/lib/api-client";
 
 interface DonationHistorySectionProps {
   userId: string;
@@ -107,11 +108,8 @@ export function DonationHistorySection({
     setError(null);
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/users/me/donations?page=${page}&limit=10`,
-        {
-          credentials: "include",
-        }
+      const response = await apiFetch(
+        `/api/users/me/donations?page=${page}&limit=10`
       );
 
       if (!response.ok) {

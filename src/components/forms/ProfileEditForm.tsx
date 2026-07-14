@@ -35,6 +35,7 @@ import { BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { DISTRICTS } from "@/lib/constants/districts";
 import type { UserDto } from "@/types/dto/user.dto";
 import type { BloodGroup, District } from "@/types/shared";
+import { apiFetch } from "@/lib/api-client";
 
 interface ProfileEditFormProps {
   user: UserDto;
@@ -82,17 +83,10 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
       const validated = updateProfileSchema.parse(formData);
 
       // Submit to API (Req 13.5)
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/users/me`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // Include cookies for JWT
-          body: JSON.stringify(validated),
-        }
-      );
+      const response = await apiFetch("/api/users/me", {
+        method: "PATCH",
+        body: JSON.stringify(validated),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { UrgencyBadge } from "@/components/shared/UrgencyBadge";
 import type { BloodRequest, PaginatedResponse } from "@/types/shared";
+import { apiFetch } from "@/lib/api-client";
 
 interface PostedRequestsSectionProps {
   userId: string;
@@ -52,12 +53,7 @@ export function PostedRequestsSection({ userId }: PostedRequestsSectionProps) {
 
       try {
         // Fetch user's own requests
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/requests/mine`,
-          {
-            credentials: "include",
-          }
-        );
+        const response = await apiFetch("/api/requests/mine");
 
         if (!response.ok) {
           throw new Error("Failed to load your requests");
