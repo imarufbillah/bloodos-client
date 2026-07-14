@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import type { ExtendedUser } from "@/types/auth";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +27,6 @@ import { Badge } from "@/components/ui/badge";
 import { NotificationPanel } from "@/components/layout/NotificationPanel";
 import { useTheme } from "next-themes";
 import {
-  Bell,
   Menu,
   User,
   LogOut,
@@ -35,7 +34,6 @@ import {
   Moon,
   Droplet,
   Shield,
-  Settings,
 } from "lucide-react";
 
 interface NavLink {
@@ -75,10 +73,7 @@ export function Navbar() {
 
   const handleSignOut = async () => {
     try {
-      await fetch("/api/auth/sign-out", {
-        method: "POST",
-        credentials: "include",
-      });
+      await authClient.signOut()
       router.push("/");
       router.refresh();
     } catch (error) {
