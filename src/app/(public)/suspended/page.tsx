@@ -8,15 +8,14 @@
 
 "use client";
 
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AlertCircle, Mail, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function SuspendedPage() {
+function SuspendedContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  // Get ban reason from URL params if provided
   const banReason = searchParams.get("reason");
 
   return (
@@ -127,5 +126,13 @@ export default function SuspendedPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SuspendedPage() {
+  return (
+    <Suspense>
+      <SuspendedContent />
+    </Suspense>
   );
 }
