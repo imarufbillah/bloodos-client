@@ -2,19 +2,22 @@
  * Client-Side API Utility
  * 
  * Provides API helpers for client components (use client).
- * Automatically includes JWT token from better-auth in requests.
+ * Uses session cookies from better-auth instead of JWTs.
  * 
  * Frontend (Next.js) runs on port 3000, backend (Express) runs on port 5000.
- * Backend requires JWT token in Authorization header for protected routes.
+ * Backend needs to verify the session cookie from better-auth.
  */
 
 import { authClient } from './auth-client';
 
 /**
  * Get the base URL for backend API calls
+ * Uses Next.js rewrite proxy in development/production
  */
 export function getApiUrl(): string {
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  // Use the proxied path which Next.js will rewrite to the backend
+  // This ensures cookies work since requests appear to come from the same origin
+  return '/backend-api';
 }
 
 /**
@@ -23,26 +26,38 @@ export function getApiUrl(): string {
  * @returns Full URL to the backend API
  */
 export function apiUrl(path: string): string {
-  const base = getApiUrl();
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const base = getApiUrl(); // Returns '/backend-api'
+  
+  // Remove '/api' prefix from path if present since the rewrite adds it back
+  let normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  if (normalizedPath.startsWith('/api/')) {
+    normalizedPath = normalizedPath.substring(4); // Remove '/api'
+  }
+  
   return `${base}${normalizedPath}`;
 }
 
 /**
- * Get JWT token from better-auth (client-side only)
- * @returns JWT token string or null if not authenticated
+ * Get session token from better-auth cookie
+ * This reads the session_token cookie that better-auth sets
  */
-async function getAuthToken(): Promise<string | null> {
-  try {
-    const { data, error } = await authClient.token();
-    if (error || !data) {
-      return null;
-    }
-    return data.token;
-  } catch (error) {
-    console.error('Failed to get auth token:', error);
+function getSessionToken(): string | null {
+  if (typeof document === 'undefined') {
     return null;
   }
+
+  // Better-auth stores the session in a cookie named 'better-auth.session_token'
+  // or just 'session_token' depending on configuration
+  const cookies = document.cookie.split(';');
+  
+  for (const cookie of cookies) {
+    const [name, value] = cookie.trim().split('=');
+    if (name === 'better-auth.session_token' || name === 'session_token') {
+      return value;
+    }
+  }
+
+  return null;
 }
 
 /**
@@ -50,10 +65,12 @@ async function getAuthToken(): Promise<string | null> {
  * 
  * This function:
  * 1. Resolves the full backend API URL
- * 2. Fetches JWT token from better-auth
- * 3. Includes token in Authorization header
- * 4. Makes the request to the backend
- * 5. Handles banned user errors automatically
+ * 2. Includes credentials to send cookies
+ * 3. Makes the request to the backend
+ * 4. Handles banned user errors automatically
+ * 
+ * The session token is sent via cookies automatically with credentials: 'include'.
+ * The backend will verify the session using better-auth's session verification.
  * 
  * @param path - API endpoint path
  * @param options - Fetch options
@@ -74,24 +91,16 @@ export async function apiFetch(
 ): Promise<Response> {
   const url = apiUrl(path);
   
-  // Get JWT token for authentication
-  const token = await getAuthToken();
-  
   // Build headers - merge provided headers with defaults
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...options?.headers,
   };
   
-  // Add Authorization header if token exists
-  if (token) {
-    (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
-  }
-  
-  // Merge options with defaults, ensuring headers are properly combined
+  // Merge options with defaults, ensuring cookies are sent
   const fetchOptions: RequestInit = {
     ...options,
-    credentials: 'include',
+    credentials: 'include', // This sends cookies including session_token
     headers,
   };
 

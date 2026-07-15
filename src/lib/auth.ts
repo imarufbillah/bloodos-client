@@ -1,7 +1,6 @@
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { jwt } from "better-auth/plugins";
 import { BLOOD_GROUPS, DISTRICTS } from "@/types/shared";
 
 const client = new MongoClient(process.env.MONGODB_URI as string);
@@ -57,38 +56,4 @@ export const auth = betterAuth({
       },
     },
   },
-  plugins: [
-    jwt({
-      jwt: {
-        // Define the JWT payload structure to match backend expectations
-        definePayload: ({ user }) => {
-          return {
-            // Include session data with user object
-            session: {
-              userId: user.id,
-              user: {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                emailVerified: user.emailVerified,
-                image: user.image,
-                createdAt: user.createdAt,
-                updatedAt: user.updatedAt,
-                // Include custom fields
-                role: user.role,
-                phone: user.phone,
-                district: user.district,
-                bloodGroup: user.bloodGroup,
-                isDonor: user.isDonor,
-                lastDonationDate: user.lastDonationDate,
-                banned: user.banned || false,
-                banReason: user.banReason || null,
-                banExpiresAt: user.banExpiresAt || null,
-              },
-            },
-          };
-        },
-      },
-    }),
-  ],
 });

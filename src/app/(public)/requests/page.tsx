@@ -34,8 +34,6 @@ import BrowseRequestsContent from "./BrowseRequestsContent";
 import type { BloodGroup, District, PaginatedResponse, BloodRequest } from "@/types/shared";
 import type { Urgency, SortOption } from "@/components/shared/Filters";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
 /**
  * Fetch requests from backend - Server-side
  */
@@ -67,6 +65,8 @@ async function fetchRequests(params: {
   if (params.page) queryParams.set("page", params.page.toString());
   if (params.limit) queryParams.set("limit", params.limit.toString());
 
+  // Use direct backend URL for server-side fetch (no rewrite needed on server)
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
   const url = `${API_BASE_URL}/api/requests?${queryParams.toString()}`;
   
   const response = await fetch(url, {

@@ -26,31 +26,21 @@
  */
 
 import { Metadata } from "next";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ProfileContent } from "./ProfileContent";
 import type { UserDto } from "@/types/dto/user.dto";
+import { apiFetch } from "@/lib/api-server";
 
 export const metadata: Metadata = {
   title: "My Profile | BloodOS",
   description: "Manage your account and view your donation activity",
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
 /**
  * Fetch user profile - Server-side with authentication
  */
-async function fetchUserProfile(sessionToken?: string): Promise<UserDto> {
-  const url = `${API_BASE_URL}/api/users/me`;
-
-  const response = await fetch(url, {
-    headers: {
-      ...(sessionToken && { Authorization: `Bearer ${sessionToken}` }),
-    },
-    // No caching for user profile data
-    cache: "no-store",
-  });
+async function fetchUserProfile(): Promise<UserDto> {
+  const response = await apiFetch('/api/users/me');
 
   if (response.status === 401) {
     // Redirect to login if unauthorized
@@ -65,13 +55,8 @@ async function fetchUserProfile(sessionToken?: string): Promise<UserDto> {
 }
 
 export default async function ProfilePage() {
-  // Get session token from cookies
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("better-auth.session_token");
-  const sessionToken = sessionCookie?.value;
-
   // Fetch user profile server-side
-  const user = await fetchUserProfile(sessionToken);
+  const user = await fetchUserProfile();
 
   return <ProfileContent initialUser={user} />;
 }

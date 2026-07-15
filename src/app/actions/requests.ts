@@ -8,30 +8,13 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
-import { cookies } from "next/headers";
+import { apiFetch } from "@/lib/api-server";
 import type { RequestStatus } from "@/types/shared";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
-/**
- * Get session token from cookies
- */
-async function getSessionToken(): Promise<string | undefined> {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("better-auth.session_token");
-  return sessionCookie?.value;
-}
 
 /**
  * Create a new blood request
  */
 export async function createBloodRequest(formData: FormData) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
     const requestData = {
       patientName: formData.get("patientName"),
@@ -46,12 +29,8 @@ export async function createBloodRequest(formData: FormData) {
       additionalNotes: formData.get("additionalNotes"),
     };
 
-    const response = await fetch(`${API_BASE_URL}/api/requests`, {
+    const response = await apiFetch("/api/requests", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionToken}`,
-      },
       body: JSON.stringify(requestData),
     });
 
@@ -80,19 +59,9 @@ export async function createBloodRequest(formData: FormData) {
  * Update blood request status
  */
 export async function updateRequestStatus(requestId: string, status: RequestStatus) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/api/requests/${requestId}/status`, {
+    const response = await apiFetch(`/api/requests/${requestId}/status`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionToken}`,
-      },
       body: JSON.stringify({ status }),
     });
 
@@ -122,18 +91,9 @@ export async function updateRequestStatus(requestId: string, status: RequestStat
  * Delete a blood request
  */
 export async function deleteRequest(requestId: string) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/api/requests/${requestId}`, {
+    const response = await apiFetch(`/api/requests/${requestId}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${sessionToken}`,
-      },
     });
 
     if (!response.ok) {
@@ -159,19 +119,9 @@ export async function deleteRequest(requestId: string) {
  * Respond to a blood request
  */
 export async function respondToRequest(requestId: string, message: string) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/api/requests/${requestId}/respond`, {
+    const response = await apiFetch(`/api/requests/${requestId}/respond`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionToken}`,
-      },
       body: JSON.stringify({ message }),
     });
 

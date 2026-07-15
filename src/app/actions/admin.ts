@@ -8,37 +8,17 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
-import { cookies } from "next/headers";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
-/**
- * Get session token from cookies
- */
-async function getSessionToken(): Promise<string | undefined> {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("better-auth.session_token");
-  return sessionCookie?.value;
-}
+import { apiFetch } from "@/lib/api-server";
 
 /**
  * Approve a blood request
  */
 export async function approveRequest(requestId: string) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/admin/requests/${requestId}/approve`,
+    const response = await apiFetch(
+      `/api/admin/requests/${requestId}/approve`,
       {
         method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${sessionToken}`,
-        },
       }
     );
 
@@ -68,21 +48,11 @@ export async function approveRequest(requestId: string) {
  * Reject a blood request
  */
 export async function rejectRequest(requestId: string, reason?: string) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/admin/requests/${requestId}/reject`,
+    const response = await apiFetch(
+      `/api/admin/requests/${requestId}/reject`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionToken}`,
-        },
         body: JSON.stringify({ reason }),
       }
     );
@@ -112,20 +82,11 @@ export async function rejectRequest(requestId: string, reason?: string) {
  * Verify a donation
  */
 export async function verifyDonation(donationId: string) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/admin/donations/${donationId}/verify`,
+    const response = await apiFetch(
+      `/api/admin/donations/${donationId}/verify`,
       {
         method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${sessionToken}`,
-        },
       }
     );
 
@@ -153,19 +114,9 @@ export async function verifyDonation(donationId: string) {
  * Ban a user
  */
 export async function banUser(userId: string, reason?: string) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/ban`, {
+    const response = await apiFetch(`/api/admin/users/${userId}/ban`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionToken}`,
-      },
       body: JSON.stringify({ reason }),
     });
 
@@ -192,18 +143,9 @@ export async function banUser(userId: string, reason?: string) {
  * Unban a user
  */
 export async function unbanUser(userId: string) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/unban`, {
+    const response = await apiFetch(`/api/admin/users/${userId}/unban`, {
       method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${sessionToken}`,
-      },
     });
 
     if (!response.ok) {
@@ -229,19 +171,9 @@ export async function unbanUser(userId: string) {
  * Change user role
  */
 export async function changeUserRole(userId: string, role: "user" | "admin") {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/role`, {
+    const response = await apiFetch(`/api/admin/users/${userId}/role`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionToken}`,
-      },
       body: JSON.stringify({ role }),
     });
 

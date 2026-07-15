@@ -8,19 +8,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
+import { apiFetch } from "@/lib/api-server";
 import type { BloodGroup, District } from "@/types/shared";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
-/**
- * Get session token from cookies
- */
-async function getSessionToken(): Promise<string | undefined> {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("better-auth.session_token");
-  return sessionCookie?.value;
-}
 
 /**
  * Update user profile
@@ -33,19 +22,9 @@ export async function updateUserProfile(data: {
   isDonor?: boolean;
   lastDonationDate?: string | null;
 }) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+    const response = await apiFetch("/api/users/me", {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionToken}`,
-      },
       body: JSON.stringify(data),
     });
 
@@ -82,19 +61,9 @@ export async function reportDonation(data: {
   hospitalName: string;
   district: District;
 }) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/api/users/me/donations`, {
+    const response = await apiFetch("/api/users/me/donations", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionToken}`,
-      },
       body: JSON.stringify(data),
     });
 

@@ -7,18 +7,7 @@
 
 "use server";
 
-import { cookies } from "next/headers";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
-/**
- * Get session token from cookies
- */
-async function getSessionToken(): Promise<string | undefined> {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get("better-auth.session_token");
-  return sessionCookie?.value;
-}
+import { apiFetch } from "@/lib/api-server";
 
 /**
  * Submit contact form
@@ -33,11 +22,8 @@ export async function submitContactForm(formData: FormData) {
       message: formData.get("message"),
     };
 
-    const response = await fetch(`${API_BASE_URL}/api/contact`, {
+    const response = await apiFetch("/api/contact", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(contactData),
     });
 
@@ -60,21 +46,11 @@ export async function submitContactForm(formData: FormData) {
  * Requires authentication and creates audit log entry
  */
 export async function requestDonorContact(donorId: string, requestId?: string) {
-  const sessionToken = await getSessionToken();
-
-  if (!sessionToken) {
-    return { success: false, error: "Authentication required" };
-  }
-
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/donors/${donorId}/request-contact`,
+    const response = await apiFetch(
+      `/api/donors/${donorId}/request-contact`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionToken}`,
-        },
         body: JSON.stringify({ requestId }),
       }
     );
