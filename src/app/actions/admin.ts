@@ -7,7 +7,7 @@
 
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { apiFetch } from "@/lib/api-server";
 
 /**
@@ -30,7 +30,6 @@ export async function approveRequest(requestId: string) {
     const data = await response.json();
 
     // Invalidate relevant caches
-    revalidateTag("requests");
     revalidatePath("/admin");
     revalidatePath("/requests");
     revalidatePath(`/requests/${requestId}`);
@@ -65,7 +64,6 @@ export async function rejectRequest(requestId: string, reason?: string) {
     const data = await response.json();
 
     // Invalidate relevant caches
-    revalidateTag("requests");
     revalidatePath("/admin");
     revalidatePath("/requests");
 
