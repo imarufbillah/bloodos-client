@@ -4,7 +4,9 @@ import { cookies } from "next/headers";
  * Get the base URL for backend API calls (direct to Express from server)
  */
 export function getApiUrl(): string {
-  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  if (url.startsWith("http")) return url;
+  return `https://${url}`;
 }
 
 /**
