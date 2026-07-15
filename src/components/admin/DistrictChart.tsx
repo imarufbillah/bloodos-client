@@ -54,9 +54,10 @@ export function DistrictChart({ data }: DistrictChartProps) {
             cx="50%"
             cy="50%"
             labelLine={false}
-            label={({ district, count }) =>
-              `${district}: ${((count / total) * 100).toFixed(1)}%`
-            }
+            label={(props) => {
+              const { district, count } = props as unknown as { district: string; count: number };
+              return `${district}: ${((count / total) * 100).toFixed(1)}%`;
+            }}
             outerRadius={80}
             fill="#8884d8"
             dataKey="count"
@@ -75,8 +76,8 @@ export function DistrictChart({ data }: DistrictChartProps) {
               borderRadius: "6px",
               fontSize: "13px",
             }}
-            formatter={(value: number) => [
-              `${value} requests (${((value / total) * 100).toFixed(1)}%)`,
+            formatter={(value) => [
+              `${value} requests (${(((value as number) / total) * 100).toFixed(1)}%)`,
               "Count",
             ]}
           />

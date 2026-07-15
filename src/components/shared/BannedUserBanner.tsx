@@ -6,14 +6,15 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
+import type { ExtendedUser } from "@/types/auth";
 import { AlertCircle } from "lucide-react";
 
 export function BannedUserBanner() {
   const { data: session } = useSession();
+  const user = session?.user as ExtendedUser | undefined;
 
-  // Check if user is banned
-  const isBanned = session?.user?.banned;
-  const banReason = session?.user?.banReason;
+  const isBanned = user?.banned;
+  const banReason = user?.banReason;
 
   if (!isBanned) {
     return null;

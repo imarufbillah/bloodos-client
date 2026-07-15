@@ -30,11 +30,8 @@ import {
 } from "lucide-react";
 
 import { Pagination } from "@/components/shared/Pagination";
-import type {
-  UserDonationHistoryDto,
-  PaginatedResponse,
-} from "@/types/dto/user.dto";
-import type { PaginatedResponse as PaginatedResponseType } from "@/types/shared";
+import type { UserDonationHistoryDto } from "@/types/dto/user.dto";
+import type { PaginatedResponse } from "@/types/shared";
 import { apiFetch } from "@/lib/api-client";
 
 interface DonationHistorySectionProps {
@@ -87,7 +84,7 @@ export function DonationHistorySection({
   lastDonationDate,
 }: DonationHistorySectionProps) {
   const [donations, setDonations] = useState<
-    PaginatedResponseType<UserDonationHistoryDto>
+    PaginatedResponse<UserDonationHistoryDto>
   >({
     data: [],
     page: 1,

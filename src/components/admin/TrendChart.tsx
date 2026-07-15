@@ -68,7 +68,7 @@ export function TrendChart({ data }: TrendChartProps) {
               fontSize: "13px",
             }}
             labelFormatter={(label) => `Date: ${label}`}
-            formatter={(value: number) => [`${value} requests`, "Count"]}
+            formatter={(value) => [`${value} requests`, "Count"]}
           />
           <Legend
             wrapperStyle={{

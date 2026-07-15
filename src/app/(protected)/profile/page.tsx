@@ -29,6 +29,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ProfileContent } from "./ProfileContent";
 import type { UserDto } from "@/types/dto/user.dto";
+import type { UserAnalytics } from "@/components/profile/UserAnalyticsDashboard";
 import { apiFetch } from "@/lib/api-server";
 
 export const metadata: Metadata = {
@@ -36,14 +37,10 @@ export const metadata: Metadata = {
   description: "Manage your account and view your donation activity",
 };
 
-/**
- * Fetch user profile - Server-side with authentication
- */
 async function fetchUserProfile(): Promise<UserDto> {
-  const response = await apiFetch('/api/users/me');
+  const response = await apiFetch("/api/users/me");
 
   if (response.status === 401) {
-    // Redirect to login if unauthorized
     redirect("/signin?callbackUrl=/profile");
   }
 
@@ -54,9 +51,40 @@ async function fetchUserProfile(): Promise<UserDto> {
   return response.json();
 }
 
-export default async function ProfilePage() {
-  // Fetch user profile server-side
-  const user = await fetchUserProfile();
+async function fetchUserAnalytics(): Promise<UserAnalytics> {
+  const response = await apiFetch("/api/users/me/analytics");
 
-  return <ProfileContent initialUser={user} />;
+  if (!response.ok) {
+    return {
+      totalRequests: 0,
+      requestsByStatus: {},
+      fulfillmentRate: 0,
+      responsesReceived: 0,
+      totalResponses: 0,
+      responsesByStatus: {},
+      responseSuccessRate: 0,
+      totalDonations: 0,
+      verifiedDonations: 0,
+      livesSaved: 0,
+      activityTimeline: [],
+      impact: {
+        requestsCreated: 0,
+        requestsFulfilled: 0,
+        responsesGiven: 0,
+        donationsCompleted: 0,
+        livesSaved: 0,
+      },
+    };
+  }
+
+  return response.json();
+}
+
+export default async function ProfilePage() {
+  const [user, analytics] = await Promise.all([
+    fetchUserProfile(),
+    fetchUserAnalytics(),
+  ]);
+
+  return <ProfileContent initialUser={user} initialAnalytics={analytics} />;
 }

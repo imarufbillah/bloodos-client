@@ -6,17 +6,18 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
+import type { ExtendedUser } from "@/types/auth";
 
 export function useUserStatus() {
   const { data: session, isPending } = useSession();
+  const user = session?.user as ExtendedUser | undefined;
 
-  const isAuthenticated = !!session?.user;
-  const isBanned = session?.user?.banned || false;
-  const banReason = session?.user?.banReason;
-  const isAdmin = session?.user?.role === "admin";
-  const isDonor = session?.user?.isDonor || false;
+  const isAuthenticated = !!user;
+  const isBanned = user?.banned || false;
+  const banReason = user?.banReason;
+  const isAdmin = user?.role === "admin";
+  const isDonor = user?.isDonor || false;
 
-  // User can perform actions if authenticated and not banned
   const canPerformActions = isAuthenticated && !isBanned;
 
   return {

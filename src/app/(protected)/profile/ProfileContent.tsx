@@ -13,13 +13,19 @@ import { ProfileEditForm } from "@/components/forms/ProfileEditForm";
 import { DonationHistorySection } from "@/components/profile/DonationHistorySection";
 import { PostedRequestsSection } from "@/components/profile/PostedRequestsSection";
 import { ResponseHistorySection } from "@/components/profile/ResponseHistorySection";
+import {
+  UserAnalyticsDashboard,
+  type UserAnalytics,
+} from "@/components/profile/UserAnalyticsDashboard";
+import { AvatarUpload } from "@/components/shared/AvatarUpload";
 import type { UserDto } from "@/types/dto/user.dto";
 
 type ProfileContentProps = {
   initialUser: UserDto;
+  initialAnalytics: UserAnalytics;
 };
 
-export function ProfileContent({ initialUser }: ProfileContentProps) {
+export function ProfileContent({ initialUser, initialAnalytics }: ProfileContentProps) {
   const [user, setUser] = useState<UserDto>(initialUser);
 
   const handleUserUpdate = (updatedUser: UserDto) => {
@@ -43,14 +49,30 @@ export function ProfileContent({ initialUser }: ProfileContentProps) {
         </div>
       </header>
 
-      {/* Four Sections (Req 13.3) */}
       <div className="space-y-8">
-        {/* Section 1: Personal Information (Req 13.4, 13.5) */}
+        {/* Avatar Upload */}
+        <section className="rounded-lg border border-border p-6">
+          <AvatarUpload
+            currentImage={user.image}
+            userName={user.name}
+            userEmail={user.email}
+            onAvatarUpdate={(imageUrl) =>
+              setUser({ ...user, image: imageUrl })
+            }
+          />
+        </section>
+
+        {/* Section 1: Personal Information */}
         <section className="rounded-lg border border-border p-6">
           <ProfileEditForm user={user} onUpdate={handleUserUpdate} />
         </section>
 
-        {/* Section 2: Donation History (Req 13.7, 13.8, 13.9) */}
+        {/* Section 2: Analytics Dashboard */}
+        <section className="rounded-lg border border-border p-6">
+          <UserAnalyticsDashboard analytics={initialAnalytics} />
+        </section>
+
+        {/* Section 3: Donation History */}
         <section className="rounded-lg border border-border p-6">
           <DonationHistorySection
             userId={user._id}
@@ -58,12 +80,12 @@ export function ProfileContent({ initialUser }: ProfileContentProps) {
           />
         </section>
 
-        {/* Section 3: Posted Requests */}
+        {/* Section 4: Posted Requests */}
         <section className="rounded-lg border border-border p-6">
           <PostedRequestsSection userId={user._id} />
         </section>
 
-        {/* Section 4: Response History (Req 13.10) */}
+        {/* Section 5: Response History */}
         <section className="rounded-lg border border-border p-6">
           <ResponseHistorySection userId={user._id} />
         </section>

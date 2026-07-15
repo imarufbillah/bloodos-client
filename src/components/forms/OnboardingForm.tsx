@@ -42,7 +42,8 @@ export function OnboardingForm() {
     formState: { errors },
     watch,
   } = useForm<OnboardingFormData>({
-    resolver: zodResolver(onboardingSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(onboardingSchema) as any,
     defaultValues: {
       isDonor: false,
       phone: "",
