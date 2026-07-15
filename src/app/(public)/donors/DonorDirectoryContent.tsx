@@ -165,9 +165,8 @@ export default function DonorDirectoryContent({
       // Request contact info (Req 17.12)
       await requestContactInfo(donorId);
 
-      // Success toast (Req 17.13)
-      toast.success("Contact information sent to your notifications", {
-        description: "Check your notifications panel to view the contact details",
+      toast.success("Contact information retrieved", {
+        description: "The donor has been notified that you requested their contact details.",
       });
     } catch (err) {
       toast.error(
