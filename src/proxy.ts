@@ -25,9 +25,10 @@ export function proxy(request: NextRequest) {
   }
 
   // 2. Check authentication for protected routes
-  // Note: better-auth stores session in cookies; we check for the presence
-  // of the auth cookie to determine if user is authenticated.
-  const authCookie = request.cookies.get("better-auth.session_token");
+  // better-auth uses __Secure- prefix in production (HTTPS)
+  const authCookie =
+    request.cookies.get("__Secure-better-auth.session_token") ||
+    request.cookies.get("better-auth.session_token");
   const isAuthenticated = !!authCookie;
 
   // Define protected path prefixes
