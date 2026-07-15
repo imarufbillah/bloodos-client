@@ -10,7 +10,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuGroup,
@@ -34,6 +33,10 @@ import {
   Moon,
   Droplet,
   Shield,
+  MapPin,
+  ChevronRight,
+  Settings,
+  Heart,
 } from "lucide-react";
 
 interface NavLink {
@@ -82,8 +85,10 @@ export function Navbar() {
 
   const user = session?.user as ExtendedUser | undefined;
   const isAdmin = user?.role === "admin";
-  const userImage = (user as Record<string, unknown> | undefined)
-    ?.image as string | null | undefined;
+  const userImage = (user as Record<string, unknown> | undefined)?.image as
+    | string
+    | null
+    | undefined;
 
   const handleSignOut = async () => {
     try {
@@ -102,28 +107,6 @@ export function Navbar() {
     return links;
   }, [user, isAdmin]);
 
-  const ThemeToggle = ({ className }: { className?: string }) => (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className={className ?? "h-9 w-9"}
-      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-    >
-      <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
-    </Button>
-  );
-
-  const UserAvatar = ({ size = "h-8 w-8" }: { size?: string }) => (
-    <Avatar className={size}>
-      {userImage && <AvatarImage src={userImage} alt={user?.name || "User"} />}
-      <AvatarFallback className="bg-crimson text-paper text-xs font-medium">
-        {getInitials(user?.name, user?.email)}
-      </AvatarFallback>
-    </Avatar>
-  );
-
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <nav className="container mx-auto flex h-14 max-w-screen-2xl items-center justify-between px-4 sm:h-16">
@@ -131,7 +114,10 @@ export function Navbar() {
           href="/"
           className="flex items-center gap-2 font-heading text-lg font-semibold tracking-tight transition-colors hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:text-xl"
         >
-          <Droplet className="h-5 w-5 text-crimson sm:h-6 sm:w-6" aria-hidden="true" />
+          <Droplet
+            className="h-5 w-5 text-crimson sm:h-6 sm:w-6"
+            aria-hidden="true"
+          />
           <span>BloodOS</span>
         </Link>
 
@@ -160,7 +146,16 @@ export function Navbar() {
           </ul>
 
           <div className="ml-2 flex items-center gap-1.5">
-            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="h-9 w-9"
+              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            >
+              <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
+            </Button>
 
             {isPending ? (
               <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
@@ -169,71 +164,138 @@ export function Navbar() {
                 <NotificationPanel />
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className="ml-1 h-8 w-8 rounded-full inline-flex items-center justify-center transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="ml-1 rounded-full inline-flex items-center justify-center transition-all hover:ring-2 hover:ring-ring/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     aria-label="User menu"
                   >
-                    <UserAvatar />
+                    <Avatar className="rounded-full">
+                      {userImage && (
+                        <AvatarImage
+                          src={userImage}
+                          alt={user?.name || "User"}
+                        />
+                      )}
+                      <AvatarFallback className="bg-crimson text-paper text-xs font-medium">
+                        {getInitials(user?.name, user?.email)}
+                      </AvatarFallback>
+                    </Avatar>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuGroup>
-                      <DropdownMenuLabel className="font-normal">
-                        <div className="flex flex-col gap-1">
-                          <p className="text-sm font-medium leading-none">
-                            {user.name || "User"}
-                          </p>
-                          <p className="text-xs leading-none text-muted-foreground">
-                            {user.email}
-                          </p>
+                  <DropdownMenuContent align="end" className="w-64 p-0">
+                    {/* User info card */}
+                    <div className="relative flex items-start gap-3 px-3 pt-3 pb-2">
+                      <Avatar className="h-10 w-10">
+                        {userImage && (
+                          <AvatarImage
+                            src={userImage}
+                            alt={user?.name || "User"}
+                          />
+                        )}
+                        <AvatarFallback className="bg-crimson text-paper text-xs font-medium">
+                          {getInitials(user?.name, user?.email)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-1 flex-col gap-0.5 min-w-0">
+                        <p className="text-sm font-semibold leading-tight truncate">
+                          {user.name || "User"}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {user.email}
+                        </p>
+                        <div className="mt-1 flex flex-wrap items-center gap-1.5">
                           {isAdmin && (
                             <Badge
-                              variant="outline"
-                              className="mt-1 w-fit text-[10px]"
+                              variant="secondary"
+                              className="text-[10px] px-1.5 py-0 gap-1"
                             >
-                              <Shield className="mr-1 h-3 w-3" />
+                              <Shield className="size-2.5" />
                               Admin
                             </Badge>
                           )}
+                          {user.bloodGroup && (
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] px-1.5 py-0 gap-1"
+                            >
+                              <Droplet className="size-2.5" />
+                              {user.bloodGroup}
+                            </Badge>
+                          )}
+                          {user.district && (
+                            <span className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                              <MapPin className="size-2.5" />
+                              {user.district}
+                            </span>
+                          )}
                         </div>
-                      </DropdownMenuLabel>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Link
-                        href="/profile"
-                        className="flex w-full cursor-pointer items-center"
-                      >
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Link
-                        href="/requests/manage"
-                        className="flex w-full cursor-pointer items-center"
-                      >
-                        <Droplet className="mr-2 h-4 w-4" />
-                        <span>My Requests</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    {isAdmin && (
-                      <DropdownMenuItem>
+                      </div>
+                    </div>
+
+                    <DropdownMenuSeparator className="mt-0" />
+
+                    {/* Quick actions */}
+                    <DropdownMenuGroup className="px-1">
+                      <DropdownMenuItem className="px-2.5 py-2">
                         <Link
-                          href="/admin"
-                          className="flex w-full cursor-pointer items-center"
+                          href="/profile"
+                          className="flex w-full items-center gap-2"
                         >
-                          <Shield className="mr-2 h-4 w-4" />
-                          <span>Admin Dashboard</span>
+                          <User className="size-4 text-muted-foreground" />
+                          <span className="flex-1">Profile</span>
+                          <ChevronRight className="size-3.5 text-muted-foreground/50" />
                         </Link>
                       </DropdownMenuItem>
+                      <DropdownMenuItem className="px-2.5 py-2">
+                        <Link
+                          href="/requests/manage"
+                          className="flex w-full items-center gap-2"
+                        >
+                          <Heart className="size-4 text-muted-foreground" />
+                          <span className="flex-1">My Requests</span>
+                          <ChevronRight className="size-3.5 text-muted-foreground/50" />
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="px-2.5 py-2">
+                        <Link
+                          href="/profile"
+                          className="flex w-full items-center gap-2"
+                        >
+                          <Settings className="size-4 text-muted-foreground" />
+                          <span className="flex-1">Settings</span>
+                          <ChevronRight className="size-3.5 text-muted-foreground/50" />
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+
+                    {isAdmin && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup className="px-1">
+                          <DropdownMenuItem className="px-2.5 py-2">
+                            <Link
+                              href="/admin"
+                              className="flex w-full items-center gap-2"
+                            >
+                              <Shield className="size-4 text-muted-foreground" />
+                              <span className="flex-1">Admin Dashboard</span>
+                              <ChevronRight className="size-3.5 text-muted-foreground/50" />
+                            </Link>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </>
                     )}
+
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={handleSignOut}
-                      className="cursor-pointer text-destructive focus:text-destructive"
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Sign Out</span>
-                    </DropdownMenuItem>
+
+                    {/* Sign out */}
+                    <div className="px-1 pb-1">
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onClick={handleSignOut}
+                        className="gap-2.5 px-2.5 py-2 cursor-pointer"
+                      >
+                        <LogOut className="size-4" />
+                        <span>Sign Out</span>
+                      </DropdownMenuItem>
+                    </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </>
@@ -255,7 +317,16 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-1.5 lg:hidden">
-          <ThemeToggle className="h-9 w-9" />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="h-9 w-9"
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
+          </Button>
 
           {user && <NotificationPanel className="mr-1" />}
 
@@ -266,7 +337,7 @@ export function Navbar() {
             >
               <Menu className="h-5 w-5" />
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[340px]">
+            <SheetContent side="right" className="w-75 sm:w-85">
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2">
                   <Droplet className="h-5 w-5 text-crimson" />
@@ -275,23 +346,52 @@ export function Navbar() {
               </SheetHeader>
               <div className="mt-6 flex flex-col gap-3">
                 {user && (
-                  <div className="flex items-center gap-3 rounded-lg border border-border p-3">
-                    <UserAvatar size="h-10 w-10" />
-                    <div className="flex flex-col min-w-0">
-                      <p className="text-sm font-medium truncate">
-                        {user.name || "User"}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {user.email}
-                      </p>
+                  <div className="rounded-lg border border-border p-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10">
+                        {userImage && (
+                          <AvatarImage
+                            src={userImage}
+                            alt={user?.name || "User"}
+                          />
+                        )}
+                        <AvatarFallback className="bg-crimson text-paper text-xs font-medium">
+                          {getInitials(user?.name, user?.email)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col min-w-0">
+                        <p className="text-sm font-semibold truncate">
+                          {user.name || "User"}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
                       {isAdmin && (
                         <Badge
-                          variant="outline"
-                          className="mt-1 w-fit text-[10px]"
+                          variant="secondary"
+                          className="text-[10px] px-1.5 py-0 gap-1"
                         >
-                          <Shield className="mr-1 h-3 w-3" />
+                          <Shield className="size-2.5" />
                           Admin
                         </Badge>
+                      )}
+                      {user.bloodGroup && (
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] px-1.5 py-0 gap-1"
+                        >
+                          <Droplet className="size-2.5" />
+                          {user.bloodGroup}
+                        </Badge>
+                      )}
+                      {user.district && (
+                        <span className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                          <MapPin className="size-2.5" />
+                          {user.district}
+                        </span>
                       )}
                     </div>
                   </div>
