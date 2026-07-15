@@ -31,17 +31,44 @@ const navigationLinks = [
 ];
 
 const socialLinks = [
-  { label: "Facebook", href: "https://facebook.com/bloodos", icon: FaFacebookF },
+  {
+    label: "Facebook",
+    href: "https://facebook.com/bloodos",
+    icon: FaFacebookF,
+  },
   { label: "Twitter", href: "https://twitter.com/bloodos", icon: FaTwitter },
-  { label: "Instagram", href: "https://instagram.com/bloodos", icon: FaInstagram },
-  { label: "LinkedIn", href: "https://linkedin.com/company/bloodos", icon: FaLinkedinIn },
+  {
+    label: "Instagram",
+    href: "https://instagram.com/bloodos",
+    icon: FaInstagram,
+  },
+  {
+    label: "LinkedIn",
+    href: "https://linkedin.com/company/bloodos",
+    icon: FaLinkedinIn,
+  },
   { label: "GitHub", href: "https://github.com/bloodos", icon: FaGithub },
 ];
 
 const contactInfo = [
-  { label: "Email", value: "support@bloodos.app", href: "mailto:support@bloodos.app", icon: MdEmail },
-  { label: "Phone", value: "+880 1XXX-XXXXXX", href: "tel:+8801xxxxxxxxx", icon: MdPhone },
-  { label: "Address", value: "Dhaka, Bangladesh", href: null, icon: MdLocationOn },
+  {
+    label: "Email",
+    value: "support@bloodos.app",
+    href: "mailto:support@bloodos.app",
+    icon: MdEmail,
+  },
+  {
+    label: "Phone",
+    value: "+880 1XXX-XXXXXX",
+    href: "tel:+8801xxxxxxxxx",
+    icon: MdPhone,
+  },
+  {
+    label: "Address",
+    value: "Dhaka, Bangladesh",
+    href: null,
+    icon: MdLocationOn,
+  },
 ];
 
 export function Footer() {

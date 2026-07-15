@@ -1,10 +1,3 @@
-/**
- * Loading UI for Manage Requests Page
- * 
- * Automatically displayed by Next.js while the server component
- * is fetching user's requests or during route transitions.
- */
-
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -41,7 +34,7 @@ export default function Loading() {
                 <div className="h-4 w-24 bg-muted-foreground/20 animate-pulse rounded ml-auto" />
               </div>
             </div>
-            
+
             {/* Table Rows Skeleton */}
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="border-b border-border p-4">

@@ -6,25 +6,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { PaginatedResponse } from "@/types/shared";
 
-/**
- * Pagination Component — Phase 7f
- * 
- * Consumes backend PaginatedResponse<T> metadata directly to render pagination controls.
- * No client-side recomputation of page math — hasNextPage/hasPrevPage drive disabled states.
- * 
- * Requirements:
- * - Req 12: Consumes PaginatedResponse<T> fields from backend
- * - Req 17.10: Paginated donor directory
- * - Req 21.10: Paginated requests list
- * - Req 16: Civic infrastructure aesthetic (monospace page numbers, compact controls)
- * 
- * Design:
- * - Monospace page numbers (data, not prose) per Phase 6a type system
- * - Hairline borders, tight spacing, no shadows
- * - Prev/Next buttons disabled based on hasNextPage/hasPrevPage from backend
- * - Page numbers: show current ± 2 range with ellipsis for large page counts
- */
-
 export interface PaginationProps<T = unknown> {
   /** Backend pagination metadata from PaginatedResponse<T> */
   metadata: Pick<
@@ -103,7 +84,10 @@ export function Pagination<T = unknown>({
 
   return (
     <nav
-      className={cn("flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", className)}
+      className={cn(
+        "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+        className,
+      )}
       aria-label="Pagination"
     >
       {/* Total count text */}
@@ -154,7 +138,7 @@ export function Pagination<T = unknown>({
               aria-current={isCurrent ? "page" : undefined}
               className={cn(
                 "h-8 w-8 p-0 font-mono tabular-data text-sm",
-                isCurrent && "pointer-events-none"
+                isCurrent && "pointer-events-none",
               )}
             >
               {pageNum}

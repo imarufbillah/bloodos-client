@@ -18,7 +18,10 @@ type ProfileContentProps = {
   initialAnalytics: UserAnalytics;
 };
 
-export function ProfileContent({ initialUser, initialAnalytics }: ProfileContentProps) {
+export function ProfileContent({
+  initialUser,
+  initialAnalytics,
+}: ProfileContentProps) {
   const [user, setUser] = useState<UserDto>(initialUser);
 
   const handleUserUpdate = (updatedUser: UserDto) => {
@@ -49,9 +52,7 @@ export function ProfileContent({ initialUser, initialAnalytics }: ProfileContent
             currentImage={user.image}
             userName={user.name}
             userEmail={user.email}
-            onAvatarUpdate={(imageUrl) =>
-              setUser({ ...user, image: imageUrl })
-            }
+            onAvatarUpdate={(imageUrl) => setUser({ ...user, image: imageUrl })}
           />
         </section>
 
@@ -101,8 +102,7 @@ export function ProfileContent({ initialUser, initialAnalytics }: ProfileContent
           </div>
           <div>
             <p>
-              User ID:{" "}
-              <span className="font-mono text-xs">{user._id}</span>
+              User ID: <span className="font-mono text-xs">{user._id}</span>
             </p>
           </div>
         </div>

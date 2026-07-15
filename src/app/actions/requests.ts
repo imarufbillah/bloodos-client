@@ -1,10 +1,3 @@
-/**
- * Server Actions for Blood Request Mutations
- * 
- * These actions run on the server and provide better security,
- * automatic error handling, and cache invalidation.
- */
-
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -36,7 +29,10 @@ export async function createBloodRequest(formData: FormData) {
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to create request" };
+      return {
+        success: false,
+        error: error.message || "Failed to create request",
+      };
     }
 
     const data = await response.json();
@@ -49,7 +45,8 @@ export async function createBloodRequest(formData: FormData) {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to create request",
+      error:
+        error instanceof Error ? error.message : "Failed to create request",
     };
   }
 }
@@ -57,7 +54,10 @@ export async function createBloodRequest(formData: FormData) {
 /**
  * Update blood request status
  */
-export async function updateRequestStatus(requestId: string, status: RequestStatus) {
+export async function updateRequestStatus(
+  requestId: string,
+  status: RequestStatus,
+) {
   try {
     const response = await apiFetch(`/api/requests/${requestId}/status`, {
       method: "PATCH",
@@ -66,7 +66,10 @@ export async function updateRequestStatus(requestId: string, status: RequestStat
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to update status" };
+      return {
+        success: false,
+        error: error.message || "Failed to update status",
+      };
     }
 
     const data = await response.json();
@@ -96,7 +99,10 @@ export async function deleteRequest(requestId: string) {
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to delete request" };
+      return {
+        success: false,
+        error: error.message || "Failed to delete request",
+      };
     }
 
     // Invalidate relevant caches
@@ -107,7 +113,8 @@ export async function deleteRequest(requestId: string) {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to delete request",
+      error:
+        error instanceof Error ? error.message : "Failed to delete request",
     };
   }
 }
@@ -124,7 +131,10 @@ export async function respondToRequest(requestId: string, message: string) {
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to respond to request" };
+      return {
+        success: false,
+        error: error.message || "Failed to respond to request",
+      };
     }
 
     const data = await response.json();
@@ -137,7 +147,8 @@ export async function respondToRequest(requestId: string, message: string) {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to respond to request",
+      error:
+        error instanceof Error ? error.message : "Failed to respond to request",
     };
   }
 }

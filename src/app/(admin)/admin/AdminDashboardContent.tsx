@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BarChart3, Shield, Users } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -26,16 +25,11 @@ export function AdminDashboardContent({
 }: AdminDashboardContentProps) {
   const router = useRouter();
   const { data: session } = useSession();
-  
+
   // Use server data directly
   const stats = initialStats;
   const requests = initialRequests;
   const users = initialUsers;
-
-  // Handle refresh - triggers server refetch
-  const handleRefreshStats = () => {
-    router.refresh();
-  };
 
   const handleRefreshRequests = () => {
     router.refresh();

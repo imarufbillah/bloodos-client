@@ -6,7 +6,7 @@
 import type { AdminActionType, BloodGroup, District } from "../shared";
 
 // ============================================================================
-// Admin Dashboard Stats (Req 18.4)
+// Admin Dashboard Stats
 // ============================================================================
 
 export interface AdminStatsDto {

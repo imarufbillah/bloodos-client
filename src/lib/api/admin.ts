@@ -5,8 +5,6 @@
 
 import { apiFetch } from "../api-client";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
 export interface AdminStats {
   totalRequests: number;
   activeRequests: number;
@@ -84,7 +82,7 @@ export async function approveRequest(requestId: string): Promise<void> {
  */
 export async function rejectRequest(
   requestId: string,
-  reason: string
+  reason: string,
 ): Promise<void> {
   const response = await apiFetch(`/api/admin/requests/${requestId}/reject`, {
     method: "PATCH",
@@ -130,7 +128,7 @@ export async function getUsers(): Promise<AdminUser[]> {
 export async function toggleUserBan(
   userId: string,
   banned: boolean,
-  reason: string
+  reason: string,
 ): Promise<void> {
   const endpoint = banned ? "ban" : "unban";
   const response = await apiFetch(`/api/admin/users/${userId}/${endpoint}`, {
@@ -149,7 +147,7 @@ export async function toggleUserBan(
  */
 export async function changeUserRole(
   userId: string,
-  role: "user" | "admin"
+  role: "user" | "admin",
 ): Promise<void> {
   const response = await apiFetch(`/api/admin/users/${userId}/role`, {
     method: "PATCH",

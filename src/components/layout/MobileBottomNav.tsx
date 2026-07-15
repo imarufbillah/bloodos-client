@@ -36,7 +36,7 @@ export function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex min-h-[48px] min-w-[64px] flex-col items-center justify-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+              className={`relative flex min-h-12 min-w-16 flex-col items-center justify-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                 isActive
                   ? "text-crimson"
                   : "text-muted-foreground hover:text-foreground"

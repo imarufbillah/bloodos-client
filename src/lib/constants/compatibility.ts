@@ -1,14 +1,8 @@
-/**
- * Blood compatibility matrix for BloodOS
- * Mirrors bloodos-server/src/types/shared.ts BLOOD_COMPATIBILITY
- * DO NOT modify independently - keep in sync with server
- */
-
 import { BloodGroup } from "./bloodGroups";
 
 /**
  * Maps each blood group to the blood groups that can donate to it
- * Based on standard blood compatibility rules (Req 2.4)
+ * Based on standard blood compatibility rules
  */
 export const BLOOD_COMPATIBILITY: Record<BloodGroup, BloodGroup[]> = {
   [BloodGroup.A_POSITIVE]: [
@@ -54,7 +48,7 @@ export const BLOOD_COMPATIBILITY: Record<BloodGroup, BloodGroup[]> = {
  */
 export function isCompatible(
   donorBloodGroup: BloodGroup,
-  recipientBloodGroup: BloodGroup
+  recipientBloodGroup: BloodGroup,
 ): boolean {
   const compatibleDonors = BLOOD_COMPATIBILITY[recipientBloodGroup];
   return compatibleDonors.includes(donorBloodGroup);
@@ -66,7 +60,7 @@ export function isCompatible(
  * @returns Array of compatible donor blood groups
  */
 export function getCompatibleDonors(
-  recipientBloodGroup: BloodGroup
+  recipientBloodGroup: BloodGroup,
 ): BloodGroup[] {
   return BLOOD_COMPATIBILITY[recipientBloodGroup];
 }
@@ -77,9 +71,11 @@ export function getCompatibleDonors(
  * @returns Array of compatible recipient blood groups
  */
 export function getCompatibleRecipients(
-  donorBloodGroup: BloodGroup
+  donorBloodGroup: BloodGroup,
 ): BloodGroup[] {
   return Object.entries(BLOOD_COMPATIBILITY)
-    .filter(([_, compatibleDonors]) => compatibleDonors.includes(donorBloodGroup))
+    .filter(([_, compatibleDonors]) =>
+      compatibleDonors.includes(donorBloodGroup),
+    )
     .map(([recipientBloodGroup]) => recipientBloodGroup as BloodGroup);
 }

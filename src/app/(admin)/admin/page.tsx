@@ -1,15 +1,3 @@
-/**
- * Admin Dashboard Page (Refactored for Server Components)
- * Main admin interface with stats, charts, and management tables (Req 18.1-18.13)
- * Tabs: Overview (stats + charts), Moderation, Users
- * 
- * Improvements (Phase 2):
- * - Server-side data fetching with admin authentication
- * - Automatic loading/error boundaries
- * - Reduced client bundle size
- * - Better initial page load performance
- */
-
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AdminDashboardContent } from "./AdminDashboardContent";
@@ -52,12 +40,12 @@ async function fetchModerationRequests(): Promise<ModerationRequest[]> {
   }
 
   const data = await response.json();
-  
+
   // If it's a paginated response, extract the data array
   if (data.data && Array.isArray(data.data)) {
     return data.data;
   }
-  
+
   // Otherwise assume it's already an array
   return Array.isArray(data) ? data : [];
 }
@@ -74,12 +62,12 @@ async function fetchUsers(): Promise<AdminUser[]> {
   }
 
   const data = await response.json();
-  
+
   // If it's a paginated response, extract the data array
   if (data.data && Array.isArray(data.data)) {
     return data.data;
   }
-  
+
   // Otherwise assume it's already an array
   return Array.isArray(data) ? data : [];
 }

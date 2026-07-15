@@ -1,10 +1,3 @@
-/**
- * Requests Moderation Table
- * Dense data table for admin moderation (Req 18.9-18.12)
- * Columns: ID, Patient, Blood Group, Status, Created, Actions
- * Actions: Reject, View/Edit, Delete (no Approve since requests are auto-approved on creation)
- */
-
 "use client";
 
 import { useState } from "react";
@@ -21,6 +14,7 @@ import {
 } from "@/lib/api/admin";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { BloodGroup, RequestStatus } from "@/types/shared";
 
 interface RequestsModerationTableProps {
   requests: ModerationRequest[];
@@ -64,7 +58,7 @@ export function RequestsModerationTable({
 
   const openDialog = (
     request: ModerationRequest,
-    type: "reject" | "delete"
+    type: "reject" | "delete",
   ) => {
     setSelectedRequest(request);
     setDialogType(type);
@@ -119,10 +113,12 @@ export function RequestsModerationTable({
                     {request.patientName}
                   </td>
                   <td className="px-4 py-3">
-                    <BloodGroupBadge bloodGroup={request.bloodGroup as any} />
+                    <BloodGroupBadge
+                      bloodGroup={request.bloodGroup as BloodGroup}
+                    />
                   </td>
                   <td className="px-4 py-3">
-                    <StatusBadge status={request.status as any} />
+                    <StatusBadge status={request.status as RequestStatus} />
                   </td>
                   <td className="px-4 py-3 font-mono text-xs text-slate tabular-data">
                     {format(new Date(request.createdAt), "MMM dd, yyyy")}
@@ -141,9 +137,7 @@ export function RequestsModerationTable({
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() =>
-                          router.push(`/requests/${request._id}`)
-                        }
+                        onClick={() => router.push(`/requests/${request._id}`)}
                         disabled={isProcessing}
                         title="View Details"
                       >
@@ -170,9 +164,7 @@ export function RequestsModerationTable({
       <ConfirmDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        title={
-          dialogType === "delete" ? "Delete Request" : "Reject Request"
-        }
+        title={dialogType === "delete" ? "Delete Request" : "Reject Request"}
         description={
           dialogType === "delete"
             ? "Are you sure you want to delete this blood request? This action cannot be undone."

@@ -105,7 +105,7 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
       } else {
         // API or network errors
         toast.error(
-          err instanceof Error ? err.message : "Failed to update profile"
+          err instanceof Error ? err.message : "Failed to update profile",
         );
       }
     } finally {
@@ -212,15 +212,17 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
             name="name"
             type="text"
             value={formData.name}
-            onChange={(e) =>
-              setFormData({ ...formData, name: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Your full name"
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? "name-error" : undefined}
           />
           {errors.name && (
-            <p id="name-error" className="text-sm text-destructive" role="alert">
+            <p
+              id="name-error"
+              className="text-sm text-destructive"
+              role="alert"
+            >
               {errors.name}
             </p>
           )}
@@ -259,7 +261,11 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
             aria-describedby={errors.phone ? "phone-error" : undefined}
           />
           {errors.phone && (
-            <p id="phone-error" className="text-sm text-destructive" role="alert">
+            <p
+              id="phone-error"
+              className="text-sm text-destructive"
+              role="alert"
+            >
               {errors.phone}
             </p>
           )}
@@ -280,7 +286,9 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
             }
             error={errors.bloodGroup}
             aria-invalid={!!errors.bloodGroup}
-            aria-describedby={errors.bloodGroup ? "bloodGroup-error" : undefined}
+            aria-describedby={
+              errors.bloodGroup ? "bloodGroup-error" : undefined
+            }
           >
             <option value="">Select blood group</option>
             {BLOOD_GROUPS.map((group) => (

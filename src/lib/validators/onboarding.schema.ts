@@ -1,10 +1,3 @@
-/**
- * Onboarding Validation Schema
- * Phase 8n - Complete donor profile after signup
- * Used to populate Req 1.8 fields (district, bloodGroup, phone, isDonor, lastDonationDate)
- * All fields are optional - user can skip this step
- */
-
 import { z } from "zod";
 import { BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { DISTRICTS } from "@/lib/constants/districts";
@@ -49,7 +42,7 @@ export const onboardingSchema = z.object({
         // Donation date cannot be in the future
         return date <= today;
       },
-      { message: "Last donation date cannot be in the future" }
+      { message: "Last donation date cannot be in the future" },
     )
     .or(z.literal("")), // Allow empty string for skipping
 });

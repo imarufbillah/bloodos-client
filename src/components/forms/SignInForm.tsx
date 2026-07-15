@@ -13,13 +13,6 @@ import { Label } from "@/components/ui/label";
 import GoogleAuth from "@/components/auth/GoogleAuth";
 import { FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
 
-/**
- * Phase 8m — Sign In Form
- * Handles email/password authentication via better-auth client SDK.
- * Rate limiting (Req 15.1-15.6) is enforced server-side; this form
- * displays the countdown on 429 responses.
- */
-
 interface SignInFormProps {
   callbackUrl?: string;
 }

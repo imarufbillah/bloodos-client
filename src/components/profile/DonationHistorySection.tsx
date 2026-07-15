@@ -1,23 +1,5 @@
 "use client";
 
-/**
- * DonationHistorySection - User's donation history with eligibility countdown
- * Phase 8j - User Profile page
- *
- * Design direction:
- * - Reverse chronological order (Req 13.8)
- * - Paginated past 10 records (Req 13.9)
- * - Eligibility countdown computed client-side (Req 13.7)
- * - Shows verification status (verified/unverified)
- * - Monospace for dates and countdown numbers (data, not prose)
- *
- * Functional requirements:
- * - Req 13.8: GET /api/users/me/donations - reverse chronological
- * - Req 13.9: Paginated if >10 donations
- * - Req 13.7: Days-until-eligible calc matches 90-day rule from backend (3a)
- * - Shows verified badge for admin-verified donations
- */
-
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import {
@@ -59,7 +41,7 @@ function calculateEligibilityCountdown(lastDonationDate: string | null): {
   const lastDonation = new Date(lastDonationDate);
   const today = new Date();
   const daysSinceLastDonation = Math.floor(
-    (today.getTime() - lastDonation.getTime()) / (1000 * 60 * 60 * 24)
+    (today.getTime() - lastDonation.getTime()) / (1000 * 60 * 60 * 24),
   );
 
   // 90-day cooldown requirement (Req 2.3)
@@ -80,7 +62,6 @@ function calculateEligibilityCountdown(lastDonationDate: string | null): {
 }
 
 export function DonationHistorySection({
-  userId,
   lastDonationDate,
 }: DonationHistorySectionProps) {
   const [donations, setDonations] = useState<
@@ -106,7 +87,7 @@ export function DonationHistorySection({
 
     try {
       const response = await apiFetch(
-        `/api/users/me/donations?page=${page}&limit=10`
+        `/api/users/me/donations?page=${page}&limit=10`,
       );
 
       if (!response.ok) {
@@ -117,7 +98,7 @@ export function DonationHistorySection({
       setDonations(data);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to load donation history"
+        err instanceof Error ? err.message : "Failed to load donation history",
       );
     } finally {
       setIsLoading(false);
@@ -163,8 +144,8 @@ export function DonationHistorySection({
             </h3>
             {eligibility.isEligible ? (
               <p className="text-sm text-muted-foreground mt-1">
-                You are eligible to donate blood. Thank you for your
-                willingness to help save lives.
+                You are eligible to donate blood. Thank you for your willingness
+                to help save lives.
               </p>
             ) : (
               <div className="space-y-1 mt-1">
@@ -290,7 +271,10 @@ export function DonationHistorySection({
                       <p className="text-xs text-muted-foreground">
                         Verified on{" "}
                         <span className="font-mono tabular-data">
-                          {format(new Date(donation.verifiedAt), "MMM dd, yyyy")}
+                          {format(
+                            new Date(donation.verifiedAt),
+                            "MMM dd, yyyy",
+                          )}
                         </span>
                       </p>
                     </div>

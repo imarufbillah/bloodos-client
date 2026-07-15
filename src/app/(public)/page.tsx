@@ -58,7 +58,7 @@ export default function HomePage() {
 
   useEffect(() => {
     fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/stats`
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/stats`,
     )
       .then((res) => res.json())
       .then((data) => {
@@ -107,7 +107,11 @@ export default function HomePage() {
                 </Button>
               </Link>
               <Link href="/requests">
-                <Button size="lg" variant="outline" className="w-full gap-2 sm:w-auto">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full gap-2 sm:w-auto"
+                >
                   <Search className="h-5 w-5" />
                   Browse Requests
                 </Button>
@@ -116,10 +120,28 @@ export default function HomePage() {
 
             {!isLoading && stats && (
               <div className="mt-4 grid grid-cols-4 gap-3 pt-4 sm:gap-4">
-                <StatCounter value={stats.activeRequests} label="Active Requests" delay={0.3} />
-                <StatCounter value={stats.totalDonors} label="Donors" suffix="+" delay={0.4} />
-                <StatCounter value={stats.fulfilledRequests} label="Lives Saved" suffix="+" delay={0.5} />
-                <StatCounter value={stats.donationsThisMonth} label="This Month" delay={0.6} />
+                <StatCounter
+                  value={stats.activeRequests}
+                  label="Active Requests"
+                  delay={0.3}
+                />
+                <StatCounter
+                  value={stats.totalDonors}
+                  label="Donors"
+                  suffix="+"
+                  delay={0.4}
+                />
+                <StatCounter
+                  value={stats.fulfilledRequests}
+                  label="Lives Saved"
+                  suffix="+"
+                  delay={0.5}
+                />
+                <StatCounter
+                  value={stats.donationsThisMonth}
+                  label="This Month"
+                  delay={0.6}
+                />
               </div>
             )}
 
@@ -139,7 +161,11 @@ export default function HomePage() {
             className="relative hidden lg:block"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] as const }}
+            transition={{
+              duration: 0.6,
+              delay: 0.2,
+              ease: [0.25, 0.1, 0.25, 1] as const,
+            }}
           >
             <div className="relative ml-auto max-w-md overflow-visible rounded-2xl border border-border lg:max-w-lg">
               <div className="relative aspect-3/4 overflow-hidden rounded-2xl">
@@ -161,8 +187,12 @@ export default function HomePage() {
                     <Heart className="h-5 w-5 text-teal" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">90-Day Tracking</p>
-                    <p className="text-xs text-muted-foreground">Donor eligibility monitored</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      90-Day Tracking
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Donor eligibility monitored
+                    </p>
                   </div>
                 </div>
               </div>
@@ -306,11 +336,7 @@ export default function HomePage() {
                 </Button>
               </Link>
               <Link href="/about" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full gap-2"
-                >
+                <Button size="lg" variant="outline" className="w-full gap-2">
                   Learn More
                   <ArrowRight className="h-4 w-4" />
                 </Button>

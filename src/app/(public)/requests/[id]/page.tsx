@@ -1,40 +1,9 @@
-/**
- * Request Details Page - Phase 8c
- *
- * Public detailed view of a single blood request with six sections:
- * 1. Overview (hero with key urgency indicators)
- * 2. Key Information (patient, blood, hospital details)
- * 3. Location (hospital address, district)
- * 4. Contact (masked unless owner/admin)
- * 5. Responses (owner-only section)
- * 6. Related Requests (same blood group + district)
- *
- * Requirements:
- * - Req 21.12: Public route (no auth required for viewing)
- * - Req 21.13: Overview section with status, urgency, blood group
- * - Req 21.14: Key Info section with all patient/medical details
- * - Req 21.15: Location section with hospital address
- * - Req 21.16: Description section with additional notes
- * - Req 21.17: Contact section (masked unless owner/admin)
- * - Req 21.18: Responses section (owner/admin only)
- * - Req 21.19: Related Requests grid (via GET /api/requests/related/:id)
- * - Req 21.20: "I Can Help" button (authenticated donors only)
- * - Req 21.21: POST /api/requests/:id/respond on help click
- * - Req 21.22: Success toast after response submission
- *
- * Design:
- * - Sectioned layout with hairline dividers (not cards-within-cards)
- * - Critical requests get the heartbeat pulse bar on the overview section
- * - Related requests use the same card-grid rhythm as browse page
- */
-
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import RequestDetailsContent from "./RequestDetailsContent";
 import type { BloodRequest } from "@/types/shared";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 /**
  * Fetch a single request by ID (server component)
@@ -110,10 +79,11 @@ export async function generateMetadata({ params }: PageProps) {
     const request = await fetchRequest(id);
     return {
       title: `${request.patientName} needs ${request.bloodGroup} blood - BloodOS`,
-      description: `${request.urgency} blood request for ${request.unitsNeeded} units of ${request.bloodGroup} blood at ${request.hospitalName}, ${request.district}. ${request.additionalNotes || ""}`.slice(
-        0,
-        160
-      ),
+      description:
+        `${request.urgency} blood request for ${request.unitsNeeded} units of ${request.bloodGroup} blood at ${request.hospitalName}, ${request.district}. ${request.additionalNotes || ""}`.slice(
+          0,
+          160,
+        ),
     };
   } catch {
     return {

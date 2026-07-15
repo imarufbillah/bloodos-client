@@ -1,10 +1,3 @@
-/**
- * Server Actions for Contact Operations
- * 
- * These actions run on the server and provide better security
- * and automatic rate limiting integration.
- */
-
 "use server";
 
 import { apiFetch } from "@/lib/api-server";
@@ -29,14 +22,20 @@ export async function submitContactForm(formData: FormData) {
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to submit contact form" };
+      return {
+        success: false,
+        error: error.message || "Failed to submit contact form",
+      };
     }
 
     return { success: true };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to submit contact form",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to submit contact form",
     };
   }
 }
@@ -47,13 +46,10 @@ export async function submitContactForm(formData: FormData) {
  */
 export async function requestDonorContact(donorId: string, requestId?: string) {
   try {
-    const response = await apiFetch(
-      `/api/donors/${donorId}/request-contact`,
-      {
-        method: "POST",
-        body: JSON.stringify({ requestId }),
-      }
-    );
+    const response = await apiFetch(`/api/donors/${donorId}/request-contact`, {
+      method: "POST",
+      body: JSON.stringify({ requestId }),
+    });
 
     if (!response.ok) {
       const error = await response.json();
@@ -70,7 +66,9 @@ export async function requestDonorContact(donorId: string, requestId?: string) {
     return {
       success: false,
       error:
-        error instanceof Error ? error.message : "Failed to request contact information",
+        error instanceof Error
+          ? error.message
+          : "Failed to request contact information",
     };
   }
 }

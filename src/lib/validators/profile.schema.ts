@@ -1,10 +1,3 @@
-/**
- * Profile Edit Validation Schema
- * Phase 8j - User Profile page
- * Mirrors backend validation from bloodos-server/src/validators/user.validator.ts
- * Based on Req 13.5 - Only allows updating whitelisted fields, never 'role'
- */
-
 import { z } from "zod";
 import { BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { DISTRICTS } from "@/lib/constants/districts";
@@ -62,7 +55,7 @@ export const createDonationSchema = z.object({
         // Donation date cannot be in the future
         return date <= today;
       },
-      { message: "Donation date cannot be in the future" }
+      { message: "Donation date cannot be in the future" },
     ),
 
   bloodGroup: z.enum(BLOOD_GROUPS as [string, ...string[]], {

@@ -17,21 +17,6 @@ import { BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { DISTRICTS_BY_DIVISION } from "@/lib/constants/districts";
 import { apiFetch } from "@/lib/api-client";
 
-/**
- * OnboardingForm Component
- * Phase 8n - Complete donor profile after signup
- * 
- * Populates Req 1.8 fields to enable:
- * - Donor matching (Req 9) via district + bloodGroup
- * - Eligibility calculation (Req 2.3) via lastDonationDate
- * - Contact for requests (Req 4) via phone
- * 
- * Design notes:
- * - All fields optional - user can skip
- * - Single centered column, quiet register aesthetic
- * - lastDonationDate visually de-emphasized (self-reported, not verified)
- * - Submits to PATCH /api/users/me (unit 5h)
- */
 export function OnboardingForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -59,13 +44,15 @@ export function OnboardingForm() {
     try {
       // Build request body with only provided fields
       const payload: Record<string, any> = {};
-      
+
       if (data.district) payload.district = data.district;
       if (data.bloodGroup) payload.bloodGroup = data.bloodGroup;
       if (data.phone) payload.phone = data.phone;
       payload.isDonor = data.isDonor;
       if (data.lastDonationDate) {
-        payload.lastDonationDate = new Date(data.lastDonationDate).toISOString();
+        payload.lastDonationDate = new Date(
+          data.lastDonationDate,
+        ).toISOString();
       }
 
       // Submit to backend
@@ -84,7 +71,7 @@ export function OnboardingForm() {
     } catch (error) {
       console.error("Onboarding error:", error);
       toast.error(
-        error instanceof Error ? error.message : "Failed to complete profile"
+        error instanceof Error ? error.message : "Failed to complete profile",
       );
     } finally {
       setIsSubmitting(false);
@@ -99,7 +86,10 @@ export function OnboardingForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {/* District */}
       <div className="space-y-2">
-        <Label htmlFor="district" className="text-sm font-medium text-foreground">
+        <Label
+          htmlFor="district"
+          className="text-sm font-medium text-foreground"
+        >
           District
         </Label>
         <Select
@@ -109,15 +99,17 @@ export function OnboardingForm() {
           disabled={isSubmitting}
         >
           <option value="">Select your district</option>
-          {Object.entries(DISTRICTS_BY_DIVISION).map(([division, districts]) => (
-            <optgroup key={division} label={division}>
-              {districts.map((district) => (
-                <option key={district} value={district}>
-                  {district}
-                </option>
-              ))}
-            </optgroup>
-          ))}
+          {Object.entries(DISTRICTS_BY_DIVISION).map(
+            ([division, districts]) => (
+              <optgroup key={division} label={division}>
+                {districts.map((district) => (
+                  <option key={district} value={district}>
+                    {district}
+                  </option>
+                ))}
+              </optgroup>
+            ),
+          )}
         </Select>
         {errors.district && (
           <p className="text-xs text-destructive">{errors.district.message}</p>
@@ -126,7 +118,10 @@ export function OnboardingForm() {
 
       {/* Blood Group */}
       <div className="space-y-2">
-        <Label htmlFor="bloodGroup" className="text-sm font-medium text-foreground">
+        <Label
+          htmlFor="bloodGroup"
+          className="text-sm font-medium text-foreground"
+        >
           Blood Group
         </Label>
         <Select
@@ -143,7 +138,9 @@ export function OnboardingForm() {
           ))}
         </Select>
         {errors.bloodGroup && (
-          <p className="text-xs text-destructive">{errors.bloodGroup.message}</p>
+          <p className="text-xs text-destructive">
+            {errors.bloodGroup.message}
+          </p>
         )}
       </div>
 
@@ -216,11 +213,7 @@ export function OnboardingForm() {
 
       {/* Action Buttons */}
       <div className="flex flex-col gap-3 pt-2">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full"
-        >
+        <Button type="submit" disabled={isSubmitting} className="w-full">
           {isSubmitting ? "Saving..." : "Complete Profile"}
         </Button>
 

@@ -36,10 +36,10 @@ interface RequestDetailsContentProps {
  * Fetch related requests
  */
 async function fetchRelatedRequests(
-  requestId: string
+  requestId: string,
 ): Promise<BloodRequest[]> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/requests/related/${requestId}`
+    `${process.env.NEXT_PUBLIC_API_URL}/api/requests/related/${requestId}`,
   );
 
   if (!response.ok) {
@@ -54,7 +54,7 @@ async function fetchRelatedRequests(
  * Submit response to request
  */
 async function submitResponse(
-  requestId: string
+  requestId: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
     const response = await apiFetch(`/api/requests/${requestId}/respond`, {
@@ -90,9 +90,9 @@ export default function RequestDetailsContent({
 }: RequestDetailsContentProps) {
   const router = useRouter();
   const { data: session } = useSession();
-  const [relatedRequests, setRelatedRequests] = React.useState<
-    BloodRequest[]
-  >([]);
+  const [relatedRequests, setRelatedRequests] = React.useState<BloodRequest[]>(
+    [],
+  );
   const [isLoadingRelated, setIsLoadingRelated] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isDonor, setIsDonor] = React.useState<boolean>(false);
@@ -105,7 +105,11 @@ export default function RequestDetailsContent({
     const created = new Date(request.createdAt);
     // eslint-disable-next-line react-hooks/purity
     const expiringSoon = needed.getTime() - Date.now() < 24 * 60 * 60 * 1000;
-    return { neededByDate: needed, createdAt: created, isExpiringSoon: expiringSoon };
+    return {
+      neededByDate: needed,
+      createdAt: created,
+      isExpiringSoon: expiringSoon,
+    };
   }, [request.neededByDate, request.createdAt]);
 
   const isOwner = session?.user?.id === request.userId;

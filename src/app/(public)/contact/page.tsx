@@ -1,12 +1,3 @@
-/**
- * Contact Page
- * Implements Req 19.3, 19.6-19.11
- * - Contact form (19.6)
- * - Email, phone, social icons (19.6)
- * - Form validation matching backend (19.7)
- * - Success toast on submission (19.11)
- */
-
 import { Metadata } from "next";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
@@ -24,9 +15,7 @@ export default function ContactPage() {
     <div className="container mx-auto px-4 py-12 max-w-6xl">
       {/* Page Header */}
       <div className="mb-12 text-center">
-        <h1 className="font-heading text-4xl font-semibold mb-4">
-          Contact Us
-        </h1>
+        <h1 className="font-heading text-4xl font-semibold mb-4">Contact Us</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
           Have questions or need assistance? We&apos;re here to help. Reach out
           to us through the form below or use any of the contact methods

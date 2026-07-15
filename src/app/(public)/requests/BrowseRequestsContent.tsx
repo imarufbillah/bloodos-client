@@ -46,7 +46,7 @@ export default function BrowseRequestsContent({
 
       if (newFilters.bloodGroups.length) {
         newFilters.bloodGroups.forEach((bg) =>
-          queryParams.append("bloodGroup", bg)
+          queryParams.append("bloodGroup", bg),
         );
       }
       if (newFilters.urgencies.length) {
@@ -69,7 +69,7 @@ export default function BrowseRequestsContent({
         ? `/requests?${queryParams.toString()}`
         : "/requests";
     },
-    []
+    [],
   );
 
   // Handle filter changes - triggers server refetch via router.push
@@ -86,7 +86,7 @@ export default function BrowseRequestsContent({
     };
     setFilters(updatedFilters);
     setPage(1); // Reset to page 1 when filters change
-    
+
     // Navigate to new URL - triggers server refetch
     router.push(buildUrl(updatedFilters, 1));
   };
@@ -94,10 +94,10 @@ export default function BrowseRequestsContent({
   // Handle page change - triggers server refetch via router.push
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    
+
     // Navigate to new URL - triggers server refetch
     router.push(buildUrl(filters, newPage));
-    
+
     // Scroll to top of results
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

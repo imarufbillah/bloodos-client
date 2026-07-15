@@ -1,10 +1,3 @@
-/**
- * Loading UI for Profile Page
- * 
- * Automatically displayed by Next.js while the server component
- * is fetching user profile data.
- */
-
 import { User } from "lucide-react";
 
 export default function Loading() {
@@ -47,7 +40,10 @@ export default function Loading() {
             <div className="h-6 w-48 bg-muted animate-pulse rounded" />
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between p-4 rounded-lg bg-muted/30">
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-4 rounded-lg bg-muted/30"
+                >
                   <div className="space-y-2 flex-1">
                     <div className="h-5 w-40 bg-muted animate-pulse rounded" />
                     <div className="h-4 w-64 bg-muted animate-pulse rounded" />
@@ -65,7 +61,10 @@ export default function Loading() {
             <div className="h-6 w-48 bg-muted animate-pulse rounded" />
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between p-4 rounded-lg bg-muted/30">
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-4 rounded-lg bg-muted/30"
+                >
                   <div className="space-y-2 flex-1">
                     <div className="h-5 w-48 bg-muted animate-pulse rounded" />
                     <div className="h-4 w-56 bg-muted animate-pulse rounded" />
@@ -83,7 +82,10 @@ export default function Loading() {
             <div className="h-6 w-48 bg-muted animate-pulse rounded" />
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between p-4 rounded-lg bg-muted/30">
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-4 rounded-lg bg-muted/30"
+                >
                   <div className="space-y-2 flex-1">
                     <div className="h-5 w-56 bg-muted animate-pulse rounded" />
                     <div className="h-4 w-72 bg-muted animate-pulse rounded" />

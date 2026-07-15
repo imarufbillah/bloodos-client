@@ -45,8 +45,19 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const MONTH_NAMES = [
-  "", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  "",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 function StatCard({
@@ -63,15 +74,15 @@ function StatCard({
   return (
     <div
       className={`rounded-lg border p-4 ${
-        highlight
-          ? "border-crimson/30 bg-crimson/5"
-          : "border-border bg-card"
+        highlight ? "border-crimson/30 bg-crimson/5" : "border-border bg-card"
       }`}
     >
       <div className="flex items-center gap-3">
         <div
           className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-            highlight ? "bg-crimson/10 text-crimson" : "bg-muted text-muted-foreground"
+            highlight
+              ? "bg-crimson/10 text-crimson"
+              : "bg-muted text-muted-foreground"
           }`}
         >
           <Icon className="h-5 w-5" />
@@ -85,12 +96,16 @@ function StatCard({
   );
 }
 
-export function UserAnalyticsDashboard({ analytics }: { analytics: UserAnalytics }) {
+export function UserAnalyticsDashboard({
+  analytics,
+}: {
+  analytics: UserAnalytics;
+}) {
   const statusData = Object.entries(analytics.requestsByStatus).map(
     ([status, count]) => ({
       name: status.replace("_", " "),
       value: count,
-    })
+    }),
   );
 
   const timelineData = analytics.activityTimeline.map((item) => ({
@@ -165,9 +180,7 @@ export function UserAnalyticsDashboard({ analytics }: { analytics: UserAnalytics
                     fontSize: "13px",
                   }}
                 />
-                <Legend
-                  wrapperStyle={{ fontSize: "12px" }}
-                />
+                <Legend wrapperStyle={{ fontSize: "12px" }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -221,11 +234,12 @@ export function UserAnalyticsDashboard({ analytics }: { analytics: UserAnalytics
 
       {/* Impact Summary */}
       {analytics.livesSaved > 0 && (
-        <div className="rounded-lg bg-gradient-to-r from-crimson/10 to-teal/10 border border-crimson/20 p-6">
+        <div className="rounded-lg bg-linear-to-r from-crimson/10 to-teal/10 border border-crimson/20 p-6">
           <p className="text-sm text-ink">
             You&apos;ve helped save{" "}
             <span className="font-bold text-crimson">
-              {analytics.livesSaved} {analytics.livesSaved === 1 ? "life" : "lives"}
+              {analytics.livesSaved}{" "}
+              {analytics.livesSaved === 1 ? "life" : "lives"}
             </span>{" "}
             through {analytics.totalResponses} responses and{" "}
             {analytics.totalDonations} donations.

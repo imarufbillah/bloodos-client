@@ -1,21 +1,3 @@
-/**
- * About Page - Phase 8e
- * 
- * Public information page explaining BloodOS mission, how it works, team, and FAQ.
- * 
- * Requirements:
- * - Req 19.1: About page with platform information
- * - Req 19.4: Sections - Mission, How It Works, Team, FAQ
- * 
- * Design Direction:
- * - Long-form content page
- * - Fraunces section headers, Public Sans body text
- * - Generous reading measure (max-width for readability)
- * - Civic infrastructure aesthetic (clean, functional)
- * - Minimal use of crimson (only for key emphasis points)
- * - Hairline dividers between sections
- */
-
 "use client";
 
 import Link from "next/link";
@@ -73,7 +55,6 @@ export default function AboutPage() {
 
       {/* ===================================================================
           Mission Section
-          Req 19.4: Mission statement and platform purpose
        =================================================================== */}
       <section className="border-b border-border px-4 py-16 sm:py-20">
         <div className="container mx-auto max-w-4xl">
@@ -159,7 +140,6 @@ export default function AboutPage() {
 
       {/* ===================================================================
           How It Works Section
-          Req 19.4: Detailed explanation of the platform workflow
        =================================================================== */}
       <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
         <div className="container mx-auto max-w-4xl">
@@ -184,10 +164,11 @@ export default function AboutPage() {
                   Hospital or Family Posts a Request
                 </h3>
                 <p className="mt-2 text-base text-muted-foreground">
-                  Authenticated users submit blood requests with patient details,
-                  blood group needed, hospital location, units required, and
-                  urgency level (critical, urgent, or moderate). The system
-                  validates all fields and publishes the request immediately.
+                  Authenticated users submit blood requests with patient
+                  details, blood group needed, hospital location, units
+                  required, and urgency level (critical, urgent, or moderate).
+                  The system validates all fields and publishes the request
+                  immediately.
                 </p>
                 <div className="mt-4 rounded-lg border border-border bg-card p-4">
                   <p className="text-sm font-medium text-foreground">
@@ -267,10 +248,10 @@ export default function AboutPage() {
                   Donors Offer to Help
                 </h3>
                 <p className="mt-2 text-base text-muted-foreground">
-                  Notified donors can browse the request details and click &quot;I Can
-                  Help&quot; to offer their availability. The system tracks all
-                  responses with timestamps and eligibility status. Donors can
-                  retract their offer before it&apos;s accepted.
+                  Notified donors can browse the request details and click
+                  &quot;I Can Help&quot; to offer their availability. The system
+                  tracks all responses with timestamps and eligibility status.
+                  Donors can retract their offer before it&apos;s accepted.
                 </p>
               </div>
             </div>
@@ -285,11 +266,11 @@ export default function AboutPage() {
                   Requester Coordinates Donation
                 </h3>
                 <p className="mt-2 text-base text-muted-foreground">
-                  The requester reviews donor responses, selects the most suitable
-                  candidate, and clicks &quot;Accept&quot; to reveal full contact
-                  information (phone and email). They coordinate the donation
-                  directly and mark the request as fulfilled once complete. All
-                  actions are logged for transparency.
+                  The requester reviews donor responses, selects the most
+                  suitable candidate, and clicks &quot;Accept&quot; to reveal
+                  full contact information (phone and email). They coordinate
+                  the donation directly and mark the request as fulfilled once
+                  complete. All actions are logged for transparency.
                 </p>
               </div>
             </div>
@@ -304,10 +285,11 @@ export default function AboutPage() {
                   Donation Tracked & Verified
                 </h3>
                 <p className="mt-2 text-base text-muted-foreground">
-                  Donors can self-report completed donations with date, location,
-                  and units given. Admin moderators verify these records, which
-                  automatically update the donor&apos;s eligibility cooldown period.
-                  Verified donation history builds trust and helps future matching.
+                  Donors can self-report completed donations with date,
+                  location, and units given. Admin moderators verify these
+                  records, which automatically update the donor&apos;s
+                  eligibility cooldown period. Verified donation history builds
+                  trust and helps future matching.
                 </p>
               </div>
             </div>
@@ -317,7 +299,6 @@ export default function AboutPage() {
 
       {/* ===================================================================
           Team Section
-          Req 19.4: Information about the team behind BloodOS
        =================================================================== */}
       <section className="border-b border-border px-4 py-16 sm:py-20">
         <div className="container mx-auto max-w-4xl">
@@ -335,16 +316,16 @@ export default function AboutPage() {
 
             <p>
               After witnessing critical delays and coordination failures in our
-              own families and communities, we knew there had to be a better way.
-              We studied existing social media-based coordination patterns,
+              own families and communities, we knew there had to be a better
+              way. We studied existing social media-based coordination patterns,
               interviewed hospital staff and regular donors, and consulted with
               the Bangladesh Red Crescent Society to understand the medical and
               safety requirements.
             </p>
 
             <p>
-              The result is BloodOS—a civic infrastructure project built with the
-              same reliability standards as emergency services. We&apos;re a
+              The result is BloodOS—a civic infrastructure project built with
+              the same reliability standards as emergency services. We&apos;re a
               volunteer-driven team committed to maintaining this platform as a
               public service for as long as it&apos;s needed.
             </p>
@@ -359,25 +340,28 @@ export default function AboutPage() {
                 <Heart className="mt-1 h-5 w-5 shrink-0 text-crimson" />
                 <span>
                   <strong className="text-foreground">No Profit Motive:</strong>{" "}
-                  BloodOS is and will always remain free for hospitals, families,
-                  and donors. We don&apos;t sell data or run ads.
+                  BloodOS is and will always remain free for hospitals,
+                  families, and donors. We don&apos;t sell data or run ads.
                 </span>
               </li>
               <li className="flex gap-3">
                 <Shield className="mt-1 h-5 w-5 shrink-0 text-teal" />
                 <span>
                   <strong className="text-foreground">Privacy First:</strong> We
-                  collect only what&apos;s necessary for matching. Contact information
-                  is masked until explicitly revealed by the requester.
+                  collect only what&apos;s necessary for matching. Contact
+                  information is masked until explicitly revealed by the
+                  requester.
                 </span>
               </li>
               <li className="flex gap-3">
                 <Users className="mt-1 h-5 w-5 shrink-0 text-ochre" />
                 <span>
-                  <strong className="text-foreground">Community-Governed:</strong>{" "}
+                  <strong className="text-foreground">
+                    Community-Governed:
+                  </strong>{" "}
                   Major platform decisions are discussed with active donors and
-                  regular users. This is infrastructure for the community, by the
-                  community.
+                  regular users. This is infrastructure for the community, by
+                  the community.
                 </span>
               </li>
             </ul>
@@ -387,7 +371,6 @@ export default function AboutPage() {
 
       {/* ===================================================================
           FAQ Section
-          Req 19.4: Frequently Asked Questions
        =================================================================== */}
       <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
         <div className="container mx-auto max-w-4xl">
@@ -414,10 +397,11 @@ export default function AboutPage() {
                 How do you verify donor eligibility?
               </h3>
               <p className="mt-2 text-base text-muted-foreground">
-                We enforce the Bangladesh Red Crescent Society&apos;s eligibility
-                guidelines: donors must be 18-60 years old, weigh at least 50kg,
-                and wait 90 days between donations. Blood type compatibility is
-                verified using medical standards before notifying donors.
+                We enforce the Bangladesh Red Crescent Society&apos;s
+                eligibility guidelines: donors must be 18-60 years old, weigh at
+                least 50kg, and wait 90 days between donations. Blood type
+                compatibility is verified using medical standards before
+                notifying donors.
               </p>
             </div>
 
@@ -428,9 +412,9 @@ export default function AboutPage() {
               </h3>
               <p className="mt-2 text-base text-muted-foreground">
                 Authentication ensures only verified users can post requests and
-                offer donations. This prevents spam, abuse, and fake requests. You
-                can browse public requests without an account, but posting or
-                responding requires registration.
+                offer donations. This prevents spam, abuse, and fake requests.
+                You can browse public requests without an account, but posting
+                or responding requires registration.
               </p>
             </div>
 
@@ -442,8 +426,8 @@ export default function AboutPage() {
               <p className="mt-2 text-base text-muted-foreground">
                 Your phone number is masked (showing only partial digits) in all
                 public listings. Full contact details are only revealed when a
-                requester explicitly accepts your donor offer. All contact reveals
-                are logged for safety and transparency.
+                requester explicitly accepts your donor offer. All contact
+                reveals are logged for safety and transparency.
               </p>
             </div>
 
@@ -454,10 +438,10 @@ export default function AboutPage() {
               </h3>
               <p className="mt-2 text-base text-muted-foreground">
                 The requester will review your offer along with others. If they
-                accept your offer, you&apos;ll receive a notification with their full
-                contact information. You can then coordinate the donation directly
-                with them. If they choose another donor, you&apos;ll be notified and
-                your offer will be marked as declined.
+                accept your offer, you&apos;ll receive a notification with their
+                full contact information. You can then coordinate the donation
+                directly with them. If they choose another donor, you&apos;ll be
+                notified and your offer will be marked as declined.
               </p>
             </div>
 
@@ -468,10 +452,11 @@ export default function AboutPage() {
               </h3>
               <p className="mt-2 text-base text-muted-foreground">
                 The 90-day cooldown is a medical safety guideline set by the
-                Bangladesh Red Crescent Society. BloodOS enforces this server-side
-                to protect donor health. You won&apos;t be notified of new requests
-                until your cooldown period ends. However, you can browse requests
-                and see how many days remain until you&apos;re eligible again.
+                Bangladesh Red Crescent Society. BloodOS enforces this
+                server-side to protect donor health. You won&apos;t be notified
+                of new requests until your cooldown period ends. However, you
+                can browse requests and see how many days remain until
+                you&apos;re eligible again.
               </p>
             </div>
 
@@ -481,10 +466,13 @@ export default function AboutPage() {
                 How do I report a problem or get help?
               </h3>
               <p className="mt-2 text-base text-muted-foreground">
-                Visit our <Link href="/contact" className="text-teal hover:underline">Contact page</Link> to submit
-                questions, report issues, or request support. For urgent
-                platform-wide issues, you can also reach us via the emergency
-                contact email listed in the footer.
+                Visit our{" "}
+                <Link href="/contact" className="text-teal hover:underline">
+                  Contact page
+                </Link>{" "}
+                to submit questions, report issues, or request support. For
+                urgent platform-wide issues, you can also reach us via the
+                emergency contact email listed in the footer.
               </p>
             </div>
 
@@ -495,10 +483,11 @@ export default function AboutPage() {
               </h3>
               <p className="mt-2 text-base text-muted-foreground">
                 No. BloodOS is a coordination platform for when blood banks are
-                unavailable or don&apos;t have the required blood type in stock. We
-                strongly encourage using official blood banks as the first option.
-                BloodOS serves as a backup network for emergency situations where
-                direct donor-to-patient coordination is necessary.
+                unavailable or don&apos;t have the required blood type in stock.
+                We strongly encourage using official blood banks as the first
+                option. BloodOS serves as a backup network for emergency
+                situations where direct donor-to-patient coordination is
+                necessary.
               </p>
             </div>
           </div>

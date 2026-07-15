@@ -1,9 +1,3 @@
-/**
- * District constants for BloodOS
- * Mirrors bloodos-server/src/types/shared.ts District enum
- * DO NOT modify independently - keep in sync with server
- */
-
 export const District = {
   // Dhaka Division
   DHAKA: "Dhaka",
@@ -142,7 +136,14 @@ export const DISTRICTS_BY_DIVISION = {
     "Narail",
     "Satkhira",
   ],
-  Barisal: ["Barisal", "Barguna", "Bhola", "Jhalokati", "Patuakhali", "Pirojpur"],
+  Barisal: [
+    "Barisal",
+    "Barguna",
+    "Bhola",
+    "Jhalokati",
+    "Patuakhali",
+    "Pirojpur",
+  ],
   Sylhet: ["Sylhet", "Habiganj", "Moulvibazar", "Sunamganj"],
   Rangpur: [
     "Rangpur",

@@ -35,18 +35,6 @@ interface DonorCardProps {
   isRequestingContact?: boolean;
 }
 
-/**
- * DonorCard component (Phase 7d)
- * Displays a donor profile in card format:
- * - Blood group + district kicker (same anatomy as RequestCard)
- * - Donor name in Fraunces heading
- * - Eligibility badge (replaces urgency badge)
- * - Last donation info
- * - "Request Contact" CTA
- *
- * Follows civic infrastructure aesthetic from Phase 6a
- * Client-side eligibility calculated per Req 17.9
- */
 export function DonorCard({
   donor,
   staggerIndex = 0,
@@ -177,12 +165,6 @@ export function DonorCard({
 // Inline Badge Component (will be extracted to 7h)
 // ============================================================================
 
-/**
- * EligibilityBadge - styled pill for donor eligibility status
- * Eligible = teal (trust color)
- * Cooldown = ochre outlined (waiting state)
- * No history = slate outlined (neutral)
- */
 function EligibilityBadge({
   eligible,
   reason,

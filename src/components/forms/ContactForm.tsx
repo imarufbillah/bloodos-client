@@ -1,14 +1,5 @@
 "use client";
 
-/**
- * ContactForm Component
- * Implements Req 19.6-19.11
- * - Zod validation matching backend (19.7)
- * - Inline validation errors block submission (19.8)
- * - Submits to POST /api/contact (19.9)
- * - Success toast "Message sent successfully" (19.11)
- */
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,7 +51,7 @@ export function ContactForm() {
       reset();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to send message"
+        error instanceof Error ? error.message : "Failed to send message",
       );
     } finally {
       setIsSubmitting(false);

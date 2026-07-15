@@ -7,7 +7,6 @@ import {
   MapPin,
   Droplet,
   Hospital,
-  User,
   AlertCircle,
   Clock,
 } from "lucide-react";
@@ -22,17 +21,6 @@ interface RequestCardProps {
   staggerIndex?: number;
 }
 
-/**
- * RequestCard component (Phase 7c)
- * Displays a blood request in the dispatch-slip anatomy:
- * - Kicker (blood group + district) above patient name
- * - Urgency pill top-right
- * - Critical cards get the heartbeat left-bar (signature element)
- * - Truncated description with ellipsis
- * - "View Details" CTA button
- *
- * Follows civic infrastructure aesthetic from Phase 6a
- */
 export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
   const isCritical = request.urgency === Urgency.CRITICAL;
   const neededByDate = new Date(request.neededByDate);
@@ -164,12 +152,6 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
 // Inline Badge Components (will be extracted to 7h)
 // ============================================================================
 
-/**
- * UrgencyBadge - styled pill for urgency levels
- * Critical = filled crimson
- * Urgent = filled ochre
- * Moderate = outlined slate
- */
 function UrgencyBadge({ urgency }: { urgency: string }) {
   const variants = {
     critical: {
@@ -189,7 +171,8 @@ function UrgencyBadge({ urgency }: { urgency: string }) {
     },
   };
 
-  const variant = variants[urgency as keyof typeof variants] || variants.moderate;
+  const variant =
+    variants[urgency as keyof typeof variants] || variants.moderate;
   const Icon = variant.icon;
 
   return (

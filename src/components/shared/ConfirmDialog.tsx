@@ -1,8 +1,3 @@
-/**
- * Reusable Confirmation Dialog
- * Used for destructive actions (delete, ban, etc.) (Req 18.12)
- */
-
 "use client";
 
 import { useState } from "react";

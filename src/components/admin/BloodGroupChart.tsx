@@ -1,9 +1,3 @@
-/**
- * Blood Group Distribution Chart
- * BarChart showing request distribution by blood group (Req 18.5)
- * Styled with BloodOS palette tokens
- */
-
 "use client";
 
 import {

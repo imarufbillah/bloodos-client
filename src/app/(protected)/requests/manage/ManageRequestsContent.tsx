@@ -30,17 +30,6 @@ import type {
 } from "@/types/shared";
 import { apiFetch } from "@/lib/api-client";
 
-/**
- * ManageRequestsContent — Client component for managing user's blood requests
- * (Refactored for Server Components)
- *
- * Improvements:
- * - Receives initialData from server component
- * - Uses router.push for pagination (triggers server refetch)
- * - No initial data fetching in useEffect
- * - Optimistic UI updates with initialData
- */
-
 type ManageRequestsContentProps = {
   initialData: PaginatedResponse<BloodRequest>;
   initialPage: number;
@@ -52,7 +41,7 @@ export function ManageRequestsContent({
 }: ManageRequestsContentProps) {
   const router = useRouter();
   const [currentPage, setCurrentPage] = React.useState(initialPage);
-  
+
   // Use server data directly
   const requests = initialData.data;
   const pagination = {
@@ -76,9 +65,7 @@ export function ManageRequestsContent({
   });
 
   // Loading state for actions
-  const [actionLoading, setActionLoading] = React.useState<string | null>(
-    null
-  );
+  const [actionLoading, setActionLoading] = React.useState<string | null>(null);
 
   // Handle page change - triggers server refetch via router.push
   const handlePageChange = (page: number) => {
@@ -90,7 +77,7 @@ export function ManageRequestsContent({
   // Handle status change (Mark Fulfilled / Cancel)
   const handleStatusChange = async (
     requestId: string,
-    newStatus: RequestStatus
+    newStatus: RequestStatus,
   ) => {
     setActionLoading(requestId);
 
@@ -106,14 +93,14 @@ export function ManageRequestsContent({
       }
 
       toast.success(
-        `Request ${newStatus === "fulfilled" ? "marked as fulfilled" : "cancelled"} successfully`
+        `Request ${newStatus === "fulfilled" ? "marked as fulfilled" : "cancelled"} successfully`,
       );
 
       // Refresh the page to get updated data from server
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to update status"
+        error instanceof Error ? error.message : "Failed to update status",
       );
     } finally {
       setActionLoading(null);
@@ -127,9 +114,12 @@ export function ManageRequestsContent({
     setActionLoading(deleteDialog.requestId);
 
     try {
-      const response = await apiFetch(`/api/requests/${deleteDialog.requestId}`, {
-        method: "DELETE",
-      });
+      const response = await apiFetch(
+        `/api/requests/${deleteDialog.requestId}`,
+        {
+          method: "DELETE",
+        },
+      );
 
       if (!response.ok) {
         const error = await response.json();
@@ -150,7 +140,7 @@ export function ManageRequestsContent({
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to delete request"
+        error instanceof Error ? error.message : "Failed to delete request",
       );
     } finally {
       setActionLoading(null);
@@ -197,9 +187,7 @@ export function ManageRequestsContent({
             <div className="rounded-full bg-muted p-3 mb-4">
               <AlertTriangle className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h2 className="text-xl font-semibold mb-2">
-              No Requests Found
-            </h2>
+            <h2 className="text-xl font-semibold mb-2">No Requests Found</h2>
             <p className="text-muted-foreground mb-6 max-w-md">
               You haven&apos;t posted any blood donation requests yet. Create
               your first request to get started.
@@ -293,7 +281,7 @@ export function ManageRequestsContent({
                               month: "short",
                               day: "numeric",
                               year: "numeric",
-                            }
+                            },
                           )}
                         </div>
                         <div className="text-xs text-muted-foreground font-mono tabular-data">
@@ -303,7 +291,7 @@ export function ManageRequestsContent({
                             {
                               month: "short",
                               day: "numeric",
-                            }
+                            },
                           )}
                         </div>
                       </td>
@@ -404,7 +392,7 @@ export function ManageRequestsContent({
                           month: "short",
                           day: "numeric",
                           year: "numeric",
-                        }
+                        },
                       )}
                     </div>
                   </div>
@@ -473,10 +461,7 @@ export function ManageRequestsContent({
         {/* Pagination */}
         {pagination.totalPages > 1 && (
           <div className="mt-6">
-            <Pagination
-              metadata={pagination}
-              onPageChange={handlePageChange}
-            />
+            <Pagination metadata={pagination} onPageChange={handlePageChange} />
           </div>
         )}
       </div>

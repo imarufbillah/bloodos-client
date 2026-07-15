@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Camera, Loader2, User } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { apiFetch } from "@/lib/api-client";
 
@@ -61,7 +61,9 @@ export function AvatarUpload({
       onAvatarUpdate(data.image);
       toast.success("Avatar updated");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to upload avatar");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to upload avatar",
+      );
       setPreview(currentImage || null);
     } finally {
       setIsUploading(false);

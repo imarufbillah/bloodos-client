@@ -13,14 +13,6 @@ import { Label } from "@/components/ui/label";
 import GoogleAuth from "@/components/auth/GoogleAuth";
 import { FiAlertCircle, FiEye, FiEyeOff } from "react-icons/fi";
 
-/**
- * Phase 8m — Sign Up Form
- * Handles user registration via better-auth client SDK.
- * Per Req 1.9, role defaults to "user" server-side — not set by client.
- * Extended fields (phone, district, bloodGroup, isDonor, lastDonationDate)
- * per Req 1.8 are collected later on /profile (unit 8j), not here.
- */
-
 interface SignUpFormProps {
   callbackUrl?: string;
 }
@@ -83,7 +75,7 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
 
       // Success
       toast.success(
-        "Account created successfully! You can now complete your profile."
+        "Account created successfully! You can now complete your profile.",
       );
       router.push(callbackUrl || "/profile");
       router.refresh();
@@ -220,9 +212,7 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             disabled={isLoading || !!rateLimitError}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-            aria-label={
-              showConfirmPassword ? "Hide password" : "Show password"
-            }
+            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
           >
             {showConfirmPassword ? (
               <FiEyeOff className="h-4 w-4" />

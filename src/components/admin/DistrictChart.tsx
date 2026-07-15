@@ -1,9 +1,3 @@
-/**
- * District Distribution Chart
- * PieChart showing request distribution by district (top 10) (Req 18.6)
- * Styled with BloodOS palette tokens
- */
-
 "use client";
 
 import {
@@ -35,9 +29,7 @@ const COLORS = [
 
 export function DistrictChart({ data }: DistrictChartProps) {
   // Take top 10 districts by count (Req 18.6)
-  const topDistricts = [...data]
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 10);
+  const topDistricts = [...data].sort((a, b) => b.count - a.count).slice(0, 10);
 
   // Calculate total for percentage
   const total = topDistricts.reduce((sum, item) => sum + item.count, 0);
@@ -55,7 +47,10 @@ export function DistrictChart({ data }: DistrictChartProps) {
             cy="50%"
             labelLine={false}
             label={(props) => {
-              const { district, count } = props as unknown as { district: string; count: number };
+              const { district, count } = props as unknown as {
+                district: string;
+                count: number;
+              };
               return `${district}: ${((count / total) * 100).toFixed(1)}%`;
             }}
             outerRadius={80}

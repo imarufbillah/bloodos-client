@@ -1,8 +1,3 @@
-/**
- * Users Management Table
- * Admin user management with ban/unban and role change (Req 5f, 10.5/10.6)
- */
-
 "use client";
 
 import { useState } from "react";
@@ -11,12 +6,9 @@ import { Shield, Ban, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { BloodGroupBadge } from "@/components/shared/BloodGroupBadge";
-import {
-  toggleUserBan,
-  changeUserRole,
-  type AdminUser,
-} from "@/lib/api/admin";
+import { toggleUserBan, changeUserRole, type AdminUser } from "@/lib/api/admin";
 import { toast } from "sonner";
+import { BloodGroup } from "@/types/shared";
 
 interface UsersManagementTableProps {
   users: AdminUser[];
@@ -31,9 +23,7 @@ export function UsersManagementTable({
 }: UsersManagementTableProps) {
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState<"ban" | "unban" | "role">(
-    "ban"
-  );
+  const [dialogType, setDialogType] = useState<"ban" | "unban" | "role">("ban");
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleBanToggle = async () => {
@@ -43,10 +33,10 @@ export function UsersManagementTable({
       await toggleUserBan(
         selectedUser._id,
         willBan,
-        willBan ? "Banned by admin" : "Unbanned by admin"
+        willBan ? "Banned by admin" : "Unbanned by admin",
       );
       toast.success(
-        willBan ? "User banned successfully" : "User unbanned successfully"
+        willBan ? "User banned successfully" : "User unbanned successfully",
       );
       onRefresh();
     } catch (error) {
@@ -68,10 +58,7 @@ export function UsersManagementTable({
     }
   };
 
-  const openDialog = (
-    user: AdminUser,
-    type: "ban" | "unban" | "role"
-  ) => {
+  const openDialog = (user: AdminUser, type: "ban" | "unban" | "role") => {
     setSelectedUser(user);
     setDialogType(type);
     setDialogOpen(true);
@@ -161,7 +148,9 @@ export function UsersManagementTable({
                     </td>
                     <td className="px-4 py-3">
                       {user.bloodGroup ? (
-                        <BloodGroupBadge bloodGroup={user.bloodGroup as any} />
+                        <BloodGroupBadge
+                          bloodGroup={user.bloodGroup as BloodGroup}
+                        />
                       ) : (
                         <span className="text-slate text-xs">—</span>
                       )}
@@ -190,10 +179,7 @@ export function UsersManagementTable({
                           size="sm"
                           variant="outline"
                           onClick={() =>
-                            openDialog(
-                              user,
-                              user.banned ? "unban" : "ban"
-                            )
+                            openDialog(user, user.banned ? "unban" : "ban")
                           }
                           disabled={isProcessing || isCurrentUser}
                           title={

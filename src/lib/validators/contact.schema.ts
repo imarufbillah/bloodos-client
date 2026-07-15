@@ -1,8 +1,3 @@
-/**
- * Contact Form Validation Schema
- * Mirrors backend validation (Req 19.7) - min 10 char message, required fields, valid email
- */
-
 import { z } from "zod";
 
 export const contactFormSchema = z.object({

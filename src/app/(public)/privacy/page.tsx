@@ -1,20 +1,3 @@
-/**
- * Privacy Policy Page - Phase 8f
- * 
- * Public privacy policy page explaining data collection, usage, sharing, and user rights.
- * 
- * Requirements:
- * - Req 19.2: Privacy policy page
- * - Req 19.5: Sections - Data Collection, Data Usage, Data Sharing, User Rights, Contact
- * 
- * Design Direction:
- * - Long-form content page (same as About page)
- * - Fraunces section headers, Public Sans body text
- * - Generous reading measure (max-width for readability)
- * - Civic infrastructure aesthetic (clean, functional)
- * - Legal but accessible language
- */
-
 "use client";
 
 import Link from "next/link";
@@ -96,7 +79,6 @@ export default function PrivacyPage() {
 
       {/* ===================================================================
           Data Collection Section
-          Req 19.5: What data we collect and how
        =================================================================== */}
       <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
         <div className="container mx-auto max-w-4xl">
@@ -188,9 +170,7 @@ export default function PrivacyPage() {
                 </li>
                 <li className="flex gap-3 text-base text-muted-foreground">
                   <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>
-                    Optional additional notes about the request
-                  </span>
+                  <span>Optional additional notes about the request</span>
                 </li>
               </ul>
             </div>
@@ -259,7 +239,6 @@ export default function PrivacyPage() {
 
       {/* ===================================================================
           Data Usage Section
-          Req 19.5: How we use collected data
        =================================================================== */}
       <section className="border-b border-border px-4 py-16 sm:py-20">
         <div className="container mx-auto max-w-4xl">
@@ -283,15 +262,11 @@ export default function PrivacyPage() {
                 <ul className="space-y-2 text-sm">
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
-                    <span>
-                      Creating and managing your account
-                    </span>
+                    <span>Creating and managing your account</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
-                    <span>
-                      Authenticating your identity when you log in
-                    </span>
+                    <span>Authenticating your identity when you log in</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
@@ -325,7 +300,8 @@ export default function PrivacyPage() {
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
                     <span>
-                      Sending notifications to eligible donors about new requests
+                      Sending notifications to eligible donors about new
+                      requests
                     </span>
                   </li>
                   <li className="flex gap-2">
@@ -357,7 +333,9 @@ export default function PrivacyPage() {
                   </li>
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
-                    <span>Alerting you about matching blood requests nearby</span>
+                    <span>
+                      Alerting you about matching blood requests nearby
+                    </span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
@@ -376,9 +354,7 @@ export default function PrivacyPage() {
                 <ul className="space-y-2 text-sm">
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
-                    <span>
-                      Detecting and preventing fraud, spam, and abuse
-                    </span>
+                    <span>Detecting and preventing fraud, spam, and abuse</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
@@ -388,9 +364,7 @@ export default function PrivacyPage() {
                   </li>
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
-                    <span>
-                      Tracking admin actions for accountability
-                    </span>
+                    <span>Tracking admin actions for accountability</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
@@ -412,9 +386,7 @@ export default function PrivacyPage() {
                   </li>
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
-                    <span>
-                      Understanding which features are most useful
-                    </span>
+                    <span>Understanding which features are most useful</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-teal">•</span>
@@ -429,7 +401,6 @@ export default function PrivacyPage() {
 
       {/* ===================================================================
           Data Sharing Section
-          Req 19.5: Who we share data with and why
        =================================================================== */}
       <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
         <div className="container mx-auto max-w-4xl">
@@ -457,20 +428,22 @@ export default function PrivacyPage() {
                     <strong className="text-foreground">
                       Public Information:
                     </strong>{" "}
-                    Your name, blood group, and district are visible to all users
-                    when you&apos;re listed as a donor. Your phone number is masked
-                    by default (showing only partial digits).
+                    Your name, blood group, and district are visible to all
+                    users when you&apos;re listed as a donor. Your phone number
+                    is masked by default (showing only partial digits).
                   </p>
                   <p>
                     <strong className="text-foreground">
                       Controlled Reveal:
                     </strong>{" "}
                     Your full contact information (phone and email) is only
-                    revealed to requesters who explicitly accept your donor offer.
-                    All such reveals are logged in our audit system.
+                    revealed to requesters who explicitly accept your donor
+                    offer. All such reveals are logged in our audit system.
                   </p>
                   <p>
-                    <strong className="text-foreground">Request Details:</strong>{" "}
+                    <strong className="text-foreground">
+                      Request Details:
+                    </strong>{" "}
                     When you post a blood request, the information you provide
                     (patient name, hospital, contact phone) becomes publicly
                     visible to help donors coordinate.
@@ -518,9 +491,9 @@ export default function PrivacyPage() {
                     </li>
                   </ul>
                   <p className="mt-3">
-                    All service providers are bound by data protection agreements
-                    and are prohibited from using your information for their own
-                    purposes.
+                    All service providers are bound by data protection
+                    agreements and are prohibited from using your information
+                    for their own purposes.
                   </p>
                 </div>
               </div>
@@ -576,16 +549,16 @@ export default function PrivacyPage() {
                       <li className="flex gap-2">
                         <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-crimson" />
                         <span>
-                          <strong>Use for advertising:</strong> We don&apos;t show
-                          ads or share your data with advertisers
+                          <strong>Use for advertising:</strong> We don&apos;t
+                          show ads or share your data with advertisers
                         </span>
                       </li>
                       <li className="flex gap-2">
                         <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-crimson" />
                         <span>
-                          <strong>Share with data brokers:</strong> We don&apos;t
-                          work with data brokers or analytics companies that
-                          profile users
+                          <strong>Share with data brokers:</strong> We
+                          don&apos;t work with data brokers or analytics
+                          companies that profile users
                         </span>
                       </li>
                     </ul>
@@ -599,7 +572,6 @@ export default function PrivacyPage() {
 
       {/* ===================================================================
           User Rights Section
-          Req 19.5: User rights regarding their data
        =================================================================== */}
       <section className="border-b border-border px-4 py-16 sm:py-20">
         <div className="container mx-auto max-w-4xl">
@@ -649,8 +621,8 @@ export default function PrivacyPage() {
                   Right to Delete
                 </h3>
                 <p className="text-sm mb-2">
-                  You can request deletion of your account and associated personal
-                  data at any time. Contact us via the{" "}
+                  You can request deletion of your account and associated
+                  personal data at any time. Contact us via the{" "}
                   <Link href="/contact" className="text-teal hover:underline">
                     contact page
                   </Link>{" "}
@@ -695,9 +667,9 @@ export default function PrivacyPage() {
                 </h3>
                 <p className="text-sm">
                   You can temporarily deactivate your donor profile to stop
-                  receiving notifications about new requests without deleting your
-                  account. Toggle the &quot;Active Donor&quot; setting in your
-                  profile.
+                  receiving notifications about new requests without deleting
+                  your account. Toggle the &quot;Active Donor&quot; setting in
+                  your profile.
                 </p>
               </div>
             </div>
@@ -810,7 +782,6 @@ export default function PrivacyPage() {
 
       {/* ===================================================================
           Contact Section
-          Req 19.5: How to contact us about privacy
        =================================================================== */}
       <section className="border-b border-border px-4 py-16 sm:py-20">
         <div className="container mx-auto max-w-4xl">
@@ -900,8 +871,8 @@ export default function PrivacyPage() {
                   <strong className="text-foreground">
                     Notice of Changes:
                   </strong>{" "}
-                  We will notify you of significant changes by email or through a
-                  prominent notice on the platform.
+                  We will notify you of significant changes by email or through
+                  a prominent notice on the platform.
                 </div>
               </div>
               <div className="flex gap-4">
@@ -915,9 +886,7 @@ export default function PrivacyPage() {
               <div className="flex gap-4">
                 <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
                 <div>
-                  <strong className="text-foreground">
-                    Continued Use:
-                  </strong>{" "}
+                  <strong className="text-foreground">Continued Use:</strong>{" "}
                   Your continued use of BloodOS after policy changes indicates
                   your acceptance of the updated terms.
                 </div>

@@ -4,18 +4,6 @@ import { Metadata } from "next";
 import { SignInForm } from "@/components/forms/SignInForm";
 import { redirect } from "next/navigation";
 
-/**
- * Phase 8m — Sign In Page
- * Route: /signin (with /login → /signin redirect handled in middleware)
- * Per Req 1.7, unauthenticated users attempting to access protected routes
- * are redirected here with a callbackUrl param.
- *
- * Design direction (unit 8m): Deliberately the quietest page in the app —
- * no card anatomy, no urgency badges. This is the one moment before someone
- * can act. Centered single-column form, max-width ~400px. Fraunces heading,
- * Public Sans labels/inputs, crimson primary button, teal focus rings.
- */
-
 export const metadata: Metadata = {
   title: "Sign In | BloodOS",
   description: "Sign in to your BloodOS account",
@@ -37,7 +25,7 @@ async function SignInContent({ searchParams }: SignInPageProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 pt-16 pb-20 md:pb-12">
-      <div className="w-full max-w-[400px] space-y-8">
+      <div className="w-full max-w-100 space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="font-heading text-3xl">Welcome back</h1>

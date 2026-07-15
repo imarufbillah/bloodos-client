@@ -28,23 +28,6 @@ interface StatCounterProps {
   delay?: number;
 }
 
-/**
- * StatCounter Component
- * 
- * Displays an animated counter that counts up from 0 to the target value
- * when the component comes into view.
- * 
- * Features:
- * - Animates on scroll into view (only once)
- * - Uses spring physics for smooth, natural motion
- * - Respects prefers-reduced-motion setting
- * - Formats large numbers with commas
- * 
- * Usage:
- * ```tsx
- * <StatCounter value={1247} label="Active Requests" suffix="+" />
- * ```
- */
 export function StatCounter({
   value,
   label,

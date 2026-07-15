@@ -1,11 +1,5 @@
-/**
- * Request form validation schema
- * Phase 8h - Create Request page
- * Mirrors backend validation from bloodos-server/src/validators/request.validator.ts (Req 7.1-7.12)
- */
-
 import { z } from "zod";
-import { BloodGroup, District, Urgency } from "@/types/shared";
+import { Urgency } from "@/types/shared";
 import { BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { DISTRICTS } from "@/lib/constants/districts";
 
@@ -65,7 +59,7 @@ export const createRequestSchema = z.object({
         today.setHours(0, 0, 0, 0);
         return date >= today;
       },
-      { message: "Needed by date must be today or in the future" }
+      { message: "Needed by date must be today or in the future" },
     ),
 
   // Contact Information

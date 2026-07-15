@@ -1,26 +1,9 @@
 "use client";
 
-/**
- * PostedRequestsSection - User's blood requests with status
- * Phase 8j - User Profile page
- *
- * Design direction:
- * - Shows user's created blood requests
- * - Status badges use consistent pill language from Phase 7h
- * - Quick actions: View Details, Manage
- * - Reverse chronological order
- *
- * Functional requirements:
- * - Fetches requests where userId matches current user
- * - Shows request status, urgency, blood group
- * - Links to request detail and manage pages
- */
-
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import {
-  Calendar,
   MapPin,
   Droplet,
   Clock,
@@ -63,7 +46,7 @@ export function PostedRequestsSection({ userId }: PostedRequestsSectionProps) {
         setRequests(data.data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to load requests"
+          err instanceof Error ? err.message : "Failed to load requests",
         );
       } finally {
         setIsLoading(false);
@@ -121,7 +104,7 @@ export function PostedRequestsSection({ userId }: PostedRequestsSectionProps) {
             No Requests Yet
           </h3>
           <p className="text-sm text-muted-foreground mb-4">
-            You haven't posted any blood requests
+            You haven&apos;t posted any blood requests
           </p>
           <Button
             variant="outline"
@@ -185,8 +168,8 @@ export function PostedRequestsSection({ userId }: PostedRequestsSectionProps) {
                         isPast
                           ? "text-destructive"
                           : isUrgent
-                          ? "text-ochre"
-                          : "text-muted-foreground"
+                            ? "text-ochre"
+                            : "text-muted-foreground"
                       }`}
                     >
                       <Clock className="size-4" />

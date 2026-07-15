@@ -1,27 +1,11 @@
-/**
- * BloodGroupBadge — Monospace chip for blood group identification
- * Phase 7h — StatusBadge family
- *
- * Visual hierarchy (from 6a design direction):
- * - Monospace font (IBM Plex Mono) — blood groups are data codes, not prose
- * - Muted, differentiated by lightness — NO urgency colors ever
- * - Small, compact chips optimized for tables and card kickers
- * - Icon-free (blood type codes are self-explanatory symbols)
- *
- * Blood groups (Req 7.5):
- * - A+, A-, B+, B-, AB+, AB-, O+, O-
- *
- * Usage:
- *   <BloodGroupBadge bloodGroup="A+" />
- *   <BloodGroupBadge bloodGroup="O-" size="lg" />
- */
-
 import { type ComponentPropsWithoutRef } from "react";
 import { type BloodGroup } from "@/types/shared";
 import { cn } from "@/lib/utils";
 
-export interface BloodGroupBadgeProps
-  extends Omit<ComponentPropsWithoutRef<"span">, "children"> {
+export interface BloodGroupBadgeProps extends Omit<
+  ComponentPropsWithoutRef<"span">,
+  "children"
+> {
   bloodGroup: BloodGroup;
   /**
    * Size variant
@@ -54,7 +38,7 @@ export function BloodGroupBadge({
         // Size variant
         SIZE_CLASSES[size],
         // User overrides
-        className
+        className,
       )}
       {...props}
     >

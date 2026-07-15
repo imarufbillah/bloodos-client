@@ -1,8 +1,3 @@
-/**
- * Banned User Banner
- * Shows a prominent warning message when user is banned
- */
-
 "use client";
 
 import { useSession } from "@/lib/auth-client";

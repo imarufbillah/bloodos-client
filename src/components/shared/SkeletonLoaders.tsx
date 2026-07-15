@@ -1,23 +1,3 @@
-/**
- * SkeletonLoaders Component — Phase 7g
- * 
- * Shape-matched loading states for RequestCard and DonorCard.
- * Follows civic infrastructure aesthetic: no shimmer animation (prefers-reduced-motion),
- * hairline borders, muted gray blocks.
- * 
- * Requirements:
- * - Req 16.11: Loading states shown while data fetching
- * - Req 21.9: Skeleton cards for requests list
- * - Req 17.7: Skeleton cards for donors directory
- * - Phase 6a: Civic aesthetic (no flashy animations)
- * 
- * Design:
- * - Shape-matched to actual card geometry
- * - Muted gray blocks (no gradient shimmer)
- * - Respects prefers-reduced-motion
- * - Optional pulse animation for non-reduced-motion users
- */
-
 import { cn } from "@/lib/utils";
 
 // ============================================================================
@@ -38,11 +18,7 @@ interface SkeletonProps {
 export function Skeleton({ className, noPulse = false }: SkeletonProps) {
   return (
     <div
-      className={cn(
-        "rounded bg-muted",
-        !noPulse && "animate-pulse",
-        className
-      )}
+      className={cn("rounded bg-muted", !noPulse && "animate-pulse", className)}
       aria-hidden="true"
     />
   );
@@ -60,20 +36,6 @@ interface RequestCardSkeletonProps {
   className?: string;
 }
 
-/**
- * RequestCardSkeleton — Shape-matched to RequestCard (Phase 7c)
- * 
- * Structure mirrors:
- * - Kicker line (blood group + district)
- * - Urgency badge placeholder (top-right)
- * - Patient name (Fraunces heading size)
- * - Hospital info block
- * - Units needed line
- * - Needed by date line
- * - Description block (2 lines)
- * - Status badge
- * - Footer (timestamp + button)
- */
 export function RequestCardSkeleton({
   staggerIndex = 0,
   className,
@@ -82,7 +44,7 @@ export function RequestCardSkeleton({
     <div
       className={cn(
         "card-grid-item relative flex flex-col overflow-hidden rounded-lg border border-border bg-card",
-        className
+        className,
       )}
       style={{ "--stagger-index": staggerIndex } as React.CSSProperties}
       role="status"
@@ -167,18 +129,6 @@ interface DonorCardSkeletonProps {
   className?: string;
 }
 
-/**
- * DonorCardSkeleton — Shape-matched to DonorCard (Phase 7d)
- * 
- * Structure mirrors:
- * - Kicker line (blood group + district)
- * - Eligibility badge placeholder (top-right)
- * - Donor name (Fraunces heading size)
- * - Last donation line
- * - Eligibility message line
- * - Masked contact info (phone + email)
- * - Footer button
- */
 export function DonorCardSkeleton({
   staggerIndex = 0,
   className,
@@ -187,7 +137,7 @@ export function DonorCardSkeleton({
     <div
       className={cn(
         "card-grid-item relative flex flex-col overflow-hidden rounded-lg border border-border bg-card",
-        className
+        className,
       )}
       style={{ "--stagger-index": staggerIndex } as React.CSSProperties}
       role="status"
@@ -272,7 +222,7 @@ export function RequestsGridSkeleton({
     <div
       className={cn(
         "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4",
-        className
+        className,
       )}
       role="status"
       aria-label="Loading blood requests"
@@ -304,7 +254,7 @@ export function DonorsGridSkeleton({
     <div
       className={cn(
         "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4",
-        className
+        className,
       )}
       role="status"
       aria-label="Loading donors"
@@ -391,7 +341,11 @@ export function TableSkeleton({
  */
 export function RequestDetailSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("space-y-6", className)} role="status" aria-label="Loading request details">
+    <div
+      className={cn("space-y-6", className)}
+      role="status"
+      aria-label="Loading request details"
+    >
       {/* Header section */}
       <div className="space-y-3">
         <Skeleton className="h-8 w-2/3" />
@@ -441,7 +395,11 @@ export function RequestDetailSkeleton({ className }: { className?: string }) {
  */
 export function ProfileSectionSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("space-y-4", className)} role="status" aria-label="Loading profile section">
+    <div
+      className={cn("space-y-4", className)}
+      role="status"
+      aria-label="Loading profile section"
+    >
       {/* Section header */}
       <div className="flex items-center justify-between">
         <Skeleton className="h-6 w-48" />

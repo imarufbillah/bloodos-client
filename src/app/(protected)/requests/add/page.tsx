@@ -1,24 +1,3 @@
-/**
- * Create Blood Request Page
- * Phase 8h - /requests/add
- *
- * Functional requirements:
- * - Req 20.1: Blood request creation form
- * - Req 20.2: Auth required (protected route)
- * - Req 20.3: All fields from API contract
- * - Req 20.4: Zod validation mirrors backend
- * - Req 20.5: Submit to POST /api/requests
- * - Req 20.10: Success toast + redirect to /requests/manage
- *
- * Design direction (from unit 8h):
- * - Form for scared/hurried person filling out
- * - Logical field grouping (patient → medical → location → timing)
- * - No unnecessary steps
- * - Urgency selector uses the 6a pill language live as a preview
- * - Validation errors inline
- * - Image upload optional
- */
-
 import type { Metadata } from "next";
 import { AddRequestForm } from "@/components/forms/AddRequestForm";
 import { ArrowLeft } from "lucide-react";

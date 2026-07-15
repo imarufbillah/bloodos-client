@@ -17,11 +17,8 @@ import { toast } from "sonner";
 import { apiFetch } from "@/lib/api-client";
 import { useSession } from "@/lib/auth-client";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
 async function requestContactInfo(
-  donorId: string
+  donorId: string,
 ): Promise<{ phone: string; email?: string }> {
   const response = await apiFetch(`/api/donors/${donorId}/request-contact`, {
     method: "POST",
@@ -76,7 +73,7 @@ export default function DonorDirectoryContent({
 
       if (newFilters.bloodGroups.length) {
         newFilters.bloodGroups.forEach((bg) =>
-          queryParams.append("bloodGroup", bg)
+          queryParams.append("bloodGroup", bg),
         );
       }
       if (newFilters.districts.length) {
@@ -93,7 +90,7 @@ export default function DonorDirectoryContent({
         ? `/donors?${queryParams.toString()}`
         : "/donors";
     },
-    []
+    [],
   );
 
   // Handle filter changes - triggers server refetch via router.push
@@ -108,7 +105,7 @@ export default function DonorDirectoryContent({
     };
     setFilters(updatedFilters);
     setPage(1); // Reset to page 1 when filters change
-    
+
     // Navigate to new URL - triggers server refetch
     router.push(buildUrl(updatedFilters, 1));
   };
@@ -116,10 +113,10 @@ export default function DonorDirectoryContent({
   // Handle page change - triggers server refetch via router.push
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    
+
     // Navigate to new URL - triggers server refetch
     router.push(buildUrl(filters, newPage));
-    
+
     // Scroll to top of results
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -158,7 +155,7 @@ export default function DonorDirectoryContent({
       });
     } catch (err) {
       toast.error(
-        err instanceof Error ? err.message : "Failed to request contact"
+        err instanceof Error ? err.message : "Failed to request contact",
       );
     } finally {
       setRequestingContactFor(null);
@@ -232,10 +229,7 @@ export default function DonorDirectoryContent({
             {!filters.search &&
               !filters.bloodGroups.length &&
               !filters.districts.length && (
-                <Button
-                  onClick={() => router.push("/signup")}
-                  className="mt-4"
-                >
+                <Button onClick={() => router.push("/signup")} className="mt-4">
                   <UserPlus className="mr-2 h-4 w-4" />
                   Register as a Donor
                 </Button>

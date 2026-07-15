@@ -1,10 +1,3 @@
-/**
- * Loading UI for Admin Dashboard
- * 
- * Automatically displayed by Next.js while the server component
- * is fetching admin data.
- */
-
 import { Shield, BarChart3, Users } from "lucide-react";
 
 export default function Loading() {
@@ -29,7 +22,7 @@ export default function Loading() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tabs Skeleton */}
         <div className="space-y-6">
-          <div className="inline-flex w-fit items-center gap-1 rounded-lg bg-muted p-[3px] h-8">
+          <div className="inline-flex w-fit items-center gap-1 rounded-lg bg-muted p-0.75 h-8">
             <div className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-sm font-medium bg-background text-foreground shadow-sm">
               <BarChart3 className="h-4 w-4" />
               Overview

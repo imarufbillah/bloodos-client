@@ -4,17 +4,6 @@ import { Metadata } from "next";
 import { SignUpForm } from "@/components/forms/SignUpForm";
 import { redirect } from "next/navigation";
 
-/**
- * Phase 8m — Sign Up Page
- * Route: /signup
- * Per unit 8m decision: collects only email/password/name at registration.
- * Extended fields (phone, district, bloodGroup, isDonor, lastDonationDate)
- * per Req 1.8 are collected on /profile after first login (unit 8j).
- *
- * Design direction: Same minimal aesthetic as /signin — centered form,
- * max-width ~400px, Fraunces heading, Public Sans body.
- */
-
 export const metadata: Metadata = {
   title: "Sign Up | BloodOS",
   description: "Create your BloodOS account",
@@ -40,7 +29,7 @@ async function SignUpContent({ searchParams }: SignUpPageProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 pt-16 pb-20 md:pb-12">
-      <div className="w-full max-w-[400px] space-y-8">
+      <div className="w-full max-w-100 space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="font-heading text-3xl">Create your account</h1>

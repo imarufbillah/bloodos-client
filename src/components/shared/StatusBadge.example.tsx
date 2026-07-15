@@ -70,7 +70,8 @@ export function StatusBadgeExamples() {
           </div>
           <p className="text-xs text-muted-foreground">
             Note: StatusBadge never uses urgency colors (crimson/ochre). This
-            prevents confusion between "request status" and "urgency level."
+            prevents confusion between &quot;request status&quot; and
+            &quot;urgency level.&quot;
           </p>
         </div>
       </section>
@@ -212,11 +213,11 @@ export function StatusBadgeExamples() {
             <li>✓ Icon + Text (never color alone)</li>
             <li>✓ Plain text labels, not pills (distinct from UrgencyBadge)</li>
             <li>
-              ✓ Status meanings are clear from labels: "Open", "In Progress",
-              "Fulfilled", etc.
+              ✓ Status meanings are clear from labels: &quot;Open&quot;,
+              &quot;In Progress&quot;, &quot;Fulfilled&quot;, etc.
             </li>
             <li>
-              ✓ Color coding supports but doesn't replace semantic meaning
+              ✓ Color coding supports but doesn&apos;t replace semantic meaning
             </li>
           </ul>
         </div>

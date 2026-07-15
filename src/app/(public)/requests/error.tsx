@@ -26,7 +26,8 @@ export default function Error({ error, reset }: ErrorProps) {
             Failed to Load Requests
           </h2>
           <p className="text-muted-foreground mb-2 max-w-md">
-            {error.message || "An unexpected error occurred while loading blood requests"}
+            {error.message ||
+              "An unexpected error occurred while loading blood requests"}
           </p>
           {error.digest && (
             <p className="text-sm text-muted-foreground mb-6 font-mono">
@@ -37,7 +38,10 @@ export default function Error({ error, reset }: ErrorProps) {
             <Button onClick={() => reset()} variant="default">
               Try Again
             </Button>
-            <Button onClick={() => (window.location.href = "/")} variant="outline">
+            <Button
+              onClick={() => (window.location.href = "/")}
+              variant="outline"
+            >
               Go Home
             </Button>
           </div>

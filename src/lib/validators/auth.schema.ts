@@ -1,11 +1,5 @@
 import { z } from "zod";
 
-/**
- * Phase 8m — Auth validation schemas
- * These schemas validate sign-in and sign-up forms client-side.
- * Server-side validation is handled by better-auth.
- */
-
 export const signInSchema = z.object({
   email: z
     .string()
@@ -35,7 +29,7 @@ export const signUpSchema = z
       .max(128, "Password must not exceed 128 characters")
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number",
       ),
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })

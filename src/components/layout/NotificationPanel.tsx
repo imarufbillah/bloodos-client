@@ -41,7 +41,7 @@ interface NotificationPanelProps {
 export function NotificationPanel({ className }: NotificationPanelProps) {
   const { data: session } = useSession();
   const [notifications, setNotifications] = React.useState<NotificationDto[]>(
-    []
+    [],
   );
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -52,54 +52,59 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
   // Use useMemo to ensure unreadCount is always fresh and triggers re-render
   const unreadCount = React.useMemo(
     () => notifications.filter((n) => !n.isRead).length,
-    [notifications]
+    [notifications],
   );
 
   // Define fetchNotifications before useEffect
-  const fetchNotifications = React.useCallback(async (pageNum: number, silent: boolean = false) => {
-    if (!session?.user) return;
+  const fetchNotifications = React.useCallback(
+    async (pageNum: number, silent: boolean = false) => {
+      if (!session?.user) return;
 
-    setIsLoading(true);
-    try {
-      const response = await apiFetch(
-        `/api/notifications?page=${pageNum}&limit=${limit}`
-      );
+      setIsLoading(true);
+      try {
+        const response = await apiFetch(
+          `/api/notifications?page=${pageNum}&limit=${limit}`,
+        );
 
-      if (!response.ok) {
-        // Check if it's a ban/suspension error (redirect will happen in apiFetch)
-        const errorData = await response.json().catch(() => ({}));
-        const message = errorData.message || '';
-        
-        // Don't throw error if it's a suspension (redirect is handling it)
-        if (response.status === 401 && 
-            (message.includes('suspended') || message.includes('banned'))) {
-          // apiFetch will handle redirect to /suspended
-          return;
+        if (!response.ok) {
+          // Check if it's a ban/suspension error (redirect will happen in apiFetch)
+          const errorData = await response.json().catch(() => ({}));
+          const message = errorData.message || "";
+
+          // Don't throw error if it's a suspension (redirect is handling it)
+          if (
+            response.status === 401 &&
+            (message.includes("suspended") || message.includes("banned"))
+          ) {
+            // apiFetch will handle redirect to /suspended
+            return;
+          }
+
+          throw new Error("Failed to fetch notifications");
         }
-        
-        throw new Error("Failed to fetch notifications");
-      }
 
-      const data: PaginatedResponse<NotificationDto> = await response.json();
+        const data: PaginatedResponse<NotificationDto> = await response.json();
 
-      if (pageNum === 1) {
-        setNotifications(data.data);
-      } else {
-        setNotifications((prev) => [...prev, ...data.data]);
-      }
+        if (pageNum === 1) {
+          setNotifications(data.data);
+        } else {
+          setNotifications((prev) => [...prev, ...data.data]);
+        }
 
-      setHasMore(data.hasNextPage);
-      setPage(pageNum);
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-      if (!silent && isOpen) {
-        // Only show error toast if panel is open and not silent
-        toast.error("Failed to load notifications");
+        setHasMore(data.hasNextPage);
+        setPage(pageNum);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+        if (!silent && isOpen) {
+          // Only show error toast if panel is open and not silent
+          toast.error("Failed to load notifications");
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } finally {
-      setIsLoading(false);
-    }
-  }, [session?.user, limit, isOpen]);
+    },
+    [session?.user, limit, isOpen],
+  );
 
   // Fetch notifications immediately on mount and when user logs in
   React.useEffect(() => {
@@ -132,18 +137,23 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
 
     // Optimistic update: immediately update UI before API call
     setNotifications((prev) =>
-      prev.map((n) => (n._id === notificationId ? { ...n, isRead: true } : n))
+      prev.map((n) => (n._id === notificationId ? { ...n, isRead: true } : n)),
     );
 
     try {
-      const response = await apiFetch(`/api/notifications/${notificationId}/read`, {
-        method: "PATCH",
-      });
+      const response = await apiFetch(
+        `/api/notifications/${notificationId}/read`,
+        {
+          method: "PATCH",
+        },
+      );
 
       if (!response.ok) {
         // Revert optimistic update on failure
         setNotifications((prev) =>
-          prev.map((n) => (n._id === notificationId ? { ...n, isRead: false } : n))
+          prev.map((n) =>
+            n._id === notificationId ? { ...n, isRead: false } : n,
+          ),
         );
         throw new Error("Failed to mark notification as read");
       }
@@ -210,11 +220,7 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
           </Badge>
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="w-[360px] sm:w-[420px]"
-        sideOffset={8}
-      >
+      <DropdownMenuContent align="end" className="w-90 sm:w-105" sideOffset={8}>
         <DropdownMenuGroup>
           <DropdownMenuLabel className="flex items-center justify-between pb-2">
             <span className="font-semibold">Notifications</span>
@@ -232,7 +238,7 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
 
-        <ScrollArea className="h-[400px]">
+        <ScrollArea className="h-100">
           {isLoading && page === 1 ? (
             <div className="space-y-3 p-2">
               {Array.from({ length: 3 }).map((_, i) => (
@@ -299,7 +305,7 @@ function NotificationItem({
   const [isOptimisticallyRead, setIsOptimisticallyRead] = React.useState(false);
   const icon = getNotificationIcon(notification.type);
   const link = getNotificationLink(notification);
-  
+
   // Merge actual state with optimistic state
   const isRead = notification.isRead || isOptimisticallyRead;
 
@@ -312,7 +318,7 @@ function NotificationItem({
       onClose();
     }
   };
-  
+
   const handleMarkReadClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -342,7 +348,9 @@ function NotificationItem({
 
       {/* Content */}
       <div className="flex-1 space-y-1 overflow-hidden">
-        <p className="text-sm font-medium leading-tight">{notification.title}</p>
+        <p className="text-sm font-medium leading-tight">
+          {notification.title}
+        </p>
         <p className="line-clamp-2 text-xs text-muted-foreground">
           {notification.message}
         </p>

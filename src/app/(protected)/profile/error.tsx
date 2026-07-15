@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect } from "react";
@@ -44,7 +43,8 @@ export default function Error({ error, reset }: ErrorProps) {
             Failed to Load Profile
           </h2>
           <p className="text-muted-foreground mb-2 max-w-md">
-            {error.message || "An unexpected error occurred while loading your profile"}
+            {error.message ||
+              "An unexpected error occurred while loading your profile"}
           </p>
           {error.digest && (
             <p className="text-sm text-muted-foreground mb-6 font-mono">

@@ -1,11 +1,5 @@
-/**
- * Shared types, enums, and constants for BloodOS (Client)
- * Mirrored from bloodos-server/src/types/shared.ts
- * Keep in sync with backend types
- */
-
 // ============================================================================
-// Blood Group Enum (Req 7.5)
+// Blood Group Enum
 // ============================================================================
 
 export const BloodGroup = {
@@ -24,7 +18,7 @@ export type BloodGroup = (typeof BloodGroup)[keyof typeof BloodGroup];
 export const BLOOD_GROUPS = Object.values(BloodGroup);
 
 // ============================================================================
-// District Enum - All 64 Bangladesh Districts (Req 7.2)
+// District Enum - All 64 Bangladesh Districts
 // ============================================================================
 
 export const District = {
@@ -114,7 +108,7 @@ export type District = (typeof District)[keyof typeof District];
 export const DISTRICTS = Object.values(District);
 
 // ============================================================================
-// Request Status Enum (Req 3.1-3.9)
+// Request Status Enum
 // ============================================================================
 
 export const RequestStatus = {
@@ -144,7 +138,7 @@ export type Urgency = (typeof Urgency)[keyof typeof Urgency];
 export const URGENCIES = Object.values(Urgency);
 
 // ============================================================================
-// Response Status Enum (Req 6)
+// Response Status Enum
 // ============================================================================
 
 export const ResponseStatus = {
@@ -160,7 +154,7 @@ export type ResponseStatus =
 export const RESPONSE_STATUSES = Object.values(ResponseStatus);
 
 // ============================================================================
-// Notification Type Enum (Req 9.12)
+// Notification Type Enum
 // ============================================================================
 
 export const NotificationType = {
@@ -180,7 +174,7 @@ export type NotificationType =
 export const NOTIFICATION_TYPES = Object.values(NotificationType);
 
 // ============================================================================
-// User Role Enum (Req 1.8)
+// User Role Enum
 // ============================================================================
 
 export const UserRole = {
@@ -193,7 +187,7 @@ export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 export const USER_ROLES = Object.values(UserRole);
 
 // ============================================================================
-// Admin Action Type Enum (Req 10.1)
+// Admin Action Type Enum
 // ============================================================================
 
 export const AdminActionType = {
@@ -212,7 +206,7 @@ export type AdminActionType =
 export const ADMIN_ACTION_TYPES = Object.values(AdminActionType);
 
 // ============================================================================
-// Error Response Type (Req 11.1)
+// Error Response Type
 // ============================================================================
 
 export interface ErrorResponse {
@@ -222,7 +216,7 @@ export interface ErrorResponse {
 }
 
 // ============================================================================
-// Paginated Response Type (Req 12.1)
+// Paginated Response Type
 // ============================================================================
 
 export interface PaginatedResponse<T> {

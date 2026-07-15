@@ -1,9 +1,3 @@
-/**
- * Blood group constants for BloodOS
- * Mirrors bloodos-server/src/types/shared.ts BloodGroup enum
- * DO NOT modify independently - keep in sync with server
- */
-
 export const BloodGroup = {
   A_POSITIVE: "A+",
   A_NEGATIVE: "A-",

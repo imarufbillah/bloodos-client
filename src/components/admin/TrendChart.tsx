@@ -1,9 +1,3 @@
-/**
- * Request Trend Chart
- * LineChart showing 30-day request trend (Req 18.7)
- * Styled with BloodOS palette tokens
- */
-
 "use client";
 
 import {

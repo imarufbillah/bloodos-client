@@ -1,10 +1,3 @@
-/**
- * Server Actions for User Profile Mutations
- * 
- * These actions run on the server and provide better security,
- * automatic error handling, and cache invalidation.
- */
-
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -30,14 +23,17 @@ export async function updateUserProfile(data: {
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to update profile" };
+      return {
+        success: false,
+        error: error.message || "Failed to update profile",
+      };
     }
 
     const updatedUser = await response.json();
 
     // Invalidate profile page cache
     revalidatePath("/profile");
-    
+
     // If donor status changed, invalidate donors page
     if (data.isDonor !== undefined) {
       revalidatePath("/donors");
@@ -47,7 +43,8 @@ export async function updateUserProfile(data: {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to update profile",
+      error:
+        error instanceof Error ? error.message : "Failed to update profile",
     };
   }
 }
@@ -69,7 +66,10 @@ export async function reportDonation(data: {
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to report donation" };
+      return {
+        success: false,
+        error: error.message || "Failed to report donation",
+      };
     }
 
     const donation = await response.json();
@@ -81,7 +81,8 @@ export async function reportDonation(data: {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to report donation",
+      error:
+        error instanceof Error ? error.message : "Failed to report donation",
     };
   }
 }

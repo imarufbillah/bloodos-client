@@ -1,8 +1,3 @@
-/**
- * Banned User Guard
- * Redirects banned users to the suspended page when they try to access protected features
- */
-
 "use client";
 
 import { useEffect } from "react";

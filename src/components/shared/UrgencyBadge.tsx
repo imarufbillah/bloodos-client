@@ -1,27 +1,12 @@
-/**
- * UrgencyBadge — Filled/outlined pill for request urgency levels
- * Phase 7h — StatusBadge family
- *
- * Visual hierarchy (from 6a design direction):
- * - Critical: Filled crimson pill (oklch(0.51 0.19 25))
- * - Urgent: Filled ochre pill (oklch(0.68 0.14 70))
- * - Moderate: Outlined slate pill (oklch(0.55 0.02 260))
- *
- * Accessibility: Color + text + icon (never color alone)
- *
- * Usage:
- *   <UrgencyBadge urgency="critical" />
- *   <UrgencyBadge urgency="urgent" />
- *   <UrgencyBadge urgency="moderate" />
- */
-
 import { type ComponentPropsWithoutRef } from "react";
 import { Urgency, type Urgency as UrgencyType } from "@/types/shared";
 import { cn } from "@/lib/utils";
 import { AlertCircle, Clock, Info } from "lucide-react";
 
-export interface UrgencyBadgeProps
-  extends Omit<ComponentPropsWithoutRef<"span">, "children"> {
+export interface UrgencyBadgeProps extends Omit<
+  ComponentPropsWithoutRef<"span">,
+  "children"
+> {
   urgency: UrgencyType;
 }
 
@@ -29,8 +14,7 @@ const URGENCY_CONFIG = {
   [Urgency.CRITICAL]: {
     label: "Critical",
     icon: AlertCircle,
-    className:
-      "bg-crimson text-paper border-crimson font-semibold shadow-sm",
+    className: "bg-crimson text-paper border-crimson font-semibold shadow-sm",
   },
   [Urgency.URGENT]: {
     label: "Urgent",
@@ -40,8 +24,7 @@ const URGENCY_CONFIG = {
   [Urgency.MODERATE]: {
     label: "Moderate",
     icon: Info,
-    className:
-      "bg-transparent text-slate border-slate border font-medium",
+    className: "bg-transparent text-slate border-slate border font-medium",
   },
 } as const;
 
@@ -61,7 +44,7 @@ export function UrgencyBadge({
         // Urgency-specific styling
         config.className,
         // User overrides
-        className
+        className,
       )}
       {...props}
     >

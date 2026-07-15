@@ -22,7 +22,7 @@ export function isBannedError(error: any): boolean {
 
 /**
  * Handle API errors with automatic redirect for banned users
- * 
+ *
  * @param error - The error object from API call
  * @param customMessage - Optional custom error message
  * @returns true if error was handled, false otherwise
@@ -44,9 +44,7 @@ export function handleApiError(error: any, customMessage?: string): boolean {
 
   // Show generic error message
   const errorMessage =
-    customMessage ||
-    error?.message ||
-    "An error occurred. Please try again.";
+    customMessage || error?.message || "An error occurred. Please try again.";
 
   toast.error(errorMessage);
 

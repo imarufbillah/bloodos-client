@@ -1,10 +1,3 @@
-/**
- * Server Actions for Admin Operations
- * 
- * These actions run on the server with admin authentication
- * and provide automatic cache invalidation.
- */
-
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -19,12 +12,15 @@ export async function approveRequest(requestId: string) {
       `/api/admin/requests/${requestId}/approve`,
       {
         method: "PATCH",
-      }
+      },
     );
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to approve request" };
+      return {
+        success: false,
+        error: error.message || "Failed to approve request",
+      };
     }
 
     const data = await response.json();
@@ -38,7 +34,8 @@ export async function approveRequest(requestId: string) {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to approve request",
+      error:
+        error instanceof Error ? error.message : "Failed to approve request",
     };
   }
 }
@@ -48,17 +45,17 @@ export async function approveRequest(requestId: string) {
  */
 export async function rejectRequest(requestId: string, reason?: string) {
   try {
-    const response = await apiFetch(
-      `/api/admin/requests/${requestId}/reject`,
-      {
-        method: "PATCH",
-        body: JSON.stringify({ reason }),
-      }
-    );
+    const response = await apiFetch(`/api/admin/requests/${requestId}/reject`, {
+      method: "PATCH",
+      body: JSON.stringify({ reason }),
+    });
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to reject request" };
+      return {
+        success: false,
+        error: error.message || "Failed to reject request",
+      };
     }
 
     const data = await response.json();
@@ -71,7 +68,8 @@ export async function rejectRequest(requestId: string, reason?: string) {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to reject request",
+      error:
+        error instanceof Error ? error.message : "Failed to reject request",
     };
   }
 }
@@ -85,12 +83,15 @@ export async function verifyDonation(donationId: string) {
       `/api/admin/donations/${donationId}/verify`,
       {
         method: "PATCH",
-      }
+      },
     );
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to verify donation" };
+      return {
+        success: false,
+        error: error.message || "Failed to verify donation",
+      };
     }
 
     const data = await response.json();
@@ -103,7 +104,8 @@ export async function verifyDonation(donationId: string) {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to verify donation",
+      error:
+        error instanceof Error ? error.message : "Failed to verify donation",
     };
   }
 }
@@ -177,7 +179,10 @@ export async function changeUserRole(userId: string, role: "user" | "admin") {
 
     if (!response.ok) {
       const error = await response.json();
-      return { success: false, error: error.message || "Failed to change user role" };
+      return {
+        success: false,
+        error: error.message || "Failed to change user role",
+      };
     }
 
     const data = await response.json();
@@ -189,7 +194,8 @@ export async function changeUserRole(userId: string, role: "user" | "admin") {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to change user role",
+      error:
+        error instanceof Error ? error.message : "Failed to change user role",
     };
   }
 }

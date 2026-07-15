@@ -1,10 +1,10 @@
-/**
- * Admin Dashboard Stats Cards
- * Displays key metrics: totalRequests, activeRequests, fulfilledRequests, 
- * totalDonors, donationsThisMonth (Req 18.8)
- */
-
-import { TrendingUp, Users, Droplet, CheckCircle, Activity } from "lucide-react";
+import {
+  TrendingUp,
+  Users,
+  Droplet,
+  CheckCircle,
+  Activity,
+} from "lucide-react";
 import type { AdminStats } from "@/lib/api/admin";
 
 interface StatsCardsProps {

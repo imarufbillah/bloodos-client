@@ -1,10 +1,3 @@
-/**
- * Loading UI for Donor Directory Page
- * 
- * Automatically displayed by Next.js while the server component
- * is fetching data or during route transitions.
- */
-
 import { DonorsGridSkeleton } from "@/components/shared/SkeletonLoaders";
 
 export default function Loading() {
@@ -29,7 +22,7 @@ export default function Loading() {
           <div className="flex flex-wrap gap-3">
             <div className="h-10 w-40 bg-muted animate-pulse rounded-lg" />
             <div className="h-10 w-40 bg-muted animate-pulse rounded-lg" />
-            <div className="h-10 flex-1 min-w-[200px] bg-muted animate-pulse rounded-lg" />
+            <div className="h-10 flex-1 min-w-50 bg-muted animate-pulse rounded-lg" />
           </div>
         </div>
       </section>

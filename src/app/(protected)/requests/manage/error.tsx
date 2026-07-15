@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect } from "react";
@@ -47,7 +46,8 @@ export default function Error({ error, reset }: ErrorProps) {
             Failed to Load Your Requests
           </h2>
           <p className="text-muted-foreground mb-2 max-w-md">
-            {error.message || "An unexpected error occurred while loading your blood requests"}
+            {error.message ||
+              "An unexpected error occurred while loading your blood requests"}
           </p>
           {error.digest && (
             <p className="text-sm text-muted-foreground mb-6 font-mono">

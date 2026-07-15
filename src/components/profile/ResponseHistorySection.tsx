@@ -1,21 +1,5 @@
 "use client";
 
-/**
- * ResponseHistorySection - User's donor responses to blood requests
- * Phase 8j - User Profile page
- *
- * Design direction:
- * - Shows responses user has made as a donor
- * - Includes parent request context (patient name, hospital, status)
- * - Response status badges (offered, accepted, declined, completed)
- * - Links to original request for details
- *
- * Functional requirements:
- * - Req 13.10: GET /api/users/me/responses (inferred from plan §0.E)
- * - Returns response history with parent request summary
- * - Reverse chronological order
- */
-
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
@@ -83,7 +67,9 @@ function getResponseStatusDisplay(status: string): {
   }
 }
 
-export function ResponseHistorySection({ userId }: ResponseHistorySectionProps) {
+export function ResponseHistorySection({
+  userId,
+}: ResponseHistorySectionProps) {
   const router = useRouter();
   const [responses, setResponses] = useState<UserResponseHistoryDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -106,7 +92,7 @@ export function ResponseHistorySection({ userId }: ResponseHistorySectionProps) 
         setResponses(data.data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to load responses"
+          err instanceof Error ? err.message : "Failed to load responses",
         );
       } finally {
         setIsLoading(false);
@@ -154,7 +140,7 @@ export function ResponseHistorySection({ userId }: ResponseHistorySectionProps) 
             No Responses Yet
           </h3>
           <p className="text-sm text-muted-foreground mb-4">
-            You haven't responded to any blood requests yet
+            You haven&apos;t responded to any blood requests yet
           </p>
           <Button
             variant="outline"

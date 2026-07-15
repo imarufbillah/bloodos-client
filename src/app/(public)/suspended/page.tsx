@@ -1,11 +1,3 @@
-/**
- * Account Suspended Page
- * Shown when a banned user tries to access protected features
- * 
- * Note: This page is reached via redirect when API calls return 401 with suspension message.
- * We don't rely on client-side session data because it may be stale.
- */
-
 "use client";
 
 import { Suspense } from "react";
@@ -47,9 +39,7 @@ function SuspendedContent() {
 
         {/* What This Means */}
         <div className="bg-paper border border-slate rounded-lg p-6 mb-6">
-          <h2 className="font-semibold text-ink mb-3">
-            What does this mean?
-          </h2>
+          <h2 className="font-semibold text-ink mb-3">What does this mean?</h2>
           <p className="text-sm text-muted-foreground mb-3">
             While your account is suspended, you cannot:
           </p>
@@ -60,7 +50,7 @@ function SuspendedContent() {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-destructive mt-0.5">•</span>
-              <span>Respond to blood requests ("I Can Help")</span>
+              <span>Respond to blood requests (&quot;I Can Help&quot;)</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-destructive mt-0.5">•</span>
@@ -108,17 +98,11 @@ function SuspendedContent() {
         <div className="text-center">
           <p className="text-xs text-muted-foreground">
             For more information, please review our{" "}
-            <a
-              href="/about"
-              className="text-teal hover:underline"
-            >
+            <a href="/about" className="text-teal hover:underline">
               community guidelines
             </a>{" "}
             and{" "}
-            <a
-              href="/privacy"
-              className="text-teal hover:underline"
-            >
+            <a href="/privacy" className="text-teal hover:underline">
               terms of service
             </a>
             .

@@ -3,12 +3,7 @@
  * Based on Requirements 20 and 7
  */
 
-import type {
-  BloodGroup,
-  District,
-  Urgency,
-  RequestStatus,
-} from "../shared";
+import type { BloodGroup, District, Urgency, RequestStatus } from "../shared";
 
 // ============================================================================
 // Create Blood Request (Req 20.3)

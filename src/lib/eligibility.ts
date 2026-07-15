@@ -1,9 +1,3 @@
-/**
- * Client-side eligibility calculation utilities
- * Mirrors server-side logic from bloodos-server/src/services/eligibility.service.ts
- * For displaying donor eligibility status without server round-trip (Req 17.9)
- */
-
 import type { BloodGroup } from "@/types/shared";
 import { BLOOD_COMPATIBILITY } from "./constants/compatibility";
 
@@ -30,7 +24,7 @@ export interface EligibilityResult {
  * Returns 0 if no donation date provided
  */
 export function calculateDaysSinceLastDonation(
-  lastDonationDate: string | Date | null
+  lastDonationDate: string | Date | null,
 ): number {
   if (!lastDonationDate) {
     return 0;
@@ -52,7 +46,7 @@ export function calculateDaysSinceLastDonation(
  * Returns 0 if already eligible or no donation history
  */
 export function calculateCooldownDaysRemaining(
-  lastDonationDate: string | Date | null
+  lastDonationDate: string | Date | null,
 ): number {
   if (!lastDonationDate) {
     return 0;
@@ -70,7 +64,7 @@ export function calculateCooldownDaysRemaining(
  */
 export function isBloodTypeCompatible(
   donorBloodGroup: BloodGroup,
-  requestedBloodGroup: BloodGroup
+  requestedBloodGroup: BloodGroup,
 ): boolean {
   const compatibleDonors = BLOOD_COMPATIBILITY[requestedBloodGroup];
   return compatibleDonors.includes(donorBloodGroup);
@@ -82,7 +76,7 @@ export function isBloodTypeCompatible(
  * Checks: cooldown period only (age/weight not available in donor profile)
  */
 export function evaluateDonorEligibility(
-  lastDonationDate: string | Date | null
+  lastDonationDate: string | Date | null,
 ): EligibilityResult {
   // No donation history
   if (!lastDonationDate) {
@@ -120,7 +114,7 @@ export function evaluateDonorEligibility(
 export function evaluateEligibilityForRequest(
   donorBloodGroup: BloodGroup,
   lastDonationDate: string | Date | null,
-  requestedBloodGroup: BloodGroup
+  requestedBloodGroup: BloodGroup,
 ): EligibilityResult {
   // First check cooldown
   const daysRemaining = calculateCooldownDaysRemaining(lastDonationDate);

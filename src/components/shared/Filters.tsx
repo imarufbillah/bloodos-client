@@ -14,22 +14,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BLOOD_GROUPS, type BloodGroup } from "@/lib/constants/bloodGroups";
-import { DISTRICTS_BY_DIVISION, type District } from "@/lib/constants/districts";
-
-/**
- * Filters Component — Phase 7e
- * 
- * Unified filter component for both /requests and /donors directory pages.
- * - Configurable field set: bloodGroup, urgency, district, search, sort
- * - Styled to BloodOS theme (shadcn dropdowns, debounced search input)
- * - Matches civic infrastructure aesthetic (no over-styled chips)
- * 
- * Requirements:
- * - Req 21.4-21.6: /requests filters (blood/urgency/district/search/sort)
- * - Req 17.6: /donors filters (blood/district)
- * - Req 21.5: 300ms search debounce
- * - Req 16.14: Debounce visible in UI (pending state)
- */
+import {
+  DISTRICTS_BY_DIVISION,
+  type District,
+} from "@/lib/constants/districts";
 
 // Urgency levels per Req 3
 export type Urgency = "critical" | "urgent" | "moderate";
@@ -140,7 +128,7 @@ export function Filters({
     <div
       className={cn(
         "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
-        className
+        className,
       )}
     >
       {/* Left side: filter dropdowns + search */}
@@ -153,7 +141,7 @@ export function Filters({
                 "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-input bg-background px-3 text-xs font-medium shadow-sm transition-colors",
                 "hover:bg-accent hover:text-accent-foreground",
                 "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                "disabled:pointer-events-none disabled:opacity-50"
+                "disabled:pointer-events-none disabled:opacity-50",
               )}
             >
               <span className="font-mono text-xs">
@@ -199,7 +187,7 @@ export function Filters({
                 "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-input bg-background px-3 text-xs font-medium shadow-sm transition-colors",
                 "hover:bg-accent hover:text-accent-foreground",
                 "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                "disabled:pointer-events-none disabled:opacity-50"
+                "disabled:pointer-events-none disabled:opacity-50",
               )}
             >
               <span className="text-xs">
@@ -245,7 +233,7 @@ export function Filters({
                 "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-input bg-background px-3 text-xs font-medium shadow-sm transition-colors",
                 "hover:bg-accent hover:text-accent-foreground",
                 "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                "disabled:pointer-events-none disabled:opacity-50"
+                "disabled:pointer-events-none disabled:opacity-50",
               )}
             >
               <span className="text-xs">
@@ -255,39 +243,48 @@ export function Filters({
               </span>
               <ChevronDownIcon className="size-3.5 text-muted-foreground" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 max-h-96 overflow-y-auto">
+            <DropdownMenuContent
+              align="start"
+              className="w-56 max-h-96 overflow-y-auto"
+            >
               <DropdownMenuGroup>
                 <DropdownMenuLabel className="text-muted-foreground">
                   Select Districts
                 </DropdownMenuLabel>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              {Object.entries(DISTRICTS_BY_DIVISION).map(([division, districts]) => (
-                <div key={division}>
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel className="text-xs font-semibold text-foreground mt-1">
-                      {division}
-                    </DropdownMenuLabel>
-                  </DropdownMenuGroup>
-                  {districts.map((district) => (
-                    <DropdownMenuCheckboxItem
-                      key={district}
-                      checked={value.districts?.includes(district as District)}
-                      onCheckedChange={(checked) => {
-                        const current = value.districts ?? [];
-                        onChange({
-                          ...value,
-                          districts: checked
-                            ? [...current, district as District]
-                            : current.filter((d) => d !== district),
-                        });
-                      }}
-                    >
-                      <span className="text-sm text-muted-foreground">{district}</span>
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </div>
-              ))}
+              {Object.entries(DISTRICTS_BY_DIVISION).map(
+                ([division, districts]) => (
+                  <div key={division}>
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel className="text-xs font-semibold text-foreground mt-1">
+                        {division}
+                      </DropdownMenuLabel>
+                    </DropdownMenuGroup>
+                    {districts.map((district) => (
+                      <DropdownMenuCheckboxItem
+                        key={district}
+                        checked={value.districts?.includes(
+                          district as District,
+                        )}
+                        onCheckedChange={(checked) => {
+                          const current = value.districts ?? [];
+                          onChange({
+                            ...value,
+                            districts: checked
+                              ? [...current, district as District]
+                              : current.filter((d) => d !== district),
+                          });
+                        }}
+                      >
+                        <span className="text-sm text-muted-foreground">
+                          {district}
+                        </span>
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </div>
+                ),
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         )}
@@ -306,7 +303,7 @@ export function Filters({
                 "placeholder:text-muted-foreground",
                 "focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring",
                 "transition-all",
-                isSearchPending && "border-ochre ring-1 ring-ochre/20"
+                isSearchPending && "border-ochre ring-1 ring-ochre/20",
               )}
             />
             {searchInput && (
@@ -343,7 +340,7 @@ export function Filters({
               "inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-input bg-background px-3 text-xs font-medium shadow-sm transition-colors",
               "hover:bg-accent hover:text-accent-foreground",
               "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-              "disabled:pointer-events-none disabled:opacity-50"
+              "disabled:pointer-events-none disabled:opacity-50",
             )}
           >
             <span className="text-xs">
