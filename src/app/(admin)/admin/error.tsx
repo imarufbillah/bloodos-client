@@ -1,11 +1,3 @@
-/**
- * Error UI for Admin Dashboard
- * 
- * Automatically displayed by Next.js when an error occurs
- * during server-side admin data fetching.
- * 
- * Must be a Client Component.
- */
 
 "use client";
 

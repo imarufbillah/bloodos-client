@@ -1,27 +1,5 @@
 "use client";
 
-/**
- * AddRequestForm - Blood request creation form
- * Phase 8h - Create Request page
- *
- * Design direction (from unit 8h):
- * - Logical field grouping: patient → medical → location → timing
- * - No unnecessary steps
- * - Urgency selector uses the 6a pill language live as a preview
- * - Inline validation errors
- * - Form uses the same input styling as other forms for consistency
- *
- * Functional requirements:
- * - Req 20.3: All required fields per API contract
- * - Req 20.4: Zod validation mirrors backend validator
- * - Req 20.5: Submit to POST /api/requests
- * - Req 20.10: Success toast + redirect to /requests/manage
- * 
- * Phase 8n integration:
- * - Check if user has completed profile (district, bloodGroup, phone)
- * - Redirect to /onboarding if incomplete
- */
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";

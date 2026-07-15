@@ -1,22 +1,5 @@
 "use client";
 
-/**
- * ProfileEditForm - Inline profile editing component
- * Phase 8j - User Profile page
- *
- * Design direction (from unit 8j):
- * - Inline edit rather than a separate edit page (Req 13.4)
- * - Uses the same input styling as AddRequestForm for consistency
- * - Edit mode toggle for each editable field
- * - Clear save/cancel actions
- *
- * Functional requirements:
- * - Req 13.4: Inline editing of personal info
- * - Req 13.5: PATCH /api/users/me with whitelisted fields
- * - Never allows updating 'role' field (Req 1.10)
- * - Zod validation mirrors backend
- */
-
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";

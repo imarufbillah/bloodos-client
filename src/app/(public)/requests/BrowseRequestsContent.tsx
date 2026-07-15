@@ -1,16 +1,3 @@
-/**
- * Browse Requests Content Component (Refactored for Server Components)
- * 
- * Client component that receives server-fetched initial data and handles
- * interactive filtering via URL updates.
- * 
- * Improvements:
- * - Receives initialData from server component
- * - Uses router.push for client-side filtering (triggers server refetch)
- * - No client-side data fetching in useEffect
- * - Optimistic UI updates with initialData
- */
-
 "use client";
 
 import * as React from "react";
@@ -40,9 +27,6 @@ type BrowseRequestsContentProps = {
   initialPage: number;
 };
 
-/**
- * Browse Requests Content Component
- */
 export default function BrowseRequestsContent({
   initialData,
   initialFilters,

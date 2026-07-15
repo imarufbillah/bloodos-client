@@ -1,12 +1,3 @@
-/**
- * Request Details Content Component
- *
- * Client component for interactive features:
- * - "I Can Help" button with auth check
- * - Response submission
- * - Related requests grid
- */
-
 "use client";
 
 import * as React from "react";
@@ -108,8 +99,7 @@ export default function RequestDetailsContent({
   const [isCheckingDonor, setIsCheckingDonor] = React.useState(true);
 
   const isCritical = request.urgency === Urgency.CRITICAL;
-  
-  // Memoize date calculations to avoid new Date() on every render
+
   const { neededByDate, createdAt, isExpiringSoon } = React.useMemo(() => {
     const needed = new Date(request.neededByDate);
     const created = new Date(request.createdAt);
@@ -118,11 +108,9 @@ export default function RequestDetailsContent({
     return { neededByDate: needed, createdAt: created, isExpiringSoon: expiringSoon };
   }, [request.neededByDate, request.createdAt]);
 
-  // Check if current user is the request owner
   const isOwner = session?.user?.id === request.userId;
   const isAuthenticated = !!session?.user;
 
-  // Fetch current user's donor status from API
   React.useEffect(() => {
     const checkDonorStatus = async () => {
       if (!isAuthenticated) {
@@ -148,7 +136,6 @@ export default function RequestDetailsContent({
     checkDonorStatus();
   }, [isAuthenticated]);
 
-  // Fetch related requests
   React.useEffect(() => {
     const loadRelated = async () => {
       setIsLoadingRelated(true);
@@ -160,7 +147,6 @@ export default function RequestDetailsContent({
     loadRelated();
   }, [request._id]);
 
-  // Handle "I Can Help" button click
   const handleHelp = async () => {
     if (!isAuthenticated) {
       toast.error("Please sign in to respond to requests");

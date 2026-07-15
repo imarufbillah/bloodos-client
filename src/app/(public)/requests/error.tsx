@@ -1,15 +1,5 @@
-/**
- * Error UI for Browse Requests Page
- * 
- * Automatically displayed by Next.js when an error occurs
- * during server-side data fetching or rendering.
- * 
- * Must be a Client Component.
- */
-
 "use client";
 
-import { useEffect } from "react";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -19,14 +9,8 @@ type ErrorProps = {
 };
 
 export default function Error({ error, reset }: ErrorProps) {
-  useEffect(() => {
-    // Log error to error reporting service
-    console.error("Browse Requests Error:", error);
-  }, [error]);
-
   return (
     <div className="min-h-screen bg-background">
-      {/* Page Header */}
       <section className="border-b border-border bg-card">
         <div className="container mx-auto max-w-7xl px-4 py-8">
           <h1 className="font-heading text-3xl font-semibold text-foreground">
@@ -35,7 +19,6 @@ export default function Error({ error, reset }: ErrorProps) {
         </div>
       </section>
 
-      {/* Error Content */}
       <section className="container mx-auto max-w-7xl px-4 py-16">
         <div className="flex flex-col items-center justify-center text-center">
           <AlertCircle className="h-16 w-16 text-destructive mb-6" />

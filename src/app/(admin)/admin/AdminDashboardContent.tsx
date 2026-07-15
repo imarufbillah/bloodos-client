@@ -1,10 +1,3 @@
-/**
- * Admin Dashboard Content Component (Client Component)
- * 
- * Receives server-fetched initial data and handles interactive features like
- * tab switching, refresh actions, and moderation actions.
- */
-
 "use client";
 
 import { useState } from "react";

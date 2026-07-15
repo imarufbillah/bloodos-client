@@ -1,16 +1,3 @@
-/**
- * Donor Directory Content Component (Refactored for Server Components)
- * 
- * Client component that receives server-fetched initial data and handles
- * interactive filtering and contact requests.
- * 
- * Improvements:
- * - Receives initialData from server component
- * - Uses router.push for client-side filtering (triggers server refetch)
- * - No client-side data fetching in useEffect
- * - Optimistic UI updates with initialData
- */
-
 "use client";
 
 import * as React from "react";

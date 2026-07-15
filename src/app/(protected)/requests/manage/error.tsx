@@ -1,11 +1,3 @@
-/**
- * Error UI for Manage Requests Page
- * 
- * Automatically displayed by Next.js when an error occurs
- * during server-side data fetching or rendering.
- * 
- * Must be a Client Component.
- */
 
 "use client";
 

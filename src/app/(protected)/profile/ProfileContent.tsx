@@ -1,10 +1,3 @@
-/**
- * Profile Content Component (Client Component)
- * 
- * Receives server-fetched user data and renders the profile sections.
- * Handles client-side interactions like form submissions and updates.
- */
-
 "use client";
 
 import { useState } from "react";

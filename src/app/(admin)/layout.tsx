@@ -1,12 +1,5 @@
 "use client";
 
-/**
- * Admin-only routes layout
- * Ensures user has admin role before accessing admin pages (Req 18.2)
- * Redirects non-admin users to home
- * Includes Navbar and Footer for admin pages
- */
-
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
