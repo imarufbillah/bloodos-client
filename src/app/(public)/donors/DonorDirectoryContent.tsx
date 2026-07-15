@@ -27,25 +27,17 @@ import type {
 import { SearchX, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client";
+import { apiFetch } from "@/lib/api-client";
+import { useSession } from "@/lib/auth-client";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-/**
- * Request contact information for a donor (Req 17.12)
- */
 async function requestContactInfo(
-  donorId: string,
-  sessionToken?: string
+  donorId: string
 ): Promise<{ phone: string; email?: string }> {
-  const url = `${API_BASE_URL}/api/donors/${donorId}/request-contact`;
-  const response = await fetch(url, {
+  const response = await apiFetch(`/api/donors/${donorId}/request-contact`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(sessionToken && { Authorization: `Bearer ${sessionToken}` }),
-    },
   });
 
   if (!response.ok) {
@@ -87,7 +79,7 @@ export default function DonorDirectoryContent({
   >(null);
 
   // Get current session
-  const { data: session } = authClient.useSession();
+  const { data: session } = useSession();
 
   // Build URL from current filters and page
   const buildUrl = React.useCallback(
@@ -171,7 +163,7 @@ export default function DonorDirectoryContent({
 
     try {
       // Request contact info (Req 17.12)
-      await requestContactInfo(donorId, session.session.token);
+      await requestContactInfo(donorId);
 
       // Success toast (Req 17.13)
       toast.success("Contact information sent to your notifications", {
