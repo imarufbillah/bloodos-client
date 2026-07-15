@@ -23,7 +23,6 @@ import {
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { BloodGroupBadge } from "@/components/shared/BloodGroupBadge";
 import { Pagination } from "@/components/shared/Pagination";
-import { cn } from "@/lib/utils";
 import type {
   BloodRequest,
   PaginatedResponse,
@@ -33,45 +32,37 @@ import { apiFetch } from "@/lib/api-client";
 
 /**
  * ManageRequestsContent — Client component for managing user's blood requests
+ * (Refactored for Server Components)
  *
- * Features:
- * - Fetches user's requests from GET /api/requests/mine
- * - Table view with Patient, Blood Group, Status, Date, Actions columns
- * - Actions: View Details, Mark Fulfilled, Cancel, Delete
- * - Delete requires confirmation dialog
- * - Status transitions via PATCH /api/requests/:id/status
- * - Pagination for > 10 requests
- * - Empty, loading, and error states
- *
- * Design:
- * - Table layout (not card grid)
- * - Monospace for dates and IDs
- * - Compact spacing per civic infrastructure aesthetic
+ * Improvements:
+ * - Receives initialData from server component
+ * - Uses router.push for pagination (triggers server refetch)
+ * - No initial data fetching in useEffect
+ * - Optimistic UI updates with initialData
  */
 
-interface ManageRequestsState {
-  requests: BloodRequest[];
-  pagination: Omit<PaginatedResponse<BloodRequest>, "data">;
-  isLoading: boolean;
-  error: string | null;
-}
+type ManageRequestsContentProps = {
+  initialData: PaginatedResponse<BloodRequest>;
+  initialPage: number;
+};
 
-export function ManageRequestsContent() {
+export function ManageRequestsContent({
+  initialData,
+  initialPage,
+}: ManageRequestsContentProps) {
   const router = useRouter();
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [state, setState] = React.useState<ManageRequestsState>({
-    requests: [],
-    pagination: {
-      page: 1,
-      limit: 10,
-      totalPages: 1,
-      totalCount: 0,
-      hasNextPage: false,
-      hasPrevPage: false,
-    },
-    isLoading: true,
-    error: null,
-  });
+  const [currentPage, setCurrentPage] = React.useState(initialPage);
+  
+  // Use server data directly
+  const requests = initialData.data;
+  const pagination = {
+    page: initialData.page,
+    limit: initialData.limit,
+    totalPages: initialData.totalPages,
+    totalCount: initialData.totalCount,
+    hasNextPage: initialData.hasNextPage,
+    hasPrevPage: initialData.hasPrevPage,
+  };
 
   // Delete confirmation dialog state
   const [deleteDialog, setDeleteDialog] = React.useState<{
@@ -89,54 +80,10 @@ export function ManageRequestsContent() {
     null
   );
 
-  // Fetch requests
-  const fetchRequests = React.useCallback(async (page: number) => {
-    setState((prev) => ({ ...prev, isLoading: true, error: null }));
-
-    try {
-      const response = await apiFetch(
-        `/api/requests/mine?page=${page}&limit=10`
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch requests");
-      }
-
-      const data: PaginatedResponse<BloodRequest> = await response.json();
-
-      setState({
-        requests: data.data,
-        pagination: {
-          page: data.page,
-          limit: data.limit,
-          totalPages: data.totalPages,
-          totalCount: data.totalCount,
-          hasNextPage: data.hasNextPage,
-          hasPrevPage: data.hasPrevPage,
-        },
-        isLoading: false,
-        error: null,
-      });
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to load requests",
-      }));
-    }
-  }, []);
-
-  // Load requests on mount and page change
-  React.useEffect(() => {
-    fetchRequests(currentPage);
-  }, [currentPage, fetchRequests]);
-
-  // Handle page change
+  // Handle page change - triggers server refetch via router.push
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    router.push(`/requests/manage?page=${page}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -162,8 +109,8 @@ export function ManageRequestsContent() {
         `Request ${newStatus === "fulfilled" ? "marked as fulfilled" : "cancelled"} successfully`
       );
 
-      // Refresh the list
-      fetchRequests(currentPage);
+      // Refresh the page to get updated data from server
+      router.refresh();
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to update status"
@@ -194,15 +141,12 @@ export function ManageRequestsContent() {
       // Close dialog
       setDeleteDialog({ isOpen: false, requestId: null, patientName: null });
 
-      // Refresh the list
       // If we're on a page > 1 and this was the last item, go to previous page
-      if (
-        state.requests.length === 1 &&
-        currentPage > 1
-      ) {
-        setCurrentPage(currentPage - 1);
+      if (requests.length === 1 && currentPage > 1) {
+        router.push(`/requests/manage?page=${currentPage - 1}`);
       } else {
-        fetchRequests(currentPage);
+        // Refresh the page to get updated data from server
+        router.refresh();
       }
     } catch (error) {
       toast.error(
@@ -227,80 +171,8 @@ export function ManageRequestsContent() {
     setDeleteDialog({ isOpen: false, requestId: null, patientName: null });
   };
 
-  // Loading state
-  if (state.isLoading && state.requests.length === 0) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="border-b border-border bg-card">
-          <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold">Manage Requests</h1>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  View and manage your blood donation requests
-                </p>
-              </div>
-              <Button onClick={() => router.push("/requests/add")}>
-                <Plus className="mr-2 h-4 w-4" />
-                New Request
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-              <p className="mt-4 text-sm text-muted-foreground">
-                Loading requests...
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (state.error && state.requests.length === 0) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="border-b border-border bg-card">
-          <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold">Manage Requests</h1>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  View and manage your blood donation requests
-                </p>
-              </div>
-              <Button onClick={() => router.push("/requests/add")}>
-                <Plus className="mr-2 h-4 w-4" />
-                New Request
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
-            <h2 className="text-xl font-semibold mb-2">
-              Failed to Load Requests
-            </h2>
-            <p className="text-muted-foreground mb-4">{state.error}</p>
-            <Button onClick={() => fetchRequests(currentPage)}>
-              Try Again
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Empty state
-  if (!state.isLoading && state.requests.length === 0) {
+  if (requests.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <div className="border-b border-border bg-card">
@@ -388,7 +260,7 @@ export function ManageRequestsContent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {state.requests.map((request) => {
+                {requests.map((request) => {
                   const isActionLoading = actionLoading === request._id;
                   // Can only fulfill from in_progress status (state machine rule)
                   const canFulfill = request.status === "in_progress";
@@ -502,7 +374,7 @@ export function ManageRequestsContent() {
 
           {/* Mobile cards */}
           <div className="md:hidden divide-y divide-border">
-            {state.requests.map((request) => {
+            {requests.map((request) => {
               const isActionLoading = actionLoading === request._id;
               // Can only fulfill from in_progress status (state machine rule)
               const canFulfill = request.status === "in_progress";
@@ -599,10 +471,10 @@ export function ManageRequestsContent() {
         </div>
 
         {/* Pagination */}
-        {state.pagination.totalPages > 1 && (
+        {pagination.totalPages > 1 && (
           <div className="mt-6">
             <Pagination
-              metadata={state.pagination}
+              metadata={pagination}
               onPageChange={handlePageChange}
             />
           </div>

@@ -1,70 +1,36 @@
 /**
- * Donor Directory Content Component
+ * Donor Directory Content Component (Refactored for Server Components)
  * 
- * Main content component for donor directory page.
- * Separated from page.tsx to handle Suspense boundary for useSearchParams.
+ * Client component that receives server-fetched initial data and handles
+ * interactive filtering and contact requests.
+ * 
+ * Improvements:
+ * - Receives initialData from server component
+ * - Uses router.push for client-side filtering (triggers server refetch)
+ * - No client-side data fetching in useEffect
+ * - Optimistic UI updates with initialData
  */
 
 "use client";
 
 import * as React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { DonorCard } from "@/components/donors/DonorCard";
 import { Filters } from "@/components/shared/Filters";
 import { Pagination } from "@/components/shared/Pagination";
-import { DonorsGridSkeleton } from "@/components/shared/SkeletonLoaders";
 import type {
   Donor,
   PaginatedResponse,
   BloodGroup,
   District,
 } from "@/types/shared";
-import { AlertCircle, SearchX, UserPlus } from "lucide-react";
+import { SearchX, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
-/**
- * API endpoint for fetching donors
- * TODO: Replace with actual backend URL from env
- */
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
-/**
- * Fetch donors from backend with query params
- */
-async function fetchDonors(params: {
-  bloodGroups?: BloodGroup[];
-  districts?: District[];
-  search?: string;
-  page?: number;
-  limit?: number;
-}): Promise<PaginatedResponse<Donor>> {
-  const queryParams = new URLSearchParams();
-
-  // Add array params
-  if (params.bloodGroups?.length) {
-    params.bloodGroups.forEach((bg) => queryParams.append("bloodGroup", bg));
-  }
-  if (params.districts?.length) {
-    params.districts.forEach((d) => queryParams.append("district", d));
-  }
-
-  // Add scalar params
-  if (params.search) queryParams.set("search", params.search);
-  if (params.page) queryParams.set("page", params.page.toString());
-  if (params.limit) queryParams.set("limit", params.limit.toString());
-
-  const url = `${API_BASE_URL}/api/donors?${queryParams.toString()}`;
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch donors: ${response.statusText}`);
-  }
-
-  return response.json();
-}
 
 /**
  * Request contact information for a donor (Req 17.12)
@@ -90,34 +56,30 @@ async function requestContactInfo(
   return response.json();
 }
 
-/**
- * Donor Directory Content Component
- */
-export default function DonorDirectoryContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // Parse URL search params into filter state
-  const [filters, setFilters] = React.useState<{
+type DonorDirectoryContentProps = {
+  initialData: PaginatedResponse<Donor>;
+  initialFilters: {
     bloodGroups: BloodGroup[];
     districts: District[];
     search: string;
-  }>({
-    bloodGroups: searchParams.getAll("bloodGroup") as BloodGroup[],
-    districts: searchParams.getAll("district") as District[],
-    search: searchParams.get("search") || "",
-  });
+  };
+  initialPage: number;
+};
 
-  const [page, setPage] = React.useState(
-    parseInt(searchParams.get("page") || "1", 10)
-  );
+/**
+ * Donor Directory Content Component
+ */
+export default function DonorDirectoryContent({
+  initialData,
+  initialFilters,
+  initialPage,
+}: DonorDirectoryContentProps) {
+  const router = useRouter();
 
-  // Data fetching state
-  const [data, setData] = React.useState<PaginatedResponse<Donor> | null>(
-    null
-  );
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  // State is initialized from server-fetched data
+  const [filters, setFilters] = React.useState(initialFilters);
+  const [page, setPage] = React.useState(initialPage);
+  const data = initialData; // Use server data directly
 
   // Contact request state
   const [requestingContactFor, setRequestingContactFor] = React.useState<
@@ -127,73 +89,72 @@ export default function DonorDirectoryContent() {
   // Get current session
   const { data: session } = authClient.useSession();
 
-  // Fetch data when filters or page changes
-  React.useEffect(() => {
-    const loadDonors = async () => {
-      setIsLoading(true);
-      setError(null);
+  // Build URL from current filters and page
+  const buildUrl = React.useCallback(
+    (newFilters: typeof filters, newPage: number) => {
+      const queryParams = new URLSearchParams();
 
-      try {
-        const result = await fetchDonors({
-          ...filters,
-          page,
-          limit: 12, // 12 cards per page (4×3 grid on desktop)
-        });
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load donors");
-      } finally {
-        setIsLoading(false);
+      if (newFilters.bloodGroups.length) {
+        newFilters.bloodGroups.forEach((bg) =>
+          queryParams.append("bloodGroup", bg)
+        );
       }
-    };
+      if (newFilters.districts.length) {
+        newFilters.districts.forEach((d) => queryParams.append("district", d));
+      }
+      if (newFilters.search) {
+        queryParams.set("search", newFilters.search);
+      }
+      if (newPage > 1) {
+        queryParams.set("page", newPage.toString());
+      }
 
-    loadDonors();
-  }, [filters, page]);
+      return queryParams.toString()
+        ? `/donors?${queryParams.toString()}`
+        : "/donors";
+    },
+    []
+  );
 
-  // Update URL when filters change
-  React.useEffect(() => {
-    const queryParams = new URLSearchParams();
-
-    if (filters.bloodGroups.length) {
-      filters.bloodGroups.forEach((bg) => queryParams.append("bloodGroup", bg));
-    }
-    if (filters.districts.length) {
-      filters.districts.forEach((d) => queryParams.append("district", d));
-    }
-    if (filters.search) {
-      queryParams.set("search", filters.search);
-    }
-    if (page > 1) {
-      queryParams.set("page", page.toString());
-    }
-
-    // Update URL without triggering navigation
-    const newUrl = queryParams.toString()
-      ? `/donors?${queryParams.toString()}`
-      : "/donors";
-    router.replace(newUrl, { scroll: false });
-  }, [filters, page, router]);
-
-  // Handle filter changes
+  // Handle filter changes - triggers server refetch via router.push
   const handleFilterChange = (newFilters: {
     bloodGroups?: BloodGroup[];
     districts?: District[];
     search?: string;
   }) => {
-    setFilters((prev) => ({
-      ...prev,
+    const updatedFilters = {
+      ...filters,
       ...newFilters,
-    }));
+    };
+    setFilters(updatedFilters);
     setPage(1); // Reset to page 1 when filters change
+    
+    // Navigate to new URL - triggers server refetch
+    router.push(buildUrl(updatedFilters, 1));
   };
 
-  // Handle page change
+  // Handle page change - triggers server refetch via router.push
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+    
+    // Navigate to new URL - triggers server refetch
+    router.push(buildUrl(filters, newPage));
+    
     // Scroll to top of results
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // Handle clear all filters
+  const handleClearFilters = () => {
+    const clearedFilters = {
+      bloodGroups: [],
+      districts: [],
+      search: "",
+    };
+    setFilters(clearedFilters);
+    setPage(1);
+    router.push("/donors");
+  };
   // Handle contact request (Req 17.11-17.13)
   const handleRequestContact = async (donorId: string) => {
     // Check authentication (Req 17.11)
@@ -239,14 +200,12 @@ export default function DonorDirectoryContent() {
                 Connect with eligible blood donors in your area
               </p>
             </div>
-            {data && !isLoading && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="font-mono tabular-data font-medium text-foreground">
-                  {data.totalCount}
-                </span>
-                <span>{data.totalCount === 1 ? "donor" : "donors"} found</span>
-              </div>
-            )}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="font-mono tabular-data font-medium text-foreground">
+                {data.totalCount}
+              </span>
+              <span>{data.totalCount === 1 ? "donor" : "donors"} found</span>
+            </div>
           </div>
         </div>
       </section>
@@ -270,28 +229,8 @@ export default function DonorDirectoryContent() {
 
       {/* Results Section */}
       <section className="container mx-auto max-w-7xl px-4 py-8">
-        {/* Loading State */}
-        {isLoading && <DonorsGridSkeleton count={12} />}
-
-        {/* Error State */}
-        {error && !isLoading && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <AlertCircle className="h-12 w-12 text-destructive mb-4" />
-            <h2 className="font-heading text-xl font-semibold text-foreground mb-2">
-              Failed to Load Donors
-            </h2>
-            <p className="text-muted-foreground mb-6 max-w-md">{error}</p>
-            <Button
-              onClick={() => window.location.reload()}
-              variant="outline"
-            >
-              Try Again
-            </Button>
-          </div>
-        )}
-
         {/* Empty State */}
-        {!isLoading && !error && data && data.data.length === 0 && (
+        {data.data.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <SearchX className="h-12 w-12 text-muted-foreground mb-4" />
             <h2 className="font-heading text-xl font-semibold text-foreground mb-2">
@@ -307,16 +246,7 @@ export default function DonorDirectoryContent() {
             {(filters.search ||
               filters.bloodGroups.length ||
               filters.districts.length) && (
-              <Button
-                onClick={() =>
-                  setFilters({
-                    bloodGroups: [],
-                    districts: [],
-                    search: "",
-                  })
-                }
-                variant="outline"
-              >
+              <Button onClick={handleClearFilters} variant="outline">
                 Clear All Filters
               </Button>
             )}
@@ -335,7 +265,7 @@ export default function DonorDirectoryContent() {
         )}
 
         {/* Results Grid */}
-        {!isLoading && !error && data && data.data.length > 0 && (
+        {data.data.length > 0 && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {data.data.map((donor, index) => (

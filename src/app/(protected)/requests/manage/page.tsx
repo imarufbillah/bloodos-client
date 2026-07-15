@@ -1,5 +1,5 @@
 /**
- * Manage Blood Requests Page
+ * Manage Blood Requests Page (Refactored for Server Components)
  * Phase 8i - /requests/manage
  *
  * Functional requirements:
@@ -19,22 +19,72 @@
  * - Delete requires confirmation dialog before calling DELETE
  * - Civic infrastructure aesthetic: compact, functional, clear hierarchy
  *
- * Edge cases & states:
- * - Empty state when user has no requests
- * - Loading state with skeleton
- * - Error state with retry
- * - Delete confirmation dialog gates DELETE call
- * - Status transitions respect state machine rules (via backend)
+ * Improvements (Phase 2):
+ * - Server-side data fetching with authentication
+ * - Automatic loading/error boundaries
+ * - Reduced client bundle size
+ * - Better initial page load performance
  */
 
 import { Metadata } from "next";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { ManageRequestsContent } from "./ManageRequestsContent";
+import type { BloodRequest, PaginatedResponse } from "@/types/shared";
 
 export const metadata: Metadata = {
   title: "Manage Requests | BloodOS",
   description: "View and manage your blood donation requests",
 };
 
-export default function ManageRequestsPage() {
-  return <ManageRequestsContent />;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+/**
+ * Fetch user's requests - Server-side with authentication
+ */
+async function fetchUserRequests(
+  page: number,
+  sessionToken?: string
+): Promise<PaginatedResponse<BloodRequest>> {
+  const url = `${API_BASE_URL}/api/requests/mine?page=${page}&limit=10`;
+
+  const response = await fetch(url, {
+    headers: {
+      ...(sessionToken && { Authorization: `Bearer ${sessionToken}` }),
+    },
+    // No caching for user-specific data that changes frequently
+    cache: "no-store",
+  });
+
+  if (response.status === 401) {
+    // Redirect to login if unauthorized
+    redirect("/signin?callbackUrl=/requests/manage");
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch requests: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+type PageProps = {
+  searchParams: Promise<{
+    page?: string;
+  }>;
+};
+
+export default async function ManageRequestsPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const page = parseInt(params.page || "1", 10);
+
+  // Get session token from cookies
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("better-auth.session_token");
+  const sessionToken = sessionCookie?.value;
+
+  // Fetch data server-side
+  const data = await fetchUserRequests(page, sessionToken);
+
+  return <ManageRequestsContent initialData={data} initialPage={page} />;
 }
