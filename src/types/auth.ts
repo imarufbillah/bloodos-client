@@ -21,4 +21,6 @@ export interface ExtendedUser {
   bloodGroup?: string;
   isDonor?: boolean;
   lastDonationDate?: Date | null;
+  banned?: boolean;
+  banReason?: string | null;
 }
