@@ -1,8 +1,3 @@
-/**
- * Select component - Native select wrapper with consistent styling
- * Used for form dropdowns throughout the application
- */
-
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
@@ -19,10 +14,10 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         <select
           ref={ref}
           className={cn(
-            "h-8 w-full appearance-none rounded-lg border border-input bg-transparent px-2.5 py-1 pr-8 text-base transition-colors outline-none",
-            "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
-            "disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50",
-            "md:text-sm dark:bg-input/30",
+            "h-9 w-full appearance-none rounded-lg border border-input bg-transparent px-3 py-2 pr-8 text-base transition-colors outline-none",
+            "hover:border-foreground/25 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+            "disabled:cursor-not-allowed disabled:bg-muted disabled:opacity-50",
+            "md:text-sm dark:bg-input/30 dark:hover:border-foreground/30",
             error &&
               "border-destructive ring-3 ring-destructive/20 dark:border-destructive/50 dark:ring-destructive/40",
             className

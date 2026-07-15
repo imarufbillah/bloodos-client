@@ -22,7 +22,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { NotificationPanel } from "@/components/layout/NotificationPanel";
 import { useTheme } from "next-themes";
@@ -61,6 +61,19 @@ const adminLinks: NavLink[] = [
   { href: "/admin", label: "Admin Dashboard", adminOnly: true },
 ];
 
+function getInitials(name?: string | null, email?: string | null) {
+  if (name) {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  }
+  if (email) return email.slice(0, 2).toUpperCase();
+  return "U";
+}
+
 export function Navbar() {
   const pathname = usePathname();
   const { data: session, isPending } = useSession();
@@ -69,6 +82,8 @@ export function Navbar() {
 
   const user = session?.user as ExtendedUser | undefined;
   const isAdmin = user?.role === "admin";
+  const userImage = (user as Record<string, unknown> | undefined)
+    ?.image as string | null | undefined;
 
   const handleSignOut = async () => {
     try {
@@ -78,102 +93,91 @@ export function Navbar() {
     }
   };
 
-  const getInitials = (name?: string | null, email?: string | null) => {
-    if (name) {
-      return name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2);
-    }
-    if (email) {
-      return email.slice(0, 2).toUpperCase();
-    }
-    return "U";
-  };
-
-  // Filter links based on auth state
   const visibleLinks = React.useMemo(() => {
     const links = [...publicLinks];
     if (user) {
       links.push(...protectedLinks);
-      if (isAdmin) {
-        links.push(...adminLinks);
-      }
+      if (isAdmin) links.push(...adminLinks);
     }
     return links;
   }, [user, isAdmin]);
 
+  const ThemeToggle = ({ className }: { className?: string }) => (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className={className ?? "h-9 w-9"}
+      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+    >
+      <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
+    </Button>
+  );
+
+  const UserAvatar = ({ size = "h-8 w-8" }: { size?: string }) => (
+    <Avatar className={size}>
+      {userImage && <AvatarImage src={userImage} alt={user?.name || "User"} />}
+      <AvatarFallback className="bg-crimson text-paper text-xs font-medium">
+        {getInitials(user?.name, user?.email)}
+      </AvatarFallback>
+    </Avatar>
+  );
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <nav className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4">
-        {/* Logo */}
+      <nav className="container mx-auto flex h-14 max-w-screen-2xl items-center justify-between px-4 sm:h-16">
         <Link
           href="/"
-          className="flex items-center gap-2 font-heading text-xl font-semibold tracking-tight transition-colors hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="flex items-center gap-2 font-heading text-lg font-semibold tracking-tight transition-colors hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:text-xl"
         >
-          <Droplet className="h-6 w-6 text-crimson" aria-hidden="true" />
+          <Droplet className="h-5 w-5 text-crimson sm:h-6 sm:w-6" aria-hidden="true" />
           <span>BloodOS</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden items-center gap-6 lg:flex">
-          {/* Navigation Links */}
-          <ul className="flex items-center gap-1">
-            {visibleLinks.slice(0, 5).map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className={`inline-flex items-center px-3 py-2 text-sm font-medium transition-colors hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md ${
-                    pathname === link.href
-                      ? "text-crimson"
-                      : "text-foreground/80"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+        <div className="hidden items-center gap-1 lg:flex">
+          <ul className="flex items-center gap-0.5">
+            {visibleLinks.slice(0, 5).map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={`relative inline-flex items-center px-3 py-2 text-sm font-medium transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                      isActive
+                        ? "text-crimson"
+                        : "text-foreground/70 hover:text-foreground"
+                    }`}
+                  >
+                    {link.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-crimson" />
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
 
-          {/* Right Side Actions */}
-          <div className="flex items-center gap-2">
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="h-9 w-9"
-              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-            >
-              <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
-            </Button>
+          <div className="ml-2 flex items-center gap-1.5">
+            <ThemeToggle />
 
             {isPending ? (
               <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
             ) : user ? (
               <>
-                {/* Notification Panel */}
                 <NotificationPanel />
-
-                {/* User Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className="h-9 w-9 rounded-full inline-flex items-center justify-center transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="ml-1 h-8 w-8 rounded-full inline-flex items-center justify-center transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     aria-label="User menu"
                   >
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-crimson text-paper text-xs font-medium">
-                        {getInitials(user.name, user.email)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <UserAvatar />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuGroup>
                       <DropdownMenuLabel className="font-normal">
-                        <div className="flex flex-col space-y-1">
+                        <div className="flex flex-col gap-1">
                           <p className="text-sm font-medium leading-none">
                             {user.name || "User"}
                           </p>
@@ -235,7 +239,11 @@ export function Navbar() {
               </>
             ) : (
               <>
-                <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hidden sm:inline-flex"
+                >
                   <Link href="/signin">Sign In</Link>
                 </Button>
                 <Button size="sm">
@@ -246,49 +254,34 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        <div className="flex items-center gap-2 lg:hidden">
-          {/* Theme Toggle Mobile */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="h-9 w-9"
-            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-          >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
-          </Button>
+        <div className="flex items-center gap-1.5 lg:hidden">
+          <ThemeToggle className="h-9 w-9" />
 
-          {user && (
-            <NotificationPanel className="mr-2" />
-          )}
+          {user && <NotificationPanel className="mr-1" />}
 
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger
-              className="h-9 w-9 inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="h-9 w-9 inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <SheetContent side="right" className="w-[300px] sm:w-[340px]">
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2">
                   <Droplet className="h-5 w-5 text-crimson" />
                   <span>BloodOS</span>
                 </SheetTitle>
               </SheetHeader>
-              <div className="mt-6 flex flex-col gap-4">
+              <div className="mt-6 flex flex-col gap-3">
                 {user && (
                   <div className="flex items-center gap-3 rounded-lg border border-border p-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarFallback className="bg-crimson text-paper">
-                        {getInitials(user.name, user.email)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col">
-                      <p className="text-sm font-medium">{user.name || "User"}</p>
-                      <p className="text-xs text-muted-foreground">
+                    <UserAvatar size="h-10 w-10" />
+                    <div className="flex flex-col min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {user.name || "User"}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
                         {user.email}
                       </p>
                       {isAdmin && (
@@ -304,21 +297,24 @@ export function Navbar() {
                   </div>
                 )}
 
-                <nav className="flex flex-col gap-1">
-                  {visibleLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                        pathname === link.href
-                          ? "bg-accent text-crimson"
-                          : "text-foreground/80"
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                <nav className="flex flex-col gap-0.5">
+                  {visibleLinks.map((link) => {
+                    const isActive = pathname === link.href;
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center rounded-md px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                          isActive
+                            ? "bg-accent text-crimson"
+                            : "text-foreground/70 hover:bg-accent hover:text-foreground"
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
                 </nav>
 
                 {user ? (
@@ -328,13 +324,13 @@ export function Navbar() {
                       handleSignOut();
                       setMobileMenuOpen(false);
                     }}
-                    className="mt-2 w-full justify-start text-destructive hover:text-destructive"
+                    className="mt-1 w-full justify-start text-destructive hover:text-destructive"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out
                   </Button>
                 ) : (
-                  <div className="mt-2 flex flex-col gap-2">
+                  <div className="mt-1 flex flex-col gap-2">
                     <Button
                       variant="outline"
                       onClick={() => setMobileMenuOpen(false)}

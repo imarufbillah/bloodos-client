@@ -31,76 +31,39 @@ const navigationLinks = [
 ];
 
 const socialLinks = [
-  {
-    label: "Facebook",
-    href: "https://facebook.com/bloodos",
-    icon: FaFacebookF,
-  },
-  {
-    label: "Twitter",
-    href: "https://twitter.com/bloodos",
-    icon: FaTwitter,
-  },
-  {
-    label: "Instagram",
-    href: "https://instagram.com/bloodos",
-    icon: FaInstagram,
-  },
-  {
-    label: "LinkedIn",
-    href: "https://linkedin.com/company/bloodos",
-    icon: FaLinkedinIn,
-  },
-  {
-    label: "GitHub",
-    href: "https://github.com/bloodos",
-    icon: FaGithub,
-  },
+  { label: "Facebook", href: "https://facebook.com/bloodos", icon: FaFacebookF },
+  { label: "Twitter", href: "https://twitter.com/bloodos", icon: FaTwitter },
+  { label: "Instagram", href: "https://instagram.com/bloodos", icon: FaInstagram },
+  { label: "LinkedIn", href: "https://linkedin.com/company/bloodos", icon: FaLinkedinIn },
+  { label: "GitHub", href: "https://github.com/bloodos", icon: FaGithub },
 ];
 
 const contactInfo = [
-  {
-    label: "Email",
-    value: "support@bloodos.app",
-    href: "mailto:support@bloodos.app",
-    icon: MdEmail,
-  },
-  {
-    label: "Phone",
-    value: "+880 1XXX-XXXXXX",
-    href: "tel:+8801xxxxxxxxx",
-    icon: MdPhone,
-  },
-  {
-    label: "Address",
-    value: "Dhaka, Bangladesh",
-    href: null,
-    icon: MdLocationOn,
-  },
+  { label: "Email", value: "support@bloodos.app", href: "mailto:support@bloodos.app", icon: MdEmail },
+  { label: "Phone", value: "+880 1XXX-XXXXXX", href: "tel:+8801xxxxxxxxx", icon: MdPhone },
+  { label: "Address", value: "Dhaka, Bangladesh", href: null, icon: MdLocationOn },
 ];
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-border bg-background">
-      <div className="container mx-auto max-w-screen-2xl px-4 py-12">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand Section */}
+    <footer className="mt-auto border-t border-border bg-gradient-to-b from-background to-muted/20">
+      <div className="container mx-auto max-w-screen-2xl px-4 py-10 sm:py-12">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
           <div className="space-y-4">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 font-heading text-xl font-semibold tracking-tight transition-colors hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-2 font-heading text-lg font-semibold tracking-tight transition-colors hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <Droplet className="h-6 w-6 text-crimson" aria-hidden="true" />
+              <Droplet className="h-5 w-5 text-crimson" aria-hidden="true" />
               <span>BloodOS</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               A verified blood donor coordination platform connecting urgent
-              hospital blood requests with eligible nearby donors in Bangladesh.
+              hospital requests with eligible donors in Bangladesh.
             </p>
-            {/* Social Links */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
@@ -110,27 +73,26 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background text-foreground/80 transition-colors hover:border-crimson hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-crimson/10 hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
-                    <Icon className="h-4 w-4" aria-hidden="true" />
+                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
                   </a>
                 );
               })}
             </div>
           </div>
 
-          {/* Navigation Sections */}
           {navigationLinks.map((section) => (
-            <div key={section.title} className="space-y-4">
-              <h3 className="text-sm font-semibold text-foreground">
+            <div key={section.title} className="space-y-3.5">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground/60">
                 {section.title}
               </h3>
-              <ul className="space-y-2.5">
+              <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="inline-flex text-sm text-muted-foreground transition-colors hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      className="text-sm text-muted-foreground transition-colors hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     >
                       {link.label}
                     </Link>
@@ -140,18 +102,17 @@ export function Footer() {
             </div>
           ))}
 
-          {/* Contact Section */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-foreground">
+          <div className="space-y-3.5">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground/60">
               Get in Touch
             </h3>
-            <ul className="space-y-3">
+            <ul className="space-y-2.5">
               {contactInfo.map((contact) => {
                 const Icon = contact.icon;
                 const content = (
                   <>
                     <Icon
-                      className="h-4 w-4 shrink-0 text-crimson"
+                      className="h-3.5 w-3.5 shrink-0 text-crimson"
                       aria-hidden="true"
                     />
                     <span className="text-sm text-muted-foreground">
@@ -185,13 +146,12 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="mt-12 border-t border-border pt-6">
-          <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
+        <div className="mt-10 border-t border-border pt-5">
+          <div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
             <p className="text-xs text-muted-foreground">
-              © {currentYear} BloodOS. All rights reserved.
+              &copy; {currentYear} BloodOS. All rights reserved.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground sm:gap-6">
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground sm:gap-5">
               <Link
                 href="/privacy"
                 className="transition-colors hover:text-crimson focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"

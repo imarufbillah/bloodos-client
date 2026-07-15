@@ -64,7 +64,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
       {isCritical && <div className="critical-pulse-bar" aria-hidden="true" />}
 
       {/* Card Content */}
-      <div className="flex flex-1 flex-col gap-3 p-4">
+      <div className="flex flex-1 flex-col gap-2.5 p-4">
         {/* Header: Kicker + Urgency Badge */}
         <div className="flex items-start justify-between gap-3">
           {/* Kicker: Blood Group + District */}
@@ -229,18 +229,18 @@ function StatusBadge({ status }: { status: string }) {
     statusColors[status as keyof typeof statusColors] || "text-foreground";
 
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="inline-flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5">
       <div
-        className={`h-2 w-2 rounded-full ${
+        className={`h-1.5 w-1.5 rounded-full ${
           status === "open" || status === "in_progress"
             ? "bg-teal"
             : status === "fulfilled"
               ? "bg-teal/50"
-              : "bg-muted-foreground/50"
+              : "bg-muted-foreground/40"
         }`}
         aria-hidden="true"
       />
-      <span className={`text-xs font-medium ${colorClass}`}>{label}</span>
+      <span className={`text-[11px] font-medium ${colorClass}`}>{label}</span>
     </div>
   );
 }
