@@ -7,7 +7,7 @@
 
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { apiFetch } from "@/lib/api-server";
 import type { RequestStatus } from "@/types/shared";
 
@@ -42,7 +42,6 @@ export async function createBloodRequest(formData: FormData) {
     const data = await response.json();
 
     // Invalidate relevant caches
-    revalidateTag("requests");
     revalidatePath("/requests");
     revalidatePath("/requests/manage");
 
@@ -73,7 +72,6 @@ export async function updateRequestStatus(requestId: string, status: RequestStat
     const data = await response.json();
 
     // Invalidate relevant caches
-    revalidateTag("requests");
     revalidatePath("/requests");
     revalidatePath(`/requests/${requestId}`);
     revalidatePath("/requests/manage");
@@ -102,7 +100,6 @@ export async function deleteRequest(requestId: string) {
     }
 
     // Invalidate relevant caches
-    revalidateTag("requests");
     revalidatePath("/requests");
     revalidatePath("/requests/manage");
 

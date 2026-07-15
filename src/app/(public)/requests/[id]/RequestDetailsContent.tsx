@@ -33,6 +33,7 @@ import {
   Heart,
   MapPinned,
 } from "lucide-react";
+import { ShareButton } from "@/components/shared/ShareButton";
 import { formatDistanceToNow, format } from "date-fns";
 import { apiFetch } from "@/lib/api-client";
 
@@ -235,6 +236,10 @@ export default function RequestDetailsContent({
                     <span>Expiring Soon</span>
                   </Badge>
                 )}
+                <ShareButton
+                  title={`${request.bloodGroup} blood needed at ${request.hospitalName}`}
+                  text={`${request.bloodGroup} blood needed for ${request.patientName} at ${request.hospitalName}, ${request.district}. Urgency: ${request.urgency}`}
+                />
               </div>
 
               {/* Patient Name - Large Heading */}
