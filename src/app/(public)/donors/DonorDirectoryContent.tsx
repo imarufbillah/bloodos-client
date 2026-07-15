@@ -45,7 +45,8 @@ async function requestContactInfo(
     throw new Error(error.message || "Failed to request contact information");
   }
 
-  return response.json();
+  const result = await response.json();
+  return result.data;
 }
 
 type DonorDirectoryContentProps = {
@@ -162,11 +163,11 @@ export default function DonorDirectoryContent({
     setRequestingContactFor(donorId);
 
     try {
-      // Request contact info (Req 17.12)
-      await requestContactInfo(donorId);
+      const contact = await requestContactInfo(donorId);
 
       toast.success("Contact information retrieved", {
-        description: "The donor has been notified that you requested their contact details.",
+        description: `Phone: ${contact.phone}${contact.email ? ` | Email: ${contact.email}` : ""}`,
+        duration: 10000,
       });
     } catch (err) {
       toast.error(
