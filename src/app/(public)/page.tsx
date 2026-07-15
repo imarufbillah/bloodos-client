@@ -78,7 +78,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative flex min-h-dvh items-center overflow-hidden px-4 pt-20 pb-12 sm:px-6 sm:pt-24 lg:px-8">
+      <section className="relative flex min-h-dvh items-center overflow-hidden px-4 pb-12 sm:px-6 lg:px-8">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.51_0.19_25/0.06),transparent)]" />
 
         <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">

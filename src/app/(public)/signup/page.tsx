@@ -39,7 +39,7 @@ async function SignUpContent({ searchParams }: SignUpPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center px-4 pt-16 pb-12">
       <div className="w-full max-w-[400px] space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">

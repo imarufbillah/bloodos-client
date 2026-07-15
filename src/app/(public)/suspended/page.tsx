@@ -19,7 +19,7 @@ function SuspendedContent() {
   const banReason = searchParams.get("reason");
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 pt-16">
       <div className="max-w-2xl w-full">
         {/* Icon and Title */}
         <div className="text-center mb-8">
