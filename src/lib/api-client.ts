@@ -90,17 +90,16 @@ export async function apiFetch(
   options?: RequestInit
 ): Promise<Response> {
   const url = apiUrl(path);
-  
-  // Build headers - merge provided headers with defaults
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...options?.headers,
-  };
-  
-  // Merge options with defaults, ensuring cookies are sent
+
+  // Don't set Content-Type for FormData — browser sets multipart boundary automatically
+  const isFormData = options?.body instanceof FormData;
+  const headers: HeadersInit = isFormData
+    ? { ...options?.headers }
+    : { 'Content-Type': 'application/json', ...options?.headers };
+
   const fetchOptions: RequestInit = {
     ...options,
-    credentials: 'include', // This sends cookies including session_token
+    credentials: 'include',
     headers,
   };
 
