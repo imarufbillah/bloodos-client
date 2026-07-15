@@ -8,7 +8,13 @@ import { Edit2, Save, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 import {
   updateProfileSchema,
@@ -42,6 +48,21 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
     bloodGroup: user.bloodGroup,
     isDonor: user.isDonor,
   });
+
+  // Handle Select onValueChange (can be null when cleared)
+  const handleBloodGroupChange = (value: string | null) => {
+    setFormData({
+      ...formData,
+      bloodGroup: (value as BloodGroup) || user.bloodGroup,
+    });
+  };
+
+  const handleDistrictChange = (value: string | null) => {
+    setFormData({
+      ...formData,
+      district: (value as District) || user.district,
+    });
+  };
 
   const handleCancel = () => {
     // Reset form data to original values
@@ -275,27 +296,26 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
         <div className="space-y-2">
           <Label htmlFor="bloodGroup">Blood Group</Label>
           <Select
-            id="bloodGroup"
-            name="bloodGroup"
             value={formData.bloodGroup}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                bloodGroup: e.target.value as BloodGroup,
-              })
-            }
-            error={errors.bloodGroup}
-            aria-invalid={!!errors.bloodGroup}
-            aria-describedby={
-              errors.bloodGroup ? "bloodGroup-error" : undefined
-            }
+            onValueChange={handleBloodGroupChange}
           >
-            <option value="">Select blood group</option>
-            {BLOOD_GROUPS.map((group) => (
-              <option key={group} value={group}>
-                {group}
-              </option>
-            ))}
+            <SelectTrigger
+              id="bloodGroup"
+              error={errors.bloodGroup}
+              aria-invalid={!!errors.bloodGroup}
+              aria-describedby={
+                errors.bloodGroup ? "bloodGroup-error" : undefined
+              }
+            >
+              <SelectValue placeholder="Select blood group" />
+            </SelectTrigger>
+            <SelectContent>
+              {BLOOD_GROUPS.map((group) => (
+                <SelectItem key={group} value={group}>
+                  {group}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
           {errors.bloodGroup && (
             <p
@@ -312,25 +332,24 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
         <div className="space-y-2">
           <Label htmlFor="district">District</Label>
           <Select
-            id="district"
-            name="district"
             value={formData.district}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                district: e.target.value as District,
-              })
-            }
-            error={errors.district}
-            aria-invalid={!!errors.district}
-            aria-describedby={errors.district ? "district-error" : undefined}
+            onValueChange={handleDistrictChange}
           >
-            <option value="">Select district</option>
-            {DISTRICTS.map((district) => (
-              <option key={district} value={district}>
-                {district}
-              </option>
-            ))}
+            <SelectTrigger
+              id="district"
+              error={errors.district}
+              aria-invalid={!!errors.district}
+              aria-describedby={errors.district ? "district-error" : undefined}
+            >
+              <SelectValue placeholder="Select district" />
+            </SelectTrigger>
+            <SelectContent>
+              {DISTRICTS.map((district) => (
+                <SelectItem key={district} value={district}>
+                  {district}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
           {errors.district && (
             <p

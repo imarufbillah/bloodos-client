@@ -8,7 +8,13 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { UrgencyBadge } from "@/components/shared/UrgencyBadge";
 import { BannedUserBanner } from "@/components/shared/BannedUserBanner";
@@ -34,6 +40,25 @@ export function AddRequestForm() {
   const [isCheckingProfile, setIsCheckingProfile] = useState(true);
   const [errors, setErrors] = useState<FormErrors>({});
   const [selectedUrgency, setSelectedUrgency] = useState<Urgency | "">("");
+
+  // Form state for controlled Select components
+  const [bloodGroup, setBloodGroup] = useState<string>("");
+  const [district, setDistrict] = useState<string>("");
+  const [urgency, setUrgency] = useState<string>("");
+
+  // Handle Select onValueChange (can be null when cleared)
+  const handleBloodGroupChange = (value: string | null) => {
+    setBloodGroup(value || "");
+  };
+
+  const handleDistrictChange = (value: string | null) => {
+    setDistrict(value || "");
+  };
+
+  const handleUrgencyChange = (value: string | null) => {
+    setUrgency(value || "");
+    setSelectedUrgency((value as Urgency) || "");
+  };
 
   // Check if user has completed required profile fields (Phase 8n)
   useEffect(() => {
@@ -84,15 +109,15 @@ export function AddRequestForm() {
 
     const formData = new FormData(e.currentTarget);
 
-    // Parse form data
+    // Parse form data (use state values for Select components)
     const data = {
       patientName: formData.get("patientName") as string,
-      bloodGroup: formData.get("bloodGroup") as string,
+      bloodGroup: bloodGroup,
       unitsNeeded: Number(formData.get("unitsNeeded")),
       hospitalName: formData.get("hospitalName") as string,
       hospitalAddress: formData.get("hospitalAddress") as string,
-      district: formData.get("district") as string,
-      urgency: formData.get("urgency") as string,
+      district: district,
+      urgency: urgency,
       neededByDate: formData.get("neededByDate") as string,
       contactPhone: formData.get("contactPhone") as string,
       additionalNotes: formData.get("additionalNotes") as string,
@@ -210,21 +235,27 @@ export function AddRequestForm() {
                   Blood Group <span className="text-destructive">*</span>
                 </Label>
                 <Select
-                  id="bloodGroup"
-                  name="bloodGroup"
+                  value={bloodGroup}
+                  onValueChange={handleBloodGroupChange}
                   required
-                  error={errors.bloodGroup}
-                  aria-invalid={!!errors.bloodGroup}
-                  aria-describedby={
-                    errors.bloodGroup ? "bloodGroup-error" : undefined
-                  }
                 >
-                  <option value="">Select blood group</option>
-                  {BLOOD_GROUPS.map((group) => (
-                    <option key={group} value={group}>
-                      {group}
-                    </option>
-                  ))}
+                  <SelectTrigger
+                    id="bloodGroup"
+                    error={errors.bloodGroup}
+                    aria-invalid={!!errors.bloodGroup}
+                    aria-describedby={
+                      errors.bloodGroup ? "bloodGroup-error" : undefined
+                    }
+                  >
+                    <SelectValue placeholder="Select blood group" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BLOOD_GROUPS.map((group) => (
+                      <SelectItem key={group} value={group}>
+                        {group}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
                 {errors.bloodGroup && (
                   <p
@@ -334,21 +365,27 @@ export function AddRequestForm() {
                   District <span className="text-destructive">*</span>
                 </Label>
                 <Select
-                  id="district"
-                  name="district"
+                  value={district}
+                  onValueChange={handleDistrictChange}
                   required
-                  error={errors.district}
-                  aria-invalid={!!errors.district}
-                  aria-describedby={
-                    errors.district ? "district-error" : undefined
-                  }
                 >
-                  <option value="">Select district</option>
-                  {DISTRICTS.map((district) => (
-                    <option key={district} value={district}>
-                      {district}
-                    </option>
-                  ))}
+                  <SelectTrigger
+                    id="district"
+                    error={errors.district}
+                    aria-invalid={!!errors.district}
+                    aria-describedby={
+                      errors.district ? "district-error" : undefined
+                    }
+                  >
+                    <SelectValue placeholder="Select district" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DISTRICTS.map((dist) => (
+                      <SelectItem key={dist} value={dist}>
+                        {dist}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
                 {errors.district && (
                   <p
@@ -378,24 +415,27 @@ export function AddRequestForm() {
                   Urgency Level <span className="text-destructive">*</span>
                 </Label>
                 <Select
-                  id="urgency"
-                  name="urgency"
+                  value={urgency}
+                  onValueChange={handleUrgencyChange}
                   required
-                  error={errors.urgency}
-                  aria-invalid={!!errors.urgency}
-                  aria-describedby={
-                    errors.urgency ? "urgency-error" : undefined
-                  }
-                  onChange={(e) =>
-                    setSelectedUrgency(e.target.value as Urgency | "")
-                  }
                 >
-                  <option value="">Select urgency level</option>
-                  {URGENCY_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label} - {option.description}
-                    </option>
-                  ))}
+                  <SelectTrigger
+                    id="urgency"
+                    error={errors.urgency}
+                    aria-invalid={!!errors.urgency}
+                    aria-describedby={
+                      errors.urgency ? "urgency-error" : undefined
+                    }
+                  >
+                    <SelectValue placeholder="Select urgency level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {URGENCY_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label} - {option.description}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
                 {errors.urgency && (
                   <p

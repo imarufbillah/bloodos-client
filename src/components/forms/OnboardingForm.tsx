@@ -8,7 +8,15 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
+} from "@/components/ui/select";
 import {
   onboardingSchema,
   type OnboardingFormData,
@@ -20,12 +28,15 @@ import { apiFetch } from "@/lib/api-client";
 export function OnboardingForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [district, setDistrict] = React.useState<string>("");
+  const [bloodGroup, setBloodGroup] = React.useState<string>("");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<OnboardingFormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(onboardingSchema) as any,
@@ -37,6 +48,28 @@ export function OnboardingForm() {
   });
 
   const isDonor = watch("isDonor");
+
+  // Handle Select onValueChange (can be null when cleared)
+  const handleDistrictChange = (value: string | null) => {
+    setDistrict(value || "");
+  };
+
+  const handleBloodGroupChange = (value: string | null) => {
+    setBloodGroup(value || "");
+  };
+
+  // Sync Select state with react-hook-form
+  React.useEffect(() => {
+    if (district) {
+      setValue("district", district);
+    }
+  }, [district, setValue]);
+
+  React.useEffect(() => {
+    if (bloodGroup) {
+      setValue("bloodGroup", bloodGroup);
+    }
+  }, [bloodGroup, setValue]);
 
   const onSubmit = async (data: OnboardingFormData) => {
     setIsSubmitting(true);
@@ -93,23 +126,27 @@ export function OnboardingForm() {
           District
         </Label>
         <Select
-          id="district"
-          {...register("district")}
-          aria-invalid={!!errors.district}
+          value={district}
+          onValueChange={handleDistrictChange}
           disabled={isSubmitting}
         >
-          <option value="">Select your district</option>
-          {Object.entries(DISTRICTS_BY_DIVISION).map(
-            ([division, districts]) => (
-              <optgroup key={division} label={division}>
-                {districts.map((district) => (
-                  <option key={district} value={district}>
-                    {district}
-                  </option>
-                ))}
-              </optgroup>
-            ),
-          )}
+          <SelectTrigger id="district" aria-invalid={!!errors.district}>
+            <SelectValue placeholder="Select your district" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(DISTRICTS_BY_DIVISION).map(
+              ([division, districts]) => (
+                <SelectGroup key={division}>
+                  <SelectLabel>{division}</SelectLabel>
+                  {districts.map((dist) => (
+                    <SelectItem key={dist} value={dist}>
+                      {dist}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              ),
+            )}
+          </SelectContent>
         </Select>
         {errors.district && (
           <p className="text-xs text-destructive">{errors.district.message}</p>
@@ -125,17 +162,20 @@ export function OnboardingForm() {
           Blood Group
         </Label>
         <Select
-          id="bloodGroup"
-          {...register("bloodGroup")}
-          aria-invalid={!!errors.bloodGroup}
+          value={bloodGroup}
+          onValueChange={handleBloodGroupChange}
           disabled={isSubmitting}
         >
-          <option value="">Select your blood group</option>
-          {BLOOD_GROUPS.map((group) => (
-            <option key={group} value={group}>
-              {group}
-            </option>
-          ))}
+          <SelectTrigger id="bloodGroup" aria-invalid={!!errors.bloodGroup}>
+            <SelectValue placeholder="Select your blood group" />
+          </SelectTrigger>
+          <SelectContent>
+            {BLOOD_GROUPS.map((group) => (
+              <SelectItem key={group} value={group}>
+                {group}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
         {errors.bloodGroup && (
           <p className="text-xs text-destructive">
