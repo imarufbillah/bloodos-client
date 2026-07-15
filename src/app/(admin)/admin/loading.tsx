@@ -6,7 +6,6 @@
  */
 
 import { Shield, BarChart3, Users } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Loading() {
   return (
@@ -30,20 +29,20 @@ export default function Loading() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tabs Skeleton */}
         <div className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="overview" className="gap-2" disabled>
+          <div className="inline-flex w-fit items-center gap-1 rounded-lg bg-muted p-[3px] h-8">
+            <div className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-sm font-medium bg-background text-foreground shadow-sm">
               <BarChart3 className="h-4 w-4" />
               Overview
-            </TabsTrigger>
-            <TabsTrigger value="moderation" className="gap-2" disabled>
+            </div>
+            <div className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-sm font-medium text-foreground/60">
               <Shield className="h-4 w-4" />
               Moderation
-            </TabsTrigger>
-            <TabsTrigger value="users" className="gap-2" disabled>
+            </div>
+            <div className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-sm font-medium text-foreground/60">
               <Users className="h-4 w-4" />
               Users
-            </TabsTrigger>
-          </TabsList>
+            </div>
+          </div>
 
           {/* Stats Cards Skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

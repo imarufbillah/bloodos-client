@@ -132,10 +132,11 @@ export async function toggleUserBan(
   banned: boolean,
   reason: string
 ): Promise<void> {
-  const response = await apiFetch(`/api/admin/users/${userId}/ban`, {
+  const endpoint = banned ? "ban" : "unban";
+  const response = await apiFetch(`/api/admin/users/${userId}/${endpoint}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ banned, reason }),
+    body: JSON.stringify({ reason }),
   });
 
   if (!response.ok) {
