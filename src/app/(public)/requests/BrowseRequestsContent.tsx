@@ -1,18 +1,23 @@
 /**
- * Browse Requests Content Component
+ * Browse Requests Content Component (Refactored for Server Components)
  * 
- * Main content component for browse requests page.
- * Separated from page.tsx to handle Suspense boundary for useSearchParams.
+ * Client component that receives server-fetched initial data and handles
+ * interactive filtering via URL updates.
+ * 
+ * Improvements:
+ * - Receives initialData from server component
+ * - Uses router.push for client-side filtering (triggers server refetch)
+ * - No client-side data fetching in useEffect
+ * - Optimistic UI updates with initialData
  */
 
 "use client";
 
 import * as React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { RequestCard } from "@/components/requests/RequestCard";
 import { Filters } from "@/components/shared/Filters";
 import { Pagination } from "@/components/shared/Pagination";
-import { RequestsGridSkeleton } from "@/components/shared/SkeletonLoaders";
 import type {
   BloodRequest,
   PaginatedResponse,
@@ -20,145 +25,70 @@ import type {
   District,
 } from "@/types/shared";
 import type { Urgency, SortOption } from "@/components/shared/Filters";
-import { AlertCircle, SearchX } from "lucide-react";
+import { SearchX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-/**
- * API endpoint for fetching blood requests
- * TODO: Replace with actual backend URL from env
- */
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
-/**
- * Fetch requests from backend with query params
- */
-async function fetchRequests(params: {
-  bloodGroups?: BloodGroup[];
-  urgencies?: Urgency[];
-  districts?: District[];
-  search?: string;
-  sort?: SortOption;
-  page?: number;
-  limit?: number;
-}): Promise<PaginatedResponse<BloodRequest>> {
-  const queryParams = new URLSearchParams();
-
-  // Add array params
-  if (params.bloodGroups?.length) {
-    params.bloodGroups.forEach((bg) => queryParams.append("bloodGroup", bg));
-  }
-  if (params.urgencies?.length) {
-    params.urgencies.forEach((u) => queryParams.append("urgency", u));
-  }
-  if (params.districts?.length) {
-    params.districts.forEach((d) => queryParams.append("district", d));
-  }
-
-  // Add scalar params
-  if (params.search) queryParams.set("search", params.search);
-  if (params.sort) queryParams.set("sort", params.sort);
-  if (params.page) queryParams.set("page", params.page.toString());
-  if (params.limit) queryParams.set("limit", params.limit.toString());
-
-  const url = `${API_BASE_URL}/api/requests?${queryParams.toString()}`;
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch requests: ${response.statusText}`);
-  }
-
-  return response.json();
-}
-
-/**
- * Browse Requests Content Component
- */
-export default function BrowseRequestsContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // Parse URL search params into filter state
-  const [filters, setFilters] = React.useState<{
+type BrowseRequestsContentProps = {
+  initialData: PaginatedResponse<BloodRequest>;
+  initialFilters: {
     bloodGroups: BloodGroup[];
     urgencies: Urgency[];
     districts: District[];
     search: string;
     sort?: SortOption;
-  }>({
-    bloodGroups: searchParams.getAll("bloodGroup") as BloodGroup[],
-    urgencies: searchParams.getAll("urgency") as Urgency[],
-    districts: searchParams.getAll("district") as District[],
-    search: searchParams.get("search") || "",
-    sort: (searchParams.get("sort") as SortOption) || "newest",
-  });
+  };
+  initialPage: number;
+};
 
-  const [page, setPage] = React.useState(
-    parseInt(searchParams.get("page") || "1", 10)
+/**
+ * Browse Requests Content Component
+ */
+export default function BrowseRequestsContent({
+  initialData,
+  initialFilters,
+  initialPage,
+}: BrowseRequestsContentProps) {
+  const router = useRouter();
+
+  // State is initialized from server-fetched data
+  const [filters, setFilters] = React.useState(initialFilters);
+  const [page, setPage] = React.useState(initialPage);
+  const data = initialData; // Use server data directly
+
+  // Build URL from current filters and page
+  const buildUrl = React.useCallback(
+    (newFilters: typeof filters, newPage: number) => {
+      const queryParams = new URLSearchParams();
+
+      if (newFilters.bloodGroups.length) {
+        newFilters.bloodGroups.forEach((bg) =>
+          queryParams.append("bloodGroup", bg)
+        );
+      }
+      if (newFilters.urgencies.length) {
+        newFilters.urgencies.forEach((u) => queryParams.append("urgency", u));
+      }
+      if (newFilters.districts.length) {
+        newFilters.districts.forEach((d) => queryParams.append("district", d));
+      }
+      if (newFilters.search) {
+        queryParams.set("search", newFilters.search);
+      }
+      if (newFilters.sort) {
+        queryParams.set("sort", newFilters.sort);
+      }
+      if (newPage > 1) {
+        queryParams.set("page", newPage.toString());
+      }
+
+      return queryParams.toString()
+        ? `/requests?${queryParams.toString()}`
+        : "/requests";
+    },
+    []
   );
 
-  // Data fetching state
-  const [data, setData] =
-    React.useState<PaginatedResponse<BloodRequest> | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-
-  // Fetch data when filters or page changes
-  React.useEffect(() => {
-    const loadRequests = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const result = await fetchRequests({
-          ...filters,
-          page,
-          limit: 12, // 12 cards per page (4×3 grid on desktop)
-        });
-        setData(result);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load requests"
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadRequests();
-  }, [filters, page]);
-
-  // Update URL when filters change
-  React.useEffect(() => {
-    const queryParams = new URLSearchParams();
-
-    if (filters.bloodGroups.length) {
-      filters.bloodGroups.forEach((bg) => queryParams.append("bloodGroup", bg));
-    }
-    if (filters.urgencies.length) {
-      filters.urgencies.forEach((u) => queryParams.append("urgency", u));
-    }
-    if (filters.districts.length) {
-      filters.districts.forEach((d) => queryParams.append("district", d));
-    }
-    if (filters.search) {
-      queryParams.set("search", filters.search);
-    }
-    if (filters.sort) {
-      queryParams.set("sort", filters.sort);
-    }
-    if (page > 1) {
-      queryParams.set("page", page.toString());
-    }
-
-    // Update URL without triggering navigation
-    const newUrl = queryParams.toString()
-      ? `/requests?${queryParams.toString()}`
-      : "/requests";
-    router.replace(newUrl, { scroll: false });
-  }, [filters, page, router]);
-
-  // Handle filter changes
+  // Handle filter changes - triggers server refetch via router.push
   const handleFilterChange = (newFilters: {
     bloodGroups?: BloodGroup[];
     urgencies?: Urgency[];
@@ -166,18 +96,40 @@ export default function BrowseRequestsContent() {
     search?: string;
     sort?: SortOption;
   }) => {
-    setFilters((prev) => ({
-      ...prev,
+    const updatedFilters = {
+      ...filters,
       ...newFilters,
-    }));
+    };
+    setFilters(updatedFilters);
     setPage(1); // Reset to page 1 when filters change
+    
+    // Navigate to new URL - triggers server refetch
+    router.push(buildUrl(updatedFilters, 1));
   };
 
-  // Handle page change
+  // Handle page change - triggers server refetch via router.push
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+    
+    // Navigate to new URL - triggers server refetch
+    router.push(buildUrl(filters, newPage));
+    
     // Scroll to top of results
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Handle clear all filters
+  const handleClearFilters = () => {
+    const clearedFilters = {
+      bloodGroups: [],
+      urgencies: [],
+      districts: [],
+      search: "",
+      sort: "newest" as SortOption,
+    };
+    setFilters(clearedFilters);
+    setPage(1);
+    router.push("/requests");
   };
 
   return (
@@ -194,16 +146,14 @@ export default function BrowseRequestsContent() {
                 Browse urgent blood donation requests near you
               </p>
             </div>
-            {data && !isLoading && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="font-mono tabular-data font-medium text-foreground">
-                  {data.totalCount}
-                </span>
-                <span>
-                  {data.totalCount === 1 ? "request" : "requests"} found
-                </span>
-              </div>
-            )}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="font-mono tabular-data font-medium text-foreground">
+                {data.totalCount}
+              </span>
+              <span>
+                {data.totalCount === 1 ? "request" : "requests"} found
+              </span>
+            </div>
           </div>
         </div>
       </section>
@@ -227,30 +177,8 @@ export default function BrowseRequestsContent() {
 
       {/* Results Section */}
       <section className="container mx-auto max-w-7xl px-4 py-8">
-        {/* Loading State */}
-        {isLoading && <RequestsGridSkeleton count={12} />}
-
-        {/* Error State */}
-        {error && !isLoading && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <AlertCircle className="h-12 w-12 text-destructive mb-4" />
-            <h2 className="font-heading text-xl font-semibold text-foreground mb-2">
-              Failed to Load Requests
-            </h2>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              {error}
-            </p>
-            <Button
-              onClick={() => window.location.reload()}
-              variant="outline"
-            >
-              Try Again
-            </Button>
-          </div>
-        )}
-
         {/* Empty State */}
-        {!isLoading && !error && data && data.data.length === 0 && (
+        {data.data.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <SearchX className="h-12 w-12 text-muted-foreground mb-4" />
             <h2 className="font-heading text-xl font-semibold text-foreground mb-2">
@@ -268,18 +196,7 @@ export default function BrowseRequestsContent() {
               filters.bloodGroups.length ||
               filters.urgencies.length ||
               filters.districts.length) && (
-              <Button
-                onClick={() =>
-                  setFilters({
-                    bloodGroups: [],
-                    urgencies: [],
-                    districts: [],
-                    search: "",
-                    sort: "newest",
-                  })
-                }
-                variant="outline"
-              >
+              <Button onClick={handleClearFilters} variant="outline">
                 Clear All Filters
               </Button>
             )}
@@ -287,7 +204,7 @@ export default function BrowseRequestsContent() {
         )}
 
         {/* Results Grid */}
-        {!isLoading && !error && data && data.data.length > 0 && (
+        {data.data.length > 0 && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {data.data.map((request, index) => (
