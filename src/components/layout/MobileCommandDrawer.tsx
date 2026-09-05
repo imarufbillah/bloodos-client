@@ -37,6 +37,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import type { ExtendedUser } from "@/types/auth";
 import { authClient } from "@/lib/auth-client";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
 interface MobileCommandDrawerProps {
   open: boolean;
@@ -130,7 +131,14 @@ export function MobileCommandDrawer({
               Match urgent hospital requirements with verified cooldown-eligible donors across Bangladesh in seconds.
             </p>
 
-            <Link href="/requests/add" onClick={() => onOpenChange(false)} className="block">
+            <Link 
+              href="/requests/add" 
+              onClick={() => {
+                triggerTactileFeedback(HAPTIC_PATTERNS.EMERGENCY_SOS);
+                onOpenChange(false);
+              }} 
+              className="block"
+            >
               <Button 
                 size="lg" 
                 className="w-full bg-crimson hover:bg-crimson/90 text-paper font-semibold gap-2 h-11 text-xs sm:text-sm shadow-sm transition-all duration-150 active:scale-[0.98]"

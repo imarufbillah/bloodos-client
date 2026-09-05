@@ -17,6 +17,7 @@ import { BloodGroup, BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { DISTRICTS } from "@/lib/constants/districts";
 import { Button } from "@/components/ui/button";
 import { EmergencyRadarCanvas } from "./EmergencyRadarCanvas";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
 interface EmergencyTriageHeroProps {
   stats: {
@@ -103,7 +104,11 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
 
             {/* Instant Emergency Actions */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1 animate-triage-3">
-              <Link href="/requests/add" className="w-full sm:w-auto">
+              <Link 
+                href="/requests/add" 
+                onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.EMERGENCY_SOS)}
+                className="w-full sm:w-auto"
+              >
                 <Button 
                   size="lg" 
                   className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold shadow-sm gap-2 h-11 px-6 text-sm transition-all duration-150 active:scale-[0.98]"
@@ -113,7 +118,11 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                   <ArrowRight className="h-4 w-4 shrink-0 opacity-80" />
                 </Button>
               </Link>
-              <Link href="/requests" className="w-full sm:w-auto">
+              <Link 
+                href="/requests" 
+                onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
+                className="w-full sm:w-auto"
+              >
                 <Button 
                   variant="outline" 
                   size="lg" 
@@ -211,7 +220,10 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                           type="button"
                           aria-pressed={isSelected}
                           aria-label={`Blood group ${bg}`}
-                          onClick={() => setSelectedBloodGroup(isSelected ? "" : bg)}
+                          onClick={() => {
+                            triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+                            setSelectedBloodGroup(isSelected ? "" : bg);
+                          }}
                           className={`h-11 rounded-lg font-mono font-bold text-sm transition-all duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson ${
                             isSelected
                               ? "bg-crimson text-paper shadow-md scale-[1.02] ring-2 ring-crimson ring-offset-1 animate-chip-pop"

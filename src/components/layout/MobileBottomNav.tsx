@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import type { ExtendedUser } from "@/types/auth";
 import { Home, Heart, Users, User, PlusCircle } from "lucide-react";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
 export function MobileBottomNav() {
   const pathname = usePathname();
@@ -17,6 +18,7 @@ export function MobileBottomNav() {
         {/* Home */}
         <Link
           href="/"
+          onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
           className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-150 active:scale-90 ${
             pathname === "/"
               ? "text-crimson"
@@ -30,6 +32,7 @@ export function MobileBottomNav() {
         {/* Requests */}
         <Link
           href="/requests"
+          onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
           className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-150 active:scale-90 ${
             pathname.startsWith("/requests") && pathname !== "/requests/add"
               ? "text-crimson"
@@ -43,6 +46,7 @@ export function MobileBottomNav() {
         {/* Central SOS Action */}
         <Link
           href="/requests/add"
+          onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.EMERGENCY_SOS)}
           className="flex -translate-y-3 flex-col items-center justify-center group"
         >
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-crimson text-paper shadow-lg shadow-crimson/30 ring-4 ring-background transition-transform duration-150 active:scale-90 group-hover:scale-105">
@@ -56,6 +60,7 @@ export function MobileBottomNav() {
         {/* Donors */}
         <Link
           href="/donors"
+          onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
           className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-150 active:scale-90 ${
             pathname.startsWith("/donors")
               ? "text-crimson"
@@ -69,6 +74,7 @@ export function MobileBottomNav() {
         {/* Profile / Sign In */}
         <Link
           href={user ? "/profile" : "/signin"}
+          onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
           className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-150 active:scale-90 ${
             pathname.startsWith("/profile") || pathname.startsWith("/signin")
               ? "text-crimson"
