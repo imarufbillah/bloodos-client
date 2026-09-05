@@ -9,6 +9,7 @@ import { isCompatible } from "@/lib/constants/compatibility";
 import {
   Hospital,
   Clock,
+  MapPin,
   ShieldCheck,
   HeartHandshake,
   Navigation,
@@ -54,7 +55,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
 
   return (
     <article
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-200 bg-card p-4 sm:p-6 shadow-xs hover:shadow-md ${
+      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-200 bg-card p-4 sm:p-5 shadow-xs hover:shadow-md ${
         isCritical
           ? "border-destructive/40 hover:border-destructive bg-destructive/[0.02]"
           : isUrgent
@@ -70,35 +71,10 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
         <div className="absolute top-0 left-0 right-0 h-1 bg-destructive" />
       )}
 
-      {/* Top Header Row: Blood Group, Urgency Tier, Time Countdown */}
+      {/* Main Content Area */}
       <div className="space-y-3.5">
-        <div className="flex items-start justify-between gap-3">
-          {/* Blood Group Hero Badge */}
-          <div className="flex items-center gap-3">
-            <div
-              className={`flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl font-heading text-base sm:text-lg font-bold shadow-xs transition-transform duration-200 group-hover:scale-105 ${
-                isCritical
-                  ? "bg-destructive text-destructive-foreground"
-                  : "bg-primary text-primary-foreground"
-              }`}
-            >
-              <span>{request.bloodGroup}</span>
-            </div>
-
-            <div className="space-y-0.5">
-              <span className="font-mono text-xs font-semibold text-foreground">
-                {request.unitsNeeded} {request.unitsNeeded === 1 ? "Bag" : "Bags"} Needed
-              </span>
-              <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
-                <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className={isCritical ? "font-semibold text-destructive" : ""}>
-                  {getTimeLabel()}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Urgency Badge */}
+        {/* Top Meta Bar: Urgency Pill + Quantity Required */}
+        <div className="flex items-center justify-between gap-2">
           <div
             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
               isCritical
@@ -116,24 +92,52 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
             )}
             <span>{request.urgency.toUpperCase()}</span>
           </div>
+
+          <span className="font-mono text-xs font-semibold text-foreground/90 bg-muted/50 px-2.5 py-0.5 rounded-md border border-border/50">
+            {request.unitsNeeded} {request.unitsNeeded === 1 ? "Bag" : "Bags"} Needed
+          </span>
         </div>
 
-        {/* Patient & Hospital Info */}
-        <div className="space-y-2 pt-1 border-t border-border/60">
-          <div className="flex items-baseline justify-between gap-2">
-            <h3 className="font-heading text-base sm:text-lg font-bold text-foreground leading-snug group-hover:text-primary transition-colors">
+        {/* Hero Identity Row: Blood Group Badge + Patient Info */}
+        <div className="flex items-center gap-3 pt-0.5">
+          <div
+            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl font-heading text-lg font-bold shadow-xs transition-transform duration-200 group-hover:scale-105 ${
+              isCritical
+                ? "bg-destructive text-destructive-foreground"
+                : "bg-primary text-primary-foreground"
+            }`}
+          >
+            <span>{request.bloodGroup}</span>
+          </div>
+
+          <div className="min-w-0 flex-1 space-y-0.5">
+            <h3 className="font-heading text-base font-bold text-foreground truncate group-hover:text-primary transition-colors">
               <Link href={`/requests/${request._id}`} className="hover:underline focus-visible:outline-none">
                 {request.patientName}
               </Link>
             </h3>
-            <span className="text-[11px] font-mono text-muted-foreground shrink-0">
-              {request.district}
-            </span>
-          </div>
 
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
+              <div className="flex items-center gap-1">
+                <MapPin className="h-3 w-3 text-teal shrink-0" aria-hidden="true" />
+                <span className="font-medium text-foreground/90">{request.district}</span>
+              </div>
+              <span className="text-muted-foreground/40">•</span>
+              <div className="flex items-center gap-1">
+                <Clock className="h-3 w-3 text-muted-foreground shrink-0" aria-hidden="true" />
+                <span className={isCritical ? "font-semibold text-destructive" : ""}>
+                  {getTimeLabel()}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Hospital Logistics Info */}
+        <div className="space-y-1.5 pt-2.5 border-t border-border/60">
           <div className="flex items-start gap-2 text-xs text-muted-foreground leading-relaxed">
             <Hospital className="h-4 w-4 shrink-0 text-muted-foreground mt-0.5" />
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="font-medium text-foreground truncate">{request.hospitalName}</p>
               {request.hospitalAddress && (
                 <p className="text-[11px] text-muted-foreground truncate">{request.hospitalAddress}</p>
