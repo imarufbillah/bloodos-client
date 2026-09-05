@@ -28,116 +28,90 @@ async function SignUpContent({ searchParams }: SignUpPageProps) {
   const destination = redirectParam || callbackUrl || "/profile";
 
   return (
-    <div className="relative min-h-[calc(100dvh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Subtle ambient light aura */}
+    <div className="relative min-h-[calc(100dvh-4rem)] flex items-center justify-center py-10 sm:py-16 px-4 sm:px-6 lg:px-8">
+      {/* Ambient background glow */}
       <div 
-        className="pointer-events-none absolute top-1/4 left-1/2 h-[450px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-teal/5 blur-[120px]" 
+        className="pointer-events-none absolute top-1/3 left-1/2 h-[380px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-teal/5 blur-[120px]" 
         aria-hidden="true" 
       />
 
       <div className="container relative mx-auto max-w-7xl w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           
-          {/* Left Showcase Column: Why Join BloodOS */}
+          {/* Left Column: Essential System Context */}
           <div className="lg:col-span-6 space-y-6 hidden lg:flex flex-col justify-center">
-            {/* Live Operational Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-crimson/20 bg-crimson/5 px-3 py-1 text-xs font-semibold text-crimson w-fit">
-              <span className="relative flex h-2 w-2">
-                <span className="inline-flex h-2 w-2 rounded-full bg-crimson animate-pulse" />
-              </span>
-              <span className="font-mono">JOIN 1,400+ READY DONORS • BANGLADESH</span>
+            <div className="inline-flex items-center gap-2 text-xs font-semibold text-crimson font-mono">
+              <span className="h-2 w-2 rounded-full bg-crimson animate-pulse" />
+              <span>JOIN 1,400+ READY DONORS • BANGLADESH</span>
             </div>
 
-            {/* Editorial Authority Headline */}
             <div className="space-y-3">
               <h1 className="font-heading text-3xl xl:text-4xl font-bold tracking-tight text-foreground leading-tight">
-                One account. <br />
+                One unified network. <br />
                 <span className="text-crimson">Direct impact</span> for every emergency.
               </h1>
-              <p className="text-base text-muted-foreground leading-relaxed">
-                Registering with BloodOS means hospital patients in urgent need can reach you when it matters most—with complete privacy masking and zero commercial brokerage.
+              <p className="text-base text-muted-foreground leading-relaxed max-w-lg">
+                Registering with BloodOS means emergency patients in urgent need can reach you when it matters most—with complete privacy masking and zero middleman fees.
               </p>
             </div>
 
-            {/* Impact Highlights Grid */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-start gap-3 rounded-xl border border-border/80 bg-card/60 p-3.5 shadow-xs">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-crimson/10 text-crimson mt-0.5">
-                  <CheckCircle2 className="h-4 w-4" />
-                </div>
-                <div className="space-y-0.5">
-                  <p className="text-xs font-bold text-foreground">1-Tap Emergency SOS Responses</p>
-                  <p className="text-[11px] text-muted-foreground">Receive prioritized notifications when a patient matches your blood group in your district.</p>
-                </div>
+            {/* Distilled Telemetry Highlights */}
+            <div className="space-y-3 pt-2 border-t border-border/60 max-w-lg">
+              <div className="flex items-center gap-3 text-sm text-foreground/90">
+                <CheckCircle2 className="h-4 w-4 text-crimson shrink-0" />
+                <span><strong className="font-semibold text-foreground">1-Tap SOS Responses:</strong> Immediate alerts when patients match your group.</span>
               </div>
-
-              <div className="flex items-start gap-3 rounded-xl border border-border/80 bg-card/60 p-3.5 shadow-xs">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-teal/10 text-teal mt-0.5">
-                  <ShieldCheck className="h-4 w-4" />
-                </div>
-                <div className="space-y-0.5">
-                  <p className="text-xs font-bold text-foreground">Full Number Masking & Zero Spam</p>
-                  <p className="text-[11px] text-muted-foreground">Your contact number is never indexed publicly or shared with commercial entities.</p>
-                </div>
+              <div className="flex items-center gap-3 text-sm text-foreground/90">
+                <ShieldCheck className="h-4 w-4 text-teal shrink-0" />
+                <span><strong className="font-semibold text-foreground">Masked Contact Info:</strong> Never indexed publicly or sold to third parties.</span>
               </div>
-
-              <div className="flex items-start gap-3 rounded-xl border border-border/80 bg-card/60 p-3.5 shadow-xs">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-ochre/10 text-ochre mt-0.5">
-                  <HeartHandshake className="h-4 w-4" />
-                </div>
-                <div className="space-y-0.5">
-                  <p className="text-xs font-bold text-foreground">56-Day Biological Rest Tracker</p>
-                  <p className="text-[11px] text-muted-foreground">Automatic eligibility countdowns ensure you only donate when medically ready.</p>
-                </div>
+              <div className="flex items-center gap-3 text-sm text-foreground/90">
+                <HeartHandshake className="h-4 w-4 text-ochre shrink-0" />
+                <span><strong className="font-semibold text-foreground">100% Free & Voluntary:</strong> Zero coordination charges, ever.</span>
               </div>
             </div>
           </div>
 
-          {/* Right Column: High-Contrast Registration Capsule */}
+          {/* Right Column: Distilled Registration Capsule */}
           <div className="lg:col-span-6 w-full max-w-md mx-auto">
             <div className="rounded-2xl border border-border bg-card/95 backdrop-blur-md p-6 sm:p-8 shadow-sm space-y-6">
               
-              {/* Header */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-crimson text-paper shadow-xs">
-                      <Droplet className="h-4 w-4 fill-paper" />
-                    </div>
-                    <span className="font-heading font-bold text-base text-foreground">BloodOS</span>
+              {/* Card Header */}
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-crimson text-paper shadow-xs">
+                    <Droplet className="h-4 w-4 fill-paper" />
                   </div>
-                  <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground border border-border/70">
-                    DONOR ONBOARDING
-                  </span>
+                  <span className="font-heading font-bold text-base text-foreground">BloodOS</span>
                 </div>
                 
-                <h2 className="font-heading text-2xl font-bold text-foreground pt-1">
-                  Create Your Account
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground">
+                  Create Account
                 </h2>
                 <p className="text-xs text-muted-foreground">
-                  Join as a lifesaver or patient coordinator in less than 30 seconds.
+                  Join as a donor or coordinator in less than 30 seconds
                 </p>
               </div>
 
               {/* Form Component */}
               <SignUpForm callbackUrl={destination} />
 
-              {/* Mode Switch Affordance */}
-              <div className="pt-2 border-t border-border/60 text-center space-y-3">
+              {/* Footer Links */}
+              <div className="pt-2 border-t border-border/60 text-center space-y-2">
                 <p className="text-xs text-muted-foreground">
-                  Already registered with BloodOS?{" "}
+                  Already registered?{" "}
                   <Link
                     href={`/signin${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ""}`}
-                    className="font-semibold text-crimson hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-crimson rounded px-1"
+                    className="font-semibold text-crimson hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-crimson rounded"
                   >
-                    Sign In instead
+                    Sign in instead
                   </Link>
                 </p>
 
                 <p className="text-[11px] text-muted-foreground/80">
                   By registering, you agree to our{" "}
                   <Link href="/privacy" className="underline hover:text-foreground transition-colors">
-                    Privacy Policy & Donor Code
+                    Privacy Policy
                   </Link>
                 </p>
               </div>

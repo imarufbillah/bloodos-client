@@ -37,7 +37,7 @@ export default function GoogleAuth({ label = "Continue with Google" }: GoogleAut
       onClick={handleGoogleSignIn}
       variant="outline"
       size="lg"
-      className="w-full h-12 gap-3 font-semibold text-sm border-border/80 bg-background hover:bg-muted/60 text-foreground transition-all duration-150 active:scale-[0.98] shadow-xs"
+      className="w-full h-11 gap-3 font-semibold text-sm border-border/80 bg-background hover:bg-muted/60 text-foreground transition-all duration-150 active:scale-[0.98] shadow-xs"
       disabled={loading}
     >
       <svg className="size-5 shrink-0" viewBox="0 0 24 24">

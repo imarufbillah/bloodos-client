@@ -244,16 +244,10 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
           disabled={isLoading || !!rateLimitError}
           className="w-full h-11 bg-primary hover:bg-primary/90 text-paper font-semibold gap-2 shadow-xs transition-all duration-150 active:scale-[0.98] mt-2"
         >
-          <span>{isLoading ? "Creating Account..." : "Create BloodOS Account"}</span>
+          <span>{isLoading ? "Creating Account..." : "Create Account"}</span>
           <ArrowRight className="h-4 w-4 opacity-80" />
         </Button>
       </form>
-
-      {/* Protocol Reassurance */}
-      <div className="flex items-center gap-2 rounded-lg bg-muted/40 border border-border/70 p-2.5 text-[11px] text-muted-foreground">
-        <ShieldCheck className="h-4 w-4 text-teal shrink-0" />
-        <span>100% Free & Voluntary. BloodOS never charges fees for blood coordination.</span>
-      </div>
     </div>
   );
 }
