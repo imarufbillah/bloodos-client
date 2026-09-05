@@ -142,33 +142,28 @@ export function RequestsModerationTable({
   return (
     <div className="space-y-4">
       {/* Controls / Filter Bar */}
-      <div className="bg-card border border-border rounded-xl p-4 shadow-xs">
-        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+      <div className="bg-card border border-border rounded-xl p-3.5 shadow-xs">
+        <div className="flex flex-col md:flex-row gap-2.5 items-stretch md:items-center justify-between">
           {/* Search Field */}
-          <div className="relative flex-1 min-w-[240px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <div className="relative flex-1 min-w-[220px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
             <input
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search patient, hospital, district, or ID..."
-              className="w-full pl-9 pr-4 py-2 text-sm bg-background border border-input rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full pl-8.5 pr-4 py-1.5 text-xs sm:text-sm bg-background border border-input rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               aria-label="Search blood requests"
             />
           </div>
 
           {/* Quick Filter Selectors */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Filter className="h-3.5 w-3.5" />
-              <span>Filters:</span>
-            </div>
-
             {/* Status Filter */}
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-1.5 text-xs font-medium bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="px-2.5 py-1.5 text-xs font-medium bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               aria-label="Filter by request status"
             >
               <option value="all">All Statuses</option>
@@ -183,7 +178,7 @@ export function RequestsModerationTable({
             <select
               value={bloodFilter}
               onChange={(e) => setBloodFilter(e.target.value)}
-              className="px-3 py-1.5 text-xs font-medium bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring font-mono"
+              className="px-2.5 py-1.5 text-xs font-medium bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring font-mono"
               aria-label="Filter by blood group"
             >
               <option value="all">All Blood Groups</option>
@@ -203,7 +198,7 @@ export function RequestsModerationTable({
                   setStatusFilter("all");
                   setBloodFilter("all");
                 }}
-                className="text-xs h-8 px-2 text-muted-foreground hover:text-foreground"
+                className="text-xs h-7 px-2 text-muted-foreground hover:text-foreground"
               >
                 Reset
               </Button>
@@ -212,14 +207,11 @@ export function RequestsModerationTable({
         </div>
 
         {/* Results Counter */}
-        <div className="mt-3 pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <Layers className="h-3.5 w-3.5 text-crimson" />
-            <span>
-              Showing <strong className="text-foreground font-mono tabular-nums">{filteredRequests.length}</strong> of{" "}
-              <strong className="text-foreground font-mono tabular-nums">{requests.length}</strong> moderation records
-            </span>
-          </div>
+        <div className="mt-2.5 pt-2.5 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+          <span>
+            Showing <strong className="text-foreground font-mono tabular-nums">{filteredRequests.length}</strong> of{" "}
+            <strong className="text-foreground font-mono tabular-nums">{requests.length}</strong> requests
+          </span>
         </div>
       </div>
 
@@ -497,14 +489,14 @@ export function RequestsModerationTable({
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Please specify a clear reason for rejecting this broadcast so the requester is informed.
+              The requester will receive an automated notification with this rejection reason.
             </p>
 
             {/* Quick Reason Chips */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-foreground flex items-center gap-1">
                 <Sparkles className="h-3 w-3 text-crimson" />
-                Quick Reason Presets:
+                Select preset reason:
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {REJECT_PRESET_REASONS.map((reason) => (
@@ -530,7 +522,7 @@ export function RequestsModerationTable({
                 htmlFor="rejection-reason"
                 className="text-xs font-semibold text-foreground"
               >
-                Custom Reason / Note:
+                Or provide specific rejection notes:
               </label>
               <textarea
                 id="rejection-reason"
@@ -558,7 +550,7 @@ export function RequestsModerationTable({
                 disabled={isProcessing}
                 className="bg-amber-600 hover:bg-amber-700 text-white"
               >
-                {isProcessing ? "Rejecting..." : "Confirm Rejection"}
+                {isProcessing ? "Rejecting..." : "Reject Request"}
               </Button>
             </div>
           </div>
@@ -571,8 +563,8 @@ export function RequestsModerationTable({
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           title="Delete Blood Request"
-          description={`Are you sure you want to permanently delete the request for ${selectedRequest?.patientName}? This action will wipe all linked donor dispatches and cannot be undone.`}
-          confirmText="Permanently Delete"
+          description={`Permanently delete blood request for ${selectedRequest?.patientName}? This action immediately cancels all active donor dispatches and cannot be undone.`}
+          confirmText="Delete Request"
           variant="destructive"
           onConfirm={handleDelete}
         />

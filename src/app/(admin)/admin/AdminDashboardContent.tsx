@@ -70,7 +70,7 @@ export function AdminDashboardContent({
     try {
       setIsProcessing(true);
       await rejectRequest(req._id, "Rejected via admin inspector");
-      toast.success("Request rejected successfully");
+      toast.success("Request rejected");
       setInspectedItem(null);
       handleRefresh();
     } catch (error) {
@@ -85,7 +85,7 @@ export function AdminDashboardContent({
     try {
       setIsProcessing(true);
       await deleteRequest(req._id);
-      toast.success("Request deleted successfully");
+      toast.success("Request permanently deleted");
       setInspectedItem(null);
       handleRefresh();
     } catch (error) {
@@ -106,12 +106,12 @@ export function AdminDashboardContent({
         willBan ? "Banned via admin inspector" : "Unbanned via admin inspector",
       );
       toast.success(
-        willBan ? `${user.name} banned` : `${user.name} unbanned`,
+        willBan ? `${user.name} suspended` : `${user.name} access restored`,
       );
       setInspectedItem(null);
       handleRefresh();
     } catch (error) {
-      toast.error("Failed to update user ban status");
+      toast.error("Failed to update user status");
       console.error(error);
     } finally {
       setIsProcessing(false);
@@ -123,7 +123,11 @@ export function AdminDashboardContent({
       setIsProcessing(true);
       const newRole = user.role === "admin" ? "user" : "admin";
       await changeUserRole(user._id, newRole);
-      toast.success(`Role changed to ${newRole}`);
+      toast.success(
+        newRole === "admin"
+          ? `${user.name} promoted to administrator`
+          : `${user.name} changed to standard user`,
+      );
       setInspectedItem(null);
       handleRefresh();
     } catch (error) {
@@ -160,7 +164,7 @@ export function AdminDashboardContent({
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-                  Platform oversight, emergency request moderation, and donor identity governance
+                  Platform telemetry, emergency request moderation, and donor governance
                 </p>
               </div>
             </div>
@@ -173,7 +177,7 @@ export function AdminDashboardContent({
                 onClick={handleRefresh}
                 disabled={isRefreshing}
                 className="text-xs h-9 px-3 gap-1.5 shadow-xs touch-manipulation"
-                aria-label="Refresh platform telemetry"
+                aria-label="Synchronize platform telemetry"
               >
                 <RefreshCw
                   className={`h-3.5 w-3.5 ${isRefreshing ? "animate-spin text-crimson" : "text-muted-foreground"}`}
@@ -196,7 +200,7 @@ export function AdminDashboardContent({
                 className="gap-2 px-3.5 py-2 text-xs sm:text-sm rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
               >
                 <BarChart3 className="h-4 w-4 text-crimson" />
-                <span>Overview & Telemetry</span>
+                <span>Telemetry</span>
               </TabsTrigger>
 
               <TabsTrigger
@@ -204,7 +208,7 @@ export function AdminDashboardContent({
                 className="gap-2 px-3.5 py-2 text-xs sm:text-sm rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
               >
                 <Shield className="h-4 w-4 text-amber-500" />
-                <span>Request Moderation</span>
+                <span>Moderation Queue</span>
                 {pendingRequestsCount > 0 ? (
                   <span className="ml-1 flex h-4.5 min-w-4.5 px-1 items-center justify-center rounded-full bg-crimson text-[10px] font-bold text-white tabular-nums">
                     {pendingRequestsCount}
@@ -221,7 +225,7 @@ export function AdminDashboardContent({
                 className="gap-2 px-3.5 py-2 text-xs sm:text-sm rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
               >
                 <Users className="h-4 w-4 text-primary" />
-                <span>User Governance</span>
+                <span>User Accounts</span>
                 <span className="ml-1 flex h-4.5 min-w-4.5 px-1 items-center justify-center rounded-full bg-muted-foreground/20 text-[10px] font-mono tabular-nums text-muted-foreground">
                   {users.length}
                 </span>
@@ -256,22 +260,6 @@ export function AdminDashboardContent({
 
           {/* Tab 2: Request Moderation */}
           <TabsContent value="moderation" className="space-y-4 focus-visible:outline-none">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <div>
-                <h2 className="font-heading text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
-                  <span>Emergency Request Moderation</span>
-                  {pendingRequestsCount > 0 && (
-                    <span className="text-xs font-normal text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                      {pendingRequestsCount} awaiting review
-                    </span>
-                  )}
-                </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-                  Verify validity, reject duplicate broadcasts, or delete obsolete requests
-                </p>
-              </div>
-            </div>
-
             <RequestsModerationTable
               requests={requests}
               onRefresh={handleRefresh}
@@ -281,17 +269,6 @@ export function AdminDashboardContent({
 
           {/* Tab 3: User Governance */}
           <TabsContent value="users" className="space-y-4 focus-visible:outline-none">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <div>
-                <h2 className="font-heading text-lg sm:text-xl font-bold text-foreground">
-                  User & Volunteer Governance
-                </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-                  Manage user roles, audit activity, and enforce platform suspension rules
-                </p>
-              </div>
-            </div>
-
             <UsersManagementTable
               users={users}
               currentUserId={session?.user?.id || ""}

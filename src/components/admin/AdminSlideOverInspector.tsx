@@ -127,10 +127,10 @@ export function AdminSlideOverInspector({
             /* Request Details */
             <div className="space-y-5 text-sm">
               {/* Status and Blood Group Banner */}
-              <div className="flex items-center justify-between p-3.5 bg-muted/50 rounded-xl border border-border">
+              <div className="flex items-center justify-between p-3.5 bg-muted/40 rounded-xl border border-border">
                 <div className="space-y-1">
-                  <span className="text-[10px] uppercase font-semibold text-muted-foreground">
-                    Current Status
+                  <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+                    Status
                   </span>
                   <div>
                     <StatusBadge status={item.data.status as RequestStatus} />
@@ -138,8 +138,8 @@ export function AdminSlideOverInspector({
                 </div>
 
                 <div className="space-y-1 text-right">
-                  <span className="text-[10px] uppercase font-semibold text-muted-foreground">
-                    Required Blood
+                  <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+                    Blood Group
                   </span>
                   <div>
                     <BloodGroupBadge
@@ -149,21 +149,21 @@ export function AdminSlideOverInspector({
                 </div>
               </div>
 
-              {/* Technical Telemetry Metadata */}
-              <div className="space-y-3">
+              {/* Case Telemetry */}
+              <div className="space-y-2">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Case Telemetry
+                  Incident Information
                 </h3>
 
-                <div className="space-y-2.5 bg-card rounded-xl p-3.5 border border-border">
-                  <div className="flex justify-between items-center text-xs">
+                <div className="divide-y divide-border border-y border-border">
+                  <div className="flex justify-between items-center py-2.5 text-xs">
                     <span className="text-muted-foreground">Incident ID</span>
                     <span className="font-mono text-foreground font-medium bg-muted px-1.5 py-0.5 rounded border border-border">
                       {item.data._id}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-xs">
+                  <div className="flex justify-between items-center py-2.5 text-xs">
                     <span className="text-muted-foreground">Broadcast Date</span>
                     <span className="font-mono tabular-nums text-foreground">
                       {format(new Date(item.data.createdAt), "PPpp")}
@@ -171,7 +171,7 @@ export function AdminSlideOverInspector({
                   </div>
 
                   {item.data.neededByDate && (
-                    <div className="flex justify-between items-center text-xs">
+                    <div className="flex justify-between items-center py-2.5 text-xs">
                       <span className="text-muted-foreground">Required By</span>
                       <span className="font-mono tabular-nums text-crimson font-medium">
                         {format(new Date(item.data.neededByDate), "PPpp")}
@@ -180,51 +180,36 @@ export function AdminSlideOverInspector({
                   )}
 
                   {item.data.urgency && (
-                    <div className="flex justify-between items-center text-xs">
+                    <div className="flex justify-between items-center py-2.5 text-xs">
                       <span className="text-muted-foreground">Urgency Level</span>
                       <span className="capitalize font-medium text-amber-600">
                         {item.data.urgency}
                       </span>
                     </div>
                   )}
-                </div>
-              </div>
 
-              {/* Location & Facility */}
-              <div className="space-y-3">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Facility & Region
-                </h3>
-
-                <div className="space-y-2.5 bg-card rounded-xl p-3.5 border border-border">
-                  <div className="flex items-start gap-2 text-xs">
-                    <Building2 className="h-4 w-4 text-crimson shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium text-foreground">
-                        {item.data.hospitalName || "Hospital Unspecified"}
-                      </p>
-                      <p className="text-muted-foreground">Medical Center</p>
-                    </div>
+                  <div className="flex justify-between items-start py-2.5 text-xs">
+                    <span className="text-muted-foreground">Medical Facility</span>
+                    <span className="text-foreground font-medium text-right max-w-[220px]">
+                      {item.data.hospitalName || "Unspecified Hospital"}
+                    </span>
                   </div>
 
-                  <div className="flex items-start gap-2 text-xs pt-1 border-t border-border">
-                    <MapPin className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium text-foreground">
-                        {item.data.district || "District Unspecified"}
-                      </p>
-                      <p className="text-muted-foreground">District / Division</p>
-                    </div>
+                  <div className="flex justify-between items-center py-2.5 text-xs">
+                    <span className="text-muted-foreground">District / Region</span>
+                    <span className="text-foreground font-medium">
+                      {item.data.district || "Unspecified District"}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Public Page Link */}
-              <div className="pt-2">
+              <div className="pt-1">
                 <Link
                   href={`/requests/${item.data._id}`}
                   target="_blank"
-                  className="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 text-xs font-medium rounded-lg border border-border bg-muted/60 text-foreground hover:bg-muted transition-colors"
+                  className="w-full flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-medium rounded-lg border border-border bg-muted/40 text-foreground hover:bg-muted transition-colors"
                 >
                   <span>Open Public Case Page</span>
                   <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
@@ -235,7 +220,7 @@ export function AdminSlideOverInspector({
             /* User Details */
             <div className="space-y-5 text-sm">
               {/* User Avatar & Identity Card */}
-              <div className="p-4 bg-muted/50 rounded-xl border border-border flex items-center gap-3.5">
+              <div className="p-4 bg-muted/40 rounded-xl border border-border flex items-center gap-3.5">
                 <div className="h-12 w-12 rounded-full bg-crimson/10 text-crimson flex items-center justify-center font-bold text-base uppercase shrink-0 border border-crimson/20">
                   {item.data.name ? item.data.name.charAt(0) : "U"}
                 </div>
@@ -256,11 +241,11 @@ export function AdminSlideOverInspector({
                 </div>
               </div>
 
-              {/* Account Role & Ban Status */}
+              {/* Account Status Grid */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-card rounded-xl border border-border space-y-1">
-                  <span className="text-[10px] uppercase font-semibold text-muted-foreground">
-                    System Role
+                <div className="p-3 bg-muted/30 rounded-xl border border-border space-y-1">
+                  <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+                    Role
                   </span>
                   <div className="flex items-center gap-1.5 font-medium text-xs text-foreground capitalize">
                     {item.data.role === "admin" ? (
@@ -272,14 +257,14 @@ export function AdminSlideOverInspector({
                   </div>
                 </div>
 
-                <div className="p-3 bg-card rounded-xl border border-border space-y-1">
-                  <span className="text-[10px] uppercase font-semibold text-muted-foreground">
-                    Account Status
+                <div className="p-3 bg-muted/30 rounded-xl border border-border space-y-1">
+                  <span className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">
+                    Status
                   </span>
                   <div>
                     {item.data.banned ? (
                       <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive">
-                        <Ban className="h-3 w-3" /> Banned
+                        <Ban className="h-3 w-3" /> Suspended
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-600">
@@ -291,20 +276,20 @@ export function AdminSlideOverInspector({
               </div>
 
               {/* Profile Telemetry */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Profile Metadata
+                  User Details
                 </h3>
 
-                <div className="space-y-2.5 bg-card rounded-xl p-3.5 border border-border">
-                  <div className="flex justify-between items-center text-xs">
+                <div className="divide-y divide-border border-y border-border">
+                  <div className="flex justify-between items-center py-2.5 text-xs">
                     <span className="text-muted-foreground">User ID</span>
                     <span className="font-mono text-foreground font-medium bg-muted px-1.5 py-0.5 rounded border border-border">
                       {item.data._id}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-xs">
+                  <div className="flex justify-between items-center py-2.5 text-xs">
                     <span className="text-muted-foreground">Blood Group</span>
                     {item.data.bloodGroup ? (
                       <BloodGroupBadge
@@ -315,15 +300,15 @@ export function AdminSlideOverInspector({
                     )}
                   </div>
 
-                  <div className="flex justify-between items-center text-xs">
+                  <div className="flex justify-between items-center py-2.5 text-xs">
                     <span className="text-muted-foreground">District</span>
                     <span className="text-foreground font-medium">
                       {item.data.district || "Unspecified"}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-muted-foreground">Registered</span>
+                  <div className="flex justify-between items-center py-2.5 text-xs">
+                    <span className="text-muted-foreground">Registration Date</span>
                     <span className="font-mono tabular-nums text-foreground">
                       {format(new Date(item.data.createdAt), "PP")}
                     </span>
@@ -347,7 +332,7 @@ export function AdminSlideOverInspector({
                   className="flex-1 text-xs h-9 min-h-[36px] text-amber-600 border-amber-600/30 hover:bg-amber-500/10 touch-manipulation"
                 >
                   <XCircle className="h-3.5 w-3.5 mr-1" />
-                  Reject
+                  Reject Request
                 </Button>
               )}
 
@@ -360,7 +345,7 @@ export function AdminSlideOverInspector({
                   className="flex-1 text-xs h-9 min-h-[36px] text-destructive border-destructive/30 hover:bg-destructive/10 touch-manipulation"
                 >
                   <Trash2 className="h-3.5 w-3.5 mr-1" />
-                  Delete
+                  Delete Broadcast
                 </Button>
               )}
             </div>
@@ -381,12 +366,12 @@ export function AdminSlideOverInspector({
                   {item.data.banned ? (
                     <>
                       <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
-                      Unban
+                      Restore Access
                     </>
                   ) : (
                     <>
                       <Ban className="h-3.5 w-3.5 mr-1" />
-                      Ban
+                      Suspend Account
                     </>
                   )}
                 </Button>
@@ -403,12 +388,12 @@ export function AdminSlideOverInspector({
                   {item.data.role === "admin" ? (
                     <>
                       <User className="h-3.5 w-3.5 mr-1" />
-                      Demote
+                      Demote to User
                     </>
                   ) : (
                     <>
                       <Shield className="h-3.5 w-3.5 mr-1 text-crimson" />
-                      Promote
+                      Promote to Admin
                     </>
                   )}
                 </Button>

@@ -136,33 +136,28 @@ export function UsersManagementTable({
   return (
     <div className="space-y-4">
       {/* Controls / Filter Bar */}
-      <div className="bg-card border border-border rounded-xl p-4 shadow-xs">
-        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+      <div className="bg-card border border-border rounded-xl p-3.5 shadow-xs">
+        <div className="flex flex-col md:flex-row gap-2.5 items-stretch md:items-center justify-between">
           {/* Search Field */}
-          <div className="relative flex-1 min-w-[240px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <div className="relative flex-1 min-w-[220px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
             <input
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search user name, email, district, blood group..."
-              className="w-full pl-9 pr-4 py-2 text-sm bg-background border border-input rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full pl-8.5 pr-4 py-1.5 text-xs sm:text-sm bg-background border border-input rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               aria-label="Search users"
             />
           </div>
 
           {/* Quick Filter Selectors */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Filter className="h-3.5 w-3.5" />
-              <span>Filters:</span>
-            </div>
-
             {/* Role Filter */}
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="px-3 py-1.5 text-xs font-medium bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="px-2.5 py-1.5 text-xs font-medium bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               aria-label="Filter by user role"
             >
               <option value="all">All Roles</option>
@@ -174,12 +169,12 @@ export function UsersManagementTable({
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-1.5 text-xs font-medium bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="px-2.5 py-1.5 text-xs font-medium bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               aria-label="Filter by user status"
             >
               <option value="all">All Statuses</option>
               <option value="active">Active Only</option>
-              <option value="banned">Banned Only</option>
+              <option value="banned">Suspended Only</option>
             </select>
 
             {(searchQuery || roleFilter !== "all" || statusFilter !== "all") && (
@@ -191,7 +186,7 @@ export function UsersManagementTable({
                   setRoleFilter("all");
                   setStatusFilter("all");
                 }}
-                className="text-xs h-8 px-2 text-muted-foreground hover:text-foreground"
+                className="text-xs h-7 px-2 text-muted-foreground hover:text-foreground"
               >
                 Reset
               </Button>
@@ -200,14 +195,11 @@ export function UsersManagementTable({
         </div>
 
         {/* Results Counter */}
-        <div className="mt-3 pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <Layers className="h-3.5 w-3.5 text-crimson" />
-            <span>
-              Showing <strong className="text-foreground font-mono tabular-nums">{filteredUsers.length}</strong> of{" "}
-              <strong className="text-foreground font-mono tabular-nums">{users.length}</strong> registered users
-            </span>
-          </div>
+        <div className="mt-2.5 pt-2.5 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+          <span>
+            Showing <strong className="text-foreground font-mono tabular-nums">{filteredUsers.length}</strong> of{" "}
+            <strong className="text-foreground font-mono tabular-nums">{users.length}</strong> users
+          </span>
         </div>
       </div>
 
@@ -633,7 +625,7 @@ export function UsersManagementTable({
                   id="ban-dialog-title"
                   className="font-heading font-semibold text-lg"
                 >
-                  Ban User Account
+                  Suspend User Account
                 </h3>
                 <p className="text-xs text-muted-foreground">
                   User: {selectedUser?.name} ({selectedUser?.email})
@@ -642,14 +634,14 @@ export function UsersManagementTable({
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Banning this user will immediately revoke their access to create requests, respond to emergencies, or manage account resources.
+              Suspending this user revokes their access to create broadcasts, claim donations, and coordinate emergencies.
             </p>
 
             {/* Quick Reason Chips */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-foreground flex items-center gap-1">
                 <Sparkles className="h-3 w-3 text-crimson" />
-                Select Ban Reason Preset:
+                Select preset reason:
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {BAN_PRESET_REASONS.map((reason) => (
@@ -675,7 +667,7 @@ export function UsersManagementTable({
                 htmlFor="ban-reason-input"
                 className="text-xs font-semibold text-foreground"
               >
-                Custom Reason / Audit Log:
+                Or provide specific audit notes:
               </label>
               <textarea
                 id="ban-reason-input"
@@ -703,7 +695,7 @@ export function UsersManagementTable({
                 disabled={isProcessing}
                 variant="destructive"
               >
-                {isProcessing ? "Suspending..." : "Confirm Account Ban"}
+                {isProcessing ? "Suspending..." : "Suspend Account"}
               </Button>
             </div>
           </div>
@@ -715,9 +707,9 @@ export function UsersManagementTable({
         <ConfirmDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
-          title="Unban User Account"
-          description={`Are you sure you want to restore full platform access for ${selectedUser?.name}?`}
-          confirmText="Unban User"
+          title="Reactivate User Account"
+          description={`Restore full platform and emergency coordination access for ${selectedUser?.name}?`}
+          confirmText="Reactivate Account"
           variant="default"
           onConfirm={handleBanToggle}
         />
@@ -735,13 +727,13 @@ export function UsersManagementTable({
           }
           description={
             selectedUser?.role === "admin"
-              ? `Are you sure you want to remove administrator privileges from ${selectedUser?.name}? They will lose access to the moderation panel and statistics.`
-              : `Are you sure you want to elevate ${selectedUser?.name} to administrator? They will have full access to moderate requests, manage users, and inspect platform data.`
+              ? `Remove administrator privileges from ${selectedUser?.name}? They will lose access to platform moderation and telemetry.`
+              : `Elevate ${selectedUser?.name} to administrator? They will gain access to platform moderation, user governance, and telemetry.`
           }
           confirmText={
             selectedUser?.role === "admin"
               ? "Demote to User"
-              : "Elevate to Admin"
+              : "Promote to Admin"
           }
           variant={selectedUser?.role === "admin" ? "destructive" : "default"}
           onConfirm={handleRoleChange}
