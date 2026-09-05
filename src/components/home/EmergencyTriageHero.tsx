@@ -169,18 +169,18 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
 
           {/* Right Column: Interactive Emergency Triage Console */}
           <div className="lg:col-span-5 xl:col-span-5 animate-triage-3">
-            <div className="rounded-2xl border-2 border-border/80 bg-card p-6 sm:p-7 shadow-xl shadow-foreground/5 relative transition-all duration-200 hover:border-border">
+            <div className="rounded-2xl border-2 border-border/80 bg-card p-6 sm:p-7 shadow-xl shadow-foreground/5 relative overflow-hidden transition-all duration-200 hover:border-border/90 before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-linear-to-r before:from-crimson before:via-crimson/80 before:to-teal">
               <div className="flex items-center justify-between border-b border-border/80 pb-4 mb-5">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-crimson/10 text-crimson">
-                    <Droplet className="h-5 w-5" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-crimson/10 text-crimson ring-1 ring-crimson/20">
+                    <Droplet className="h-5 w-5 fill-crimson/20" />
                   </div>
                   <div>
                     <h2 className="text-sm font-bold text-foreground">Instant Triage Console</h2>
                     <p className="text-[11px] text-muted-foreground">Find matched donors or pending requests</p>
                   </div>
                 </div>
-                <span className="rounded bg-muted px-2 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground">
+                <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground border border-border/70">
                   INSTANT QUERY
                 </span>
               </div>
@@ -189,8 +189,9 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                 {/* 1. Blood Group One-Tap Selector */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-foreground">
-                      1. Select Blood Group Needed
+                    <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-crimson/15 text-[10px] font-bold text-crimson">1</span>
+                      <span>Select Blood Group Needed</span>
                     </label>
                     {selectedBloodGroup && (
                       <button
@@ -213,7 +214,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                           className={`h-11 rounded-lg font-mono font-bold text-sm transition-all duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson ${
                             isSelected
                               ? "bg-crimson text-paper shadow-md scale-[1.02] ring-2 ring-crimson ring-offset-1 animate-chip-pop"
-                              : "bg-muted/70 hover:bg-muted text-foreground border border-border/80 hover:border-border"
+                              : "bg-muted/70 hover:bg-muted text-foreground border border-border/80 hover:border-crimson/30 hover:text-crimson"
                           }`}
                         >
                           {bg}
@@ -225,8 +226,9 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
 
                 {/* 2. District Selector with Search Filter */}
                 <div className="space-y-2 relative">
-                  <label htmlFor="triage-district-search" className="text-xs font-semibold text-foreground">
-                    2. Select District / Location
+                  <label htmlFor="triage-district-search" className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-teal/15 text-[10px] font-bold text-teal">2</span>
+                    <span>Select District / Location</span>
                   </label>
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

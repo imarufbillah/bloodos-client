@@ -137,58 +137,73 @@ export function LiveEmergencyRequests() {
 
         {/* Requests Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {requests.map((req) => (
-            <div
-              key={req.id}
-              className="relative flex flex-col justify-between rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-1 hover:border-crimson/40 hover:shadow-lg"
-            >
-              {/* Top Row: Blood Group & Urgency Badge */}
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <BloodGroupBadge bloodGroup={req.bloodGroup} className="text-base px-2.5 py-1" />
-                  <UrgencyBadge urgency={req.urgency} />
-                </div>
+          {requests.map((req) => {
+            const isCritical = req.urgency === Urgency.CRITICAL;
+            const isUrgent = req.urgency === Urgency.URGENT;
+            const cardUrgencyClass = isCritical
+              ? "border-crimson/30 hover:border-crimson/60 bg-card hover:shadow-crimson/5"
+              : isUrgent
+              ? "border-ochre/30 hover:border-ochre/60 bg-card hover:shadow-ochre/5"
+              : "border-border bg-card hover:border-border/90";
 
-                {/* Units and Hospital Details */}
-                <div className="space-y-2.5">
-                  <div className="text-sm font-bold text-foreground">
-                    {req.unitsNeeded} {req.unitsNeeded > 1 ? "Bags" : "Bag"} Needed
+            return (
+              <div
+                key={req.id}
+                className={`relative flex flex-col justify-between rounded-xl border p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg ${cardUrgencyClass}`}
+              >
+                {/* Top Row: Blood Group & Urgency Badge */}
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <BloodGroupBadge bloodGroup={req.bloodGroup} className="text-base px-2.5 py-1 shadow-xs" />
+                    <UrgencyBadge urgency={req.urgency} />
                   </div>
 
-                  <div className="space-y-1.5 text-xs text-muted-foreground">
-                    <div className="flex items-start gap-1.5">
-                      <Building2 className="h-3.5 w-3.5 shrink-0 text-foreground/60 mt-0.5" />
-                      <span className="line-clamp-1 font-medium text-foreground/80">{req.hospitalName}</span>
+                  {/* Units and Hospital Details */}
+                  <div className="space-y-2.5">
+                    <div className="text-sm font-bold text-foreground flex items-center justify-between">
+                      <span>{req.unitsNeeded} {req.unitsNeeded > 1 ? "Bags" : "Bag"} Needed</span>
+                      {isCritical && (
+                        <span className="text-[10px] font-mono font-bold text-crimson uppercase tracking-wide bg-crimson/10 px-1.5 py-0.5 rounded">
+                          STAT
+                        </span>
+                      )}
                     </div>
 
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-3.5 w-3.5 shrink-0 text-foreground/60" />
-                      <span>{req.district}</span>
-                    </div>
+                    <div className="space-y-1.5 text-xs text-muted-foreground">
+                      <div className="flex items-start gap-1.5">
+                        <Building2 className="h-3.5 w-3.5 shrink-0 text-foreground/70 mt-0.5" />
+                        <span className="line-clamp-1 font-medium text-foreground/90">{req.hospitalName}</span>
+                      </div>
 
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="h-3.5 w-3.5 shrink-0 text-foreground/60" />
-                      <span>{req.createdAt}</span>
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="h-3.5 w-3.5 shrink-0 text-teal" />
+                        <span className="font-medium text-foreground/80">{req.district}</span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                        <span>{req.createdAt}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Bottom Action */}
-              <div className="mt-4 pt-3 border-t border-border/60">
-                <Link href={`/requests/${req.id}`} className="block">
-                  <Button 
-                    size="sm" 
-                    variant="secondary"
-                    className="w-full text-xs font-semibold justify-between group h-9 transition-all duration-150 active:scale-[0.98]"
-                  >
-                    <span>Respond / Details</span>
-                    <HeartHandshake className="h-3.5 w-3.5 text-crimson transition-transform duration-200 group-hover:scale-125" />
-                  </Button>
-                </Link>
+                {/* Bottom Action */}
+                <div className="mt-4 pt-3 border-t border-border/60">
+                  <Link href={`/requests/${req.id}`} className="block">
+                    <Button 
+                      size="sm" 
+                      variant="secondary"
+                      className="w-full text-xs font-semibold justify-between group h-9 transition-all duration-150 active:scale-[0.98]"
+                    >
+                      <span>Respond / Details</span>
+                      <HeartHandshake className="h-3.5 w-3.5 text-crimson transition-transform duration-200 group-hover:scale-125" />
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

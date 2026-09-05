@@ -16,6 +16,10 @@ const steps = [
     title: "Post Emergency Need",
     desc: "Specify patient blood group, required bags, hospital location, and clinical urgency. Request is immediately broadcast to matching local donors.",
     badge: "10-Sec Triage",
+    color: "crimson",
+    iconBg: "bg-crimson/10 text-crimson ring-1 ring-crimson/20",
+    badgeStyle: "text-crimson bg-crimson/10 border-crimson/20",
+    hoverBorder: "hover:border-crimson/40",
   },
   {
     icon: BellRing,
@@ -23,6 +27,10 @@ const steps = [
     title: "Instant Donor Matching",
     desc: "Eligible volunteer donors in your target district receive push notifications. Compatibility matrix filters out incompatible donors automatically.",
     badge: "56-Day Verified",
+    color: "teal",
+    iconBg: "bg-teal/10 text-teal ring-1 ring-teal/20",
+    badgeStyle: "text-teal bg-teal/10 border-teal/20",
+    hoverBorder: "hover:border-teal/40",
   },
   {
     icon: ShieldCheck,
@@ -30,6 +38,10 @@ const steps = [
     title: "Privacy-Masked Contact",
     desc: "When a donor accepts, direct coordination begins. Phone numbers (01XXX***XXX) are protected against scrapers and harassment until accepted.",
     badge: "Zero Spam",
+    color: "ochre",
+    iconBg: "bg-ochre/10 text-ochre ring-1 ring-ochre/20",
+    badgeStyle: "text-ochre bg-ochre/10 border-ochre/20",
+    hoverBorder: "hover:border-ochre/40",
   },
 ];
 
@@ -58,14 +70,14 @@ export function CoordinationProtocol() {
             return (
               <div
                 key={item.step}
-                className="group relative rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm flex flex-col justify-between space-y-6 hover:border-crimson/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-200"
+                className={`group relative rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm flex flex-col justify-between space-y-6 hover:-translate-y-1 hover:shadow-lg transition-all duration-200 ${item.hoverBorder}`}
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-crimson/10 text-crimson transition-transform duration-200 group-hover:scale-110">
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110 ${item.iconBg}`}>
                       <Icon className="h-6 w-6" />
                     </div>
-                    <span className="font-mono text-xs font-bold text-muted-foreground bg-muted px-2.5 py-1 rounded-md">
+                    <span className="font-mono text-xs font-bold text-muted-foreground bg-muted px-2.5 py-1 rounded-md border border-border/70">
                       STEP {item.step}
                     </span>
                   </div>
@@ -81,7 +93,7 @@ export function CoordinationProtocol() {
                 </div>
 
                 <div className="pt-4 border-t border-border/70 flex items-center justify-between text-xs">
-                  <span className="inline-flex items-center gap-1 font-semibold text-teal">
+                  <span className={`inline-flex items-center gap-1 font-semibold rounded-full px-2.5 py-0.5 border ${item.badgeStyle}`}>
                     <ShieldCheck className="h-3.5 w-3.5" />
                     {item.badge}
                   </span>

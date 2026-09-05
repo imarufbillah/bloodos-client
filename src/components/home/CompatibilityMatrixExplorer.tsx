@@ -104,8 +104,8 @@ export function CompatibilityMatrixExplorer() {
             {/* Compatibility Breakdown Panels */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               {/* Compatible Donors (Can receive from) */}
-              <div className="rounded-xl border border-border/80 bg-muted/40 p-4 space-y-3">
-                <div className="text-xs font-bold uppercase tracking-wider text-foreground/80 flex items-center gap-1.5">
+              <div className="rounded-xl border border-teal/25 bg-teal/[0.04] dark:bg-teal/[0.08] p-4 space-y-3">
+                <div className="text-xs font-bold uppercase tracking-wider text-teal flex items-center gap-1.5">
                   <span className="flex h-2 w-2 rounded-full bg-teal animate-pulse" />
                   <span>Can Receive Blood From:</span>
                 </div>
@@ -117,8 +117,8 @@ export function CompatibilityMatrixExplorer() {
                         key={bg}
                         className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-mono font-bold transition-all duration-200 ${
                           isAllowed
-                            ? "bg-teal/15 text-teal border border-teal/30 scale-100 opacity-100 shadow-xs"
-                            : "bg-muted text-muted-foreground/30 border border-transparent scale-95 opacity-50 line-through"
+                            ? "bg-teal/20 text-teal border border-teal/40 scale-100 opacity-100 shadow-xs ring-1 ring-teal/20"
+                            : "bg-muted text-muted-foreground/30 border border-transparent scale-95 opacity-40 line-through"
                         }`}
                       >
                         {bg}
@@ -129,8 +129,8 @@ export function CompatibilityMatrixExplorer() {
               </div>
 
               {/* Compatible Recipients (Can give to) */}
-              <div className="rounded-xl border border-border/80 bg-muted/40 p-4 space-y-3">
-                <div className="text-xs font-bold uppercase tracking-wider text-foreground/80 flex items-center gap-1.5">
+              <div className="rounded-xl border border-crimson/25 bg-crimson/[0.04] dark:bg-crimson/[0.08] p-4 space-y-3">
+                <div className="text-xs font-bold uppercase tracking-wider text-crimson flex items-center gap-1.5">
                   <span className="flex h-2 w-2 rounded-full bg-crimson animate-pulse" />
                   <span>Can Donate Blood To:</span>
                 </div>
@@ -142,8 +142,8 @@ export function CompatibilityMatrixExplorer() {
                         key={bg}
                         className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-mono font-bold transition-all duration-200 ${
                           isAllowed
-                            ? "bg-crimson/15 text-crimson border border-crimson/30 scale-100 opacity-100 shadow-xs"
-                            : "bg-muted text-muted-foreground/30 border border-transparent scale-95 opacity-50 line-through"
+                            ? "bg-crimson/20 text-crimson border border-crimson/40 scale-100 opacity-100 shadow-xs ring-1 ring-crimson/20"
+                            : "bg-muted text-muted-foreground/30 border border-transparent scale-95 opacity-40 line-through"
                         }`}
                       >
                         {bg}
