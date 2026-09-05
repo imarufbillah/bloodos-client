@@ -2,8 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { SignInForm } from "@/components/forms/SignInForm";
-import { redirect } from "next/navigation";
-import { Droplet, ShieldCheck, Clock, MapPin, Heart, ArrowRight } from "lucide-react";
+import { Droplet, ShieldCheck, Clock, MapPin } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Sign In | BloodOS Emergency Triage",
@@ -16,14 +15,8 @@ interface SignInPageProps {
 
 async function SignInContent({ searchParams }: SignInPageProps) {
   const params = await searchParams;
-  const callbackUrl = params.callbackUrl;
-  const redirectParam = params.redirect;
-
-  if (callbackUrl && !redirectParam) {
-    redirect(`/signin?redirect=${encodeURIComponent(callbackUrl)}`);
-  }
-
-  const destination = redirectParam || callbackUrl || "/profile";
+  const redirectParam = params.redirect || params.callbackUrl;
+  const destination = redirectParam || "/profile";
 
   return (
     <div className="relative min-h-[calc(100dvh-4rem)] flex items-center justify-center pt-8 pb-24 sm:py-12 md:py-16 px-4 sm:px-6 overflow-hidden">

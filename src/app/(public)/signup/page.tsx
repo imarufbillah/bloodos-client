@@ -2,8 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { SignUpForm } from "@/components/forms/SignUpForm";
-import { redirect } from "next/navigation";
-import { Droplet, ShieldCheck, Clock, MapPin, HeartHandshake, CheckCircle2 } from "lucide-react";
+import { Droplet, ShieldCheck, HeartHandshake, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Create Account | BloodOS Emergency Network",
@@ -16,16 +15,8 @@ interface SignUpPageProps {
 
 async function SignUpContent({ searchParams }: SignUpPageProps) {
   const params = await searchParams;
-  const callbackUrl = params.callbackUrl;
-  const redirectParam = params.redirect;
-
-  if (callbackUrl && !redirectParam) {
-    redirect(`/signup?redirect=${encodeURIComponent(callbackUrl)}`);
-  } else if (!callbackUrl && !redirectParam) {
-    redirect(`/signup?redirect=${encodeURIComponent("/profile")}`);
-  }
-
-  const destination = redirectParam || callbackUrl || "/profile";
+  const redirectParam = params.redirect || params.callbackUrl;
+  const destination = redirectParam || "/profile";
 
   return (
     <div className="relative min-h-[calc(100dvh-4rem)] flex items-center justify-center pt-8 pb-24 sm:py-12 md:py-16 px-4 sm:px-6 overflow-hidden">
