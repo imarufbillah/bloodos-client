@@ -28,18 +28,18 @@ async function SignUpContent({ searchParams }: SignUpPageProps) {
   const destination = redirectParam || callbackUrl || "/profile";
 
   return (
-    <div className="relative min-h-[calc(100dvh-4rem)] flex items-center justify-center pt-8 pb-24 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div className="relative min-h-[calc(100dvh-4rem)] flex items-center justify-center pt-8 pb-24 sm:py-12 md:py-16 px-4 sm:px-6 overflow-hidden">
       {/* Ambient background glow */}
       <div 
         className="pointer-events-none absolute top-1/3 left-1/2 h-[380px] w-[600px] max-w-full -translate-x-1/2 -translate-y-1/2 rounded-full bg-teal/5 blur-[120px]" 
         aria-hidden="true" 
       />
 
-      <div className="container relative mx-auto max-w-7xl w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+      <div className="relative mx-auto max-w-7xl w-full flex items-center justify-center">
+        <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center justify-items-center">
           
           {/* Left Column: Essential System Context (Desktop / Large Displays) */}
-          <div className="lg:col-span-6 space-y-6 hidden lg:flex flex-col justify-center">
+          <div className="w-full max-w-md space-y-6 hidden lg:flex flex-col justify-center">
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-crimson font-mono">
               <span className="h-2 w-2 rounded-full bg-crimson animate-pulse motion-reduce:animate-none" />
               <span>JOIN 1,400+ READY DONORS • BANGLADESH</span>
@@ -50,30 +50,30 @@ async function SignUpContent({ searchParams }: SignUpPageProps) {
                 One unified network. <br />
                 <span className="text-crimson">Direct impact</span> for every emergency.
               </h1>
-              <p className="text-base text-muted-foreground leading-relaxed max-w-lg">
+              <p className="text-sm xl:text-base text-muted-foreground leading-relaxed">
                 Registering with BloodOS means emergency patients in urgent need can reach you when it matters most—with complete privacy masking and zero middleman fees.
               </p>
             </div>
 
             {/* Distilled Telemetry Highlights */}
-            <div className="space-y-3 pt-2 border-t border-border/60 max-w-lg">
+            <div className="space-y-3 pt-2 border-t border-border/60">
               <div className="flex items-center gap-3 text-sm text-foreground/90">
                 <CheckCircle2 className="h-4 w-4 text-crimson shrink-0" />
-                <span><strong className="font-semibold text-foreground">1-Tap SOS Responses:</strong> Immediate alerts when patients match your group.</span>
+                <span><strong className="font-semibold text-foreground">1-Tap SOS Responses:</strong> Immediate group matching.</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-foreground/90">
                 <ShieldCheck className="h-4 w-4 text-teal shrink-0" />
-                <span><strong className="font-semibold text-foreground">Masked Contact Info:</strong> Never indexed publicly or sold to third parties.</span>
+                <span><strong className="font-semibold text-foreground">Masked Contact Info:</strong> Zero public indexing or spam.</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-foreground/90">
                 <HeartHandshake className="h-4 w-4 text-ochre shrink-0" />
-                <span><strong className="font-semibold text-foreground">100% Free & Voluntary:</strong> Zero coordination charges, ever.</span>
+                <span><strong className="font-semibold text-foreground">100% Free & Voluntary:</strong> Zero coordination fees.</span>
               </div>
             </div>
           </div>
 
           {/* Right Column: Distilled Registration Capsule (Responsive on Mobile, Tablet & Desktop) */}
-          <div className="lg:col-span-6 w-full max-w-md mx-auto">
+          <div className="w-full max-w-md mx-auto">
             <div className="rounded-2xl border border-border bg-card/95 backdrop-blur-md p-5 sm:p-7 md:p-8 shadow-sm space-y-5 sm:space-y-6">
               
               {/* Card Header */}

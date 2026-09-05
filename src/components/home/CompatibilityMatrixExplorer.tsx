@@ -77,8 +77,8 @@ export function CompatibilityMatrixExplorer() {
   const daysUntilEligible = Math.max(0, 56 - lastDonatedDaysAgo);
 
   return (
-    <section className="border-b border-border/80 bg-background py-16 sm:py-20" id="compatibility">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="border-b border-border/80 bg-background py-16 sm:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">

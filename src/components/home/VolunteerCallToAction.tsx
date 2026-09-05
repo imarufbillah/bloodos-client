@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 
 export function VolunteerCallToAction() {
   return (
-    <section className="bg-background py-16 sm:py-20">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="bg-muted/10 py-16 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
         <div className="relative overflow-hidden rounded-3xl border-2 border-crimson/20 bg-linear-to-br from-card via-card to-crimson/5 p-8 sm:p-12 lg:p-16 shadow-lg">
           {/* Subtle background glow */}
           <div 

@@ -146,7 +146,7 @@ export function LiveEmergencyRequests() {
 
   return (
     <section className="border-b border-border/80 bg-muted/20 py-16 sm:py-20">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
           <div className="space-y-1.5">

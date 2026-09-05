@@ -10,8 +10,8 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-border/80 bg-card/60 pb-16 md:pb-0">
-      <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+    <footer className="border-t border-border/80 bg-background py-12 sm:py-16 text-foreground">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8">
           {/* Brand & Purpose Col (2 cols on lg) */}
           <div className="space-y-4 lg:col-span-2">

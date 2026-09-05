@@ -25,8 +25,8 @@ export function CoverageAndImpact() {
   }, [selectedDivision]);
 
   return (
-    <section className="border-b border-border/80 bg-muted/30 py-16 sm:py-20">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="border-b border-border/80 bg-muted/20 py-16 sm:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div className="space-y-2">

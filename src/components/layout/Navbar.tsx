@@ -110,7 +110,7 @@ export function Navbar() {
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur-md supports-backdrop-filter:bg-background/80">
-      <nav className="container mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
+      <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6 w-full">
         {/* Brand Logo & Live Emergency Badge */}
         <div className="flex items-center gap-4">
           <Link
