@@ -24,6 +24,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { NotificationPanel } from "@/components/layout/NotificationPanel";
+import { MobileCommandDrawer } from "@/components/layout/MobileCommandDrawer";
 import { useTheme } from "next-themes";
 import {
   Menu,
@@ -356,113 +357,21 @@ export function Navbar() {
             </Button>
           </Link>
 
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger
-              className="h-9 w-9 inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              aria-label="Open menu"
-            >
-              <Menu className="h-5 w-5" />
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80">
-              <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 font-heading">
-                  <Droplet className="h-5 w-5 text-crimson fill-crimson" />
-                  <span>BloodOS Emergency</span>
-                </SheetTitle>
-              </SheetHeader>
-              <div className="mt-6 flex flex-col gap-4">
-                {user && (
-                  <div className="rounded-xl border border-border bg-muted/40 p-3">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-10 w-10">
-                        {userImage && (
-                          <AvatarImage
-                            src={userImage}
-                            alt={user?.name || "User"}
-                          />
-                        )}
-                        <AvatarFallback className="bg-crimson text-paper text-xs font-bold">
-                          {getInitials(user?.name, user?.email)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col min-w-0">
-                        <p className="text-sm font-semibold truncate">
-                          {user.name || "User"}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {user.email}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                      {user.bloodGroup && (
-                        <Badge
-                          variant="outline"
-                          className="text-[10px] px-1.5 py-0 border-crimson/30 text-crimson font-mono font-bold"
-                        >
-                          {user.bloodGroup}
-                        </Badge>
-                      )}
-                      {user.district && (
-                        <span className="text-[10px] text-muted-foreground">
-                          {user.district}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMobileMenuOpen(true)}
+            className="h-9 w-9 inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Open mobile command drawer"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
 
-                <nav className="flex flex-col gap-1">
-                  {visibleLinks.map((link) => {
-                    const isActive = pathname === link.href;
-                    return (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={`flex items-center rounded-lg px-3.5 py-2.5 text-sm font-medium transition-colors ${
-                          isActive
-                            ? "bg-crimson/10 text-crimson font-semibold"
-                            : "text-foreground/80 hover:bg-muted"
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
-                    );
-                  })}
-                </nav>
-
-                <div className="pt-2 border-t border-border flex flex-col gap-2">
-                  <Link href="/requests/add" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full bg-crimson hover:bg-crimson/90 text-paper font-semibold gap-2">
-                      <AlertCircle className="h-4 w-4" />
-                      <span>Post Emergency Request</span>
-                    </Button>
-                  </Link>
-
-                  {user ? (
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        handleSignOut();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="w-full text-destructive hover:text-destructive gap-2"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      <span>Sign Out</span>
-                    </Button>
-                  ) : (
-                    <Link href="/signin" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="outline" className="w-full">
-                        Sign In
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+          <MobileCommandDrawer
+            open={mobileMenuOpen}
+            onOpenChange={setMobileMenuOpen}
+            user={user}
+          />
         </div>
       </nav>
     </header>
