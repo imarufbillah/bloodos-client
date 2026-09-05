@@ -19,13 +19,9 @@ import {
 } from "@/types/shared";
 import {
   Search,
-  Filter,
   X,
   PlusCircle,
   SearchX,
-  AlertCircle,
-  SlidersHorizontal,
-  ChevronDown,
   RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -52,7 +48,6 @@ export default function BrowseRequestsContent({
 
   const [filters, setFilters] = React.useState(initialFilters);
   const [searchInput, setSearchInput] = React.useState(initialFilters.search || "");
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = React.useState(false);
   const data = initialData;
 
   // Build URL with query params
@@ -173,15 +168,15 @@ export default function BrowseRequestsContent({
 
   return (
     <div className="w-full min-h-[calc(100dvh-4rem)] flex flex-col bg-background text-foreground pb-24 sm:pb-16">
-      {/* 1. Header Command Ribbon */}
+      {/* 1. Header Ribbon */}
       <section className="border-b border-border bg-muted/20 py-8 sm:py-10">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
                 Emergency Blood Triage Feed
               </h1>
-              <p className="text-sm sm:text-base text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Real-time active hospital requisitions verified across 64 districts in Bangladesh.
               </p>
             </div>
