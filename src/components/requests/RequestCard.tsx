@@ -54,7 +54,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
 
   return (
     <article
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-200 bg-card p-5 sm:p-6 shadow-xs hover:shadow-md ${
+      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-200 bg-card p-4 sm:p-6 shadow-xs hover:shadow-md ${
         isCritical
           ? "border-destructive/40 hover:border-destructive bg-destructive/[0.02]"
           : isUrgent
@@ -76,7 +76,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
           {/* Blood Group Hero Badge */}
           <div className="flex items-center gap-3">
             <div
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl font-heading text-lg font-bold shadow-xs transition-transform duration-200 group-hover:scale-105 ${
+              className={`flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl font-heading text-base sm:text-lg font-bold shadow-xs transition-transform duration-200 group-hover:scale-105 ${
                 isCritical
                   ? "bg-destructive text-destructive-foreground"
                   : "bg-primary text-primary-foreground"
@@ -175,7 +175,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
           <Link
             href={`/requests/${request._id}`}
             onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
-            className={`flex-1 h-10 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all duration-150 active:scale-[0.98] ${
+            className={`flex-1 h-11 sm:h-10 px-3.5 sm:px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all duration-150 active:scale-[0.98] ${
               isCritical
                 ? "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-xs"
                 : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs"
@@ -190,7 +190,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
-            className="h-10 w-10 shrink-0 rounded-xl border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+            className="h-11 w-11 sm:h-10 sm:w-10 shrink-0 rounded-xl border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
             aria-label={`Get directions to ${request.hospitalName}`}
             title="Google Maps Route"
           >

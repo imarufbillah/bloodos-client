@@ -610,7 +610,7 @@ export default function RequestDetailsContent({
 
       {/* 3. Interactive Commitment & Readiness Dialog */}
       <Dialog open={isCommitmentModalOpen} onOpenChange={setIsCommitmentModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-h-[90dvh] overflow-y-auto">
           <DialogHeader className="space-y-2">
             <div className="flex items-center gap-2 text-primary font-mono text-xs font-bold uppercase tracking-wider">
               <HeartHandshake className="h-4 w-4" />

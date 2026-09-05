@@ -199,12 +199,16 @@ export default function BrowseRequestsContent({
 
       {/* 2. Quick-Select Filtering Ribbon */}
       <section className="border-b border-border bg-card sticky top-14 sm:top-16 z-30 shadow-xs">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-3.5">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-3.5 sm:py-4 space-y-3.5">
           {/* Top Filter Row: Blood Group Quick-Pills & Search */}
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-            {/* Blood Group Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none" role="group" aria-label="Filter by blood group">
-              <span className="text-xs font-mono font-semibold text-muted-foreground mr-1 hidden sm:inline">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4">
+            {/* Blood Group Pills (Edge-to-edge scrollable on mobile) */}
+            <div
+              className="flex items-center gap-1.5 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-1.5 lg:pb-0 scrollbar-none"
+              role="group"
+              aria-label="Filter by blood group"
+            >
+              <span className="text-xs font-mono font-semibold text-muted-foreground mr-1 hidden sm:inline shrink-0">
                 Blood Group:
               </span>
               <button
@@ -213,10 +217,10 @@ export default function BrowseRequestsContent({
                   triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
                   applyFilters({ ...filters, bloodGroups: [] });
                 }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                className={`min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer shrink-0 ${
                   filters.bloodGroups.length === 0
                     ? "bg-primary text-primary-foreground shadow-xs"
-                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground border border-border/40"
                 }`}
                 aria-pressed={filters.bloodGroups.length === 0}
               >
@@ -229,7 +233,7 @@ export default function BrowseRequestsContent({
                     key={bg}
                     type="button"
                     onClick={() => toggleBloodGroup(bg)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                    className={`min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer shrink-0 ${
                       isSelected
                         ? "bg-primary text-primary-foreground shadow-xs"
                         : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground border border-border/60"
@@ -243,7 +247,7 @@ export default function BrowseRequestsContent({
             </div>
 
             {/* Keyword Search Input */}
-            <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md" role="search">
+            <form onSubmit={handleSearchSubmit} className="relative w-full lg:max-w-md" role="search">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <input
                 type="text"
@@ -251,7 +255,7 @@ export default function BrowseRequestsContent({
                 aria-label="Search blood requests by patient name, hospital, or city"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full h-10 pl-9 pr-8 rounded-xl bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+                className="w-full h-11 sm:h-10 pl-9 pr-9 rounded-xl bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
               />
               {searchInput && (
                 <button
@@ -260,7 +264,7 @@ export default function BrowseRequestsContent({
                     setSearchInput("");
                     applyFilters({ ...filters, search: "" });
                   }}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-muted-foreground hover:text-foreground cursor-pointer"
                   aria-label="Clear search text"
                 >
                   <X className="h-3.5 w-3.5" />
@@ -270,20 +274,20 @@ export default function BrowseRequestsContent({
           </div>
 
           {/* Secondary Controls Row: District, Urgency Tier, Sort & Clear */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-border/50 text-xs">
-            <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-border/50 text-xs">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
               {/* Urgency Selector */}
-              <div className="flex items-center gap-1.5">
-                <label htmlFor="urgency-filter" className="text-muted-foreground font-medium text-[11px]">
+              <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
+                <label htmlFor="urgency-filter" className="text-muted-foreground font-medium text-[11px] shrink-0">
                   Urgency:
                 </label>
                 <select
                   id="urgency-filter"
                   value={filters.urgencies[0] || "all"}
                   onChange={(e) => handleUrgencyChange(e.target.value)}
-                  className="h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                  className="w-full sm:w-auto h-9 sm:h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                 >
-                  <option value="all">All Urgency Levels</option>
+                  <option value="all">All Urgencies</option>
                   <option value={Urgency.CRITICAL}>Critical / STAT</option>
                   <option value={Urgency.URGENT}>Urgent</option>
                   <option value={Urgency.MODERATE}>Moderate</option>
@@ -291,15 +295,15 @@ export default function BrowseRequestsContent({
               </div>
 
               {/* District Selector */}
-              <div className="flex items-center gap-1.5">
-                <label htmlFor="district-filter" className="text-muted-foreground font-medium text-[11px]">
+              <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
+                <label htmlFor="district-filter" className="text-muted-foreground font-medium text-[11px] shrink-0">
                   District:
                 </label>
                 <select
                   id="district-filter"
                   value={filters.districts[0] || "all"}
                   onChange={(e) => handleDistrictChange(e.target.value)}
-                  className="h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer max-w-[150px] truncate"
+                  className="w-full sm:w-auto h-9 sm:h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer max-w-[160px] truncate"
                 >
                   <option value="all">All 64 Districts</option>
                   {DISTRICTS.map((district) => (
@@ -311,15 +315,15 @@ export default function BrowseRequestsContent({
               </div>
 
               {/* Sort Order */}
-              <div className="flex items-center gap-1.5">
-                <label htmlFor="sort-order" className="text-muted-foreground font-medium text-[11px]">
+              <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
+                <label htmlFor="sort-order" className="text-muted-foreground font-medium text-[11px] shrink-0">
                   Sort:
                 </label>
                 <select
                   id="sort-order"
                   value={filters.sort || SortOption.NEWEST}
                   onChange={(e) => handleSortChange(e.target.value)}
-                  className="h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+                  className="w-full sm:w-auto h-9 sm:h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                 >
                   <option value={SortOption.NEWEST}>Newest First</option>
                   <option value={SortOption.CRITICAL_FIRST}>Critical First</option>
@@ -330,7 +334,7 @@ export default function BrowseRequestsContent({
             </div>
 
             {/* Active Count & Clear Action */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between sm:justify-end gap-3 pt-1 sm:pt-0">
               <span className="text-muted-foreground text-[11px] font-mono">
                 <strong className="text-foreground">{data.totalCount}</strong>{" "}
                 {data.totalCount === 1 ? "request" : "requests"} found
