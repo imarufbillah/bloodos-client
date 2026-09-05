@@ -12,7 +12,6 @@ import {
   XCircle,
   CheckCircle2,
   Clock,
-  ArrowRight,
   HelpCircle,
   ShieldCheck,
 } from "lucide-react";
@@ -33,15 +32,10 @@ function SuspendedContent() {
       <div className="w-full max-w-3xl mx-auto space-y-8">
         {/* Header Alert Hero */}
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center p-3 sm:p-4 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive mb-2 shadow-xs">
+          <div className="inline-flex items-center justify-center p-3 sm:p-4 rounded-2xl bg-destructive/10 text-destructive mb-2 shadow-xs">
             <ShieldAlert className="h-10 w-10 sm:h-12 sm:w-12" />
           </div>
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-destructive/20 bg-destructive/5 text-destructive text-xs font-mono font-semibold uppercase tracking-wider">
-              <span>Security & Integrity Protocol</span>
-              <span>•</span>
-              <span>Account Status: Suspended</span>
-            </div>
             <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
               Account Access Temporarily Restricted
             </h1>
@@ -51,35 +45,33 @@ function SuspendedContent() {
           </div>
         </div>
 
-        {/* Reason Card */}
-        <div className="p-6 rounded-2xl border border-destructive/20 bg-destructive/5 space-y-3">
+        {/* Reason Banner (Clean single layer, no nested card) */}
+        <div className="p-5 sm:p-6 rounded-2xl border border-destructive/20 bg-destructive/5 space-y-3">
           <div className="flex items-center gap-2 text-destructive font-heading font-semibold text-sm">
             <AlertCircle className="h-4 w-4 shrink-0" />
-            <span>Enforcement Notice & Clinical Trigger</span>
+            <span>Enforcement Notice</span>
           </div>
-          <div className="p-4 rounded-xl bg-card border border-border">
-            <p className="font-mono text-xs sm:text-sm text-foreground leading-relaxed">
-              {banReason ? (
-                <span>&ldquo;{banReason}&rdquo;</span>
-              ) : (
-                <span className="text-muted-foreground">
-                  Your account has been placed under administrative review due to automated safety triggers or potential terms of service discrepancies.
-                </span>
-              )}
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-[11px] font-mono text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5 text-destructive" /> Status: Enforced
+          <p className="font-mono text-xs sm:text-sm text-foreground leading-relaxed">
+            {banReason ? (
+              <span>&ldquo;{banReason}&rdquo;</span>
+            ) : (
+              <span className="text-muted-foreground">
+                Your account has been placed under administrative review due to automated safety triggers or potential terms of service discrepancies.
+              </span>
+            )}
+          </p>
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-destructive/15 text-[11px] font-mono text-muted-foreground">
+            <span className="inline-flex items-center gap-1 text-destructive">
+              <Clock className="h-3.5 w-3.5" /> Status: Enforced
             </span>
-            <span>Reference: BLD-SUSP-{Math.abs(hashString(banReason || "DEFAULT")).toString(16).toUpperCase()}</span>
+            <span>Ref: BLD-SUSP-{Math.abs(hashString(banReason || "DEFAULT")).toString(16).toUpperCase()}</span>
           </div>
         </div>
 
         {/* Restriction Matrix */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Suspended Capabilities */}
-          <div className="p-5 rounded-xl border border-destructive/20 bg-card space-y-3">
+          <div className="p-5 rounded-2xl border border-destructive/20 bg-card space-y-3 shadow-xs">
             <div className="flex items-center gap-2 text-destructive font-heading font-semibold text-sm">
               <XCircle className="h-4 w-4" />
               <span>Restricted Privileges</span>
@@ -105,7 +97,7 @@ function SuspendedContent() {
           </div>
 
           {/* Permitted Actions */}
-          <div className="p-5 rounded-xl border border-teal/20 bg-card space-y-3">
+          <div className="p-5 rounded-2xl border border-teal/20 bg-card space-y-3 shadow-xs">
             <div className="flex items-center gap-2 text-teal font-heading font-semibold text-sm">
               <CheckCircle2 className="h-4 w-4" />
               <span>Permitted Actions</span>
@@ -139,11 +131,11 @@ function SuspendedContent() {
               <span>How to File an Appeal or Request Review</span>
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              If you believe this restriction occurred due to a technical error, false flag, or resolved dispute, you have the right to request a manual review from the Clinical Moderation Committee.
+              If you believe this restriction occurred due to a technical error, false flag, or resolved dispute, submit a request for review to the Clinical Moderation Committee.
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-muted/40 border border-border text-xs text-muted-foreground space-y-2">
+          <div className="p-4 rounded-xl bg-muted/30 border border-border text-xs text-muted-foreground space-y-1.5">
             <div className="flex items-center gap-2 text-foreground font-semibold">
               <ShieldCheck className="h-4 w-4 text-teal" />
               <span>Appeal Review SLA Standards</span>

@@ -8,7 +8,6 @@ import {
   MapPin,
   HeartHandshake,
   ArrowRight,
-  HelpCircle,
   ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -56,22 +55,11 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-[calc(100dvh-4rem)] bg-background text-foreground">
+    <div className="flex flex-col min-h-[calc(100dvh-4rem)] bg-background text-foreground pb-24 sm:pb-16">
       {/* 1. Hero Dossier Header */}
-      <section className="relative border-b border-border/80 bg-linear-to-b from-background via-muted/10 to-background py-16 sm:py-24 overflow-hidden">
-        {/* Ambient aura */}
-        <div
-          className="pointer-events-none absolute top-0 left-1/2 h-[450px] w-[800px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-crimson/5 blur-[120px]"
-          aria-hidden="true"
-        />
-
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full relative">
+      <section className="relative border-b border-border py-16 sm:py-24">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
           <div className="max-w-3xl space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-teal/20 bg-teal/5 px-3.5 py-1 text-xs font-semibold text-teal font-mono">
-              <span className="h-2 w-2 rounded-full bg-teal animate-pulse motion-reduce:animate-none" />
-              <span>BANGLADESH EMERGENCY TRANSFUSION INFRASTRUCTURE</span>
-            </div>
-
             <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.1]">
               The decentralized lifesaver network for Bangladesh.
             </h1>
@@ -80,23 +68,23 @@ export default function AboutPage() {
               When a hemorrhaging mother or trauma patient needs blood in an operating theatre, finding a compatible donor in minutes is the difference between life and death. BloodOS coordinates direct, voluntary donations across all 64 districts with zero middleman fees and automated donor safety.
             </p>
 
-            {/* High-Contrast Telemetry Badges */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-border/70">
-              <div className="space-y-0.5">
-                <p className="font-mono text-2xl sm:text-3xl font-bold text-crimson">64</p>
-                <p className="text-xs font-medium text-muted-foreground">Districts Covered</p>
+            {/* High-Contrast Telemetry Numbers Bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border">
+              <div className="space-y-1">
+                <p className="font-mono text-2xl sm:text-3xl font-bold text-primary">64</p>
+                <p className="text-xs text-muted-foreground">Districts Covered</p>
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 <p className="font-mono text-2xl sm:text-3xl font-bold text-teal">56 Days</p>
-                <p className="text-xs font-medium text-muted-foreground">Biological Rest Cycle</p>
+                <p className="text-xs text-muted-foreground">Biological Rest Cycle</p>
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 <p className="font-mono text-2xl sm:text-3xl font-bold text-foreground">0৳</p>
-                <p className="text-xs font-medium text-muted-foreground">100% Free & Voluntary</p>
+                <p className="text-xs text-muted-foreground">100% Free & Voluntary</p>
               </div>
-              <div className="space-y-0.5">
-                <p className="font-mono text-2xl sm:text-3xl font-bold text-ochre">&lt;15m</p>
-                <p className="text-xs font-medium text-muted-foreground">STAT Dispatch Target</p>
+              <div className="space-y-1">
+                <p className="font-mono text-2xl sm:text-3xl font-bold text-amber-600 dark:text-amber-400">&lt;15m</p>
+                <p className="text-xs text-muted-foreground">STAT Dispatch Target</p>
               </div>
             </div>
           </div>
@@ -104,21 +92,21 @@ export default function AboutPage() {
       </section>
 
       {/* 2. Four Operational Pillars */}
-      <section className="border-b border-border/80 py-16 sm:py-24 bg-card/40">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full space-y-12">
+      <section className="border-b border-border py-16 sm:py-24 bg-muted/20">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
           <div className="max-w-2xl space-y-2">
             <h2 className="font-heading text-2xl sm:text-4xl font-bold tracking-tight text-foreground">
-              Built on four non-negotiable principles.
+              Built on four clinical principles.
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground">
-              Traditional blood coordination in Bangladesh is fractured across informal social media posts and aggressive middleman brokers. BloodOS replaces chaos with clinical reliability.
+              Traditional blood coordination in Bangladesh is fractured across social media noise and predatory brokers. BloodOS replaces chaos with clinical reliability.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Pillar 1 */}
-            <div className="rounded-2xl border border-border bg-background p-6 space-y-3.5 shadow-xs transition-colors hover:border-crimson/40">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-crimson/10 text-crimson">
+            <div className="rounded-2xl border border-border bg-card p-6 space-y-3.5 shadow-xs">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Clock className="h-5 w-5" />
               </div>
               <h3 className="font-heading text-lg font-bold text-foreground">
@@ -130,7 +118,7 @@ export default function AboutPage() {
             </div>
 
             {/* Pillar 2 */}
-            <div className="rounded-2xl border border-border bg-background p-6 space-y-3.5 shadow-xs transition-colors hover:border-teal/40">
+            <div className="rounded-2xl border border-border bg-card p-6 space-y-3.5 shadow-xs">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal/10 text-teal">
                 <ShieldCheck className="h-5 w-5" />
               </div>
@@ -138,13 +126,13 @@ export default function AboutPage() {
                 Privacy Phone Masking
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                Contact numbers are masked (<code className="font-mono text-xs">01XXX***XXX</code>) on public views to stop broker databases and nuisance calls.
+                Contact numbers are masked (<code className="font-mono text-xs text-teal">01XXX***XXX</code>) on public views to stop broker databases and nuisance calls.
               </p>
             </div>
 
             {/* Pillar 3 */}
-            <div className="rounded-2xl border border-border bg-background p-6 space-y-3.5 shadow-xs transition-colors hover:border-ochre/40">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-ochre/10 text-ochre">
+            <div className="rounded-2xl border border-border bg-card p-6 space-y-3.5 shadow-xs">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
                 <MapPin className="h-5 w-5" />
               </div>
               <h3 className="font-heading text-lg font-bold text-foreground">
@@ -156,9 +144,9 @@ export default function AboutPage() {
             </div>
 
             {/* Pillar 4 */}
-            <div className="rounded-2xl border border-border bg-background p-6 space-y-3.5 shadow-xs transition-colors hover:border-primary/40">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-crimson text-paper">
-                <HeartHandshake className="h-5 w-5 fill-paper" />
+            <div className="rounded-2xl border border-border bg-card p-6 space-y-3.5 shadow-xs">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal/10 text-teal">
+                <HeartHandshake className="h-5 w-5" />
               </div>
               <h3 className="font-heading text-lg font-bold text-foreground">
                 Zero Commercial Fees
@@ -172,8 +160,8 @@ export default function AboutPage() {
       </section>
 
       {/* 3. The STAT Dispatch Loop */}
-      <section className="border-b border-border/80 py-16 sm:py-24 bg-background">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full space-y-12">
+      <section className="border-b border-border py-16 sm:py-24 bg-background">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
           <div className="max-w-2xl space-y-2">
             <h2 className="font-heading text-2xl sm:text-4xl font-bold tracking-tight text-foreground">
               How emergency blood coordination works.
@@ -183,46 +171,46 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-            <div className="space-y-3 rounded-2xl border border-border/80 bg-card/60 p-6">
-              <span className="font-mono text-xs font-bold text-crimson uppercase tracking-wider">
-                Stage 01 • Dispatch Requisition
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="space-y-2.5 rounded-2xl border border-border bg-card p-6">
+              <span className="font-mono text-xs font-semibold text-primary">
+                Stage 1 • Requisition
               </span>
               <h3 className="font-heading text-base font-bold text-foreground">
-                Post Urgent Requisition
+                Post Urgent Request
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Patient relative or coordinator inputs blood group, hospital, required units, and urgency level (Urgent / Critical / STAT).
+                Patient relative or coordinator inputs blood group, hospital, required units, and urgency level.
               </p>
             </div>
 
-            <div className="space-y-3 rounded-2xl border border-border/80 bg-card/60 p-6">
-              <span className="font-mono text-xs font-bold text-teal uppercase tracking-wider">
-                Stage 02 • Algorithmic Triage
+            <div className="space-y-2.5 rounded-2xl border border-border bg-card p-6">
+              <span className="font-mono text-xs font-semibold text-teal">
+                Stage 2 • Triage
               </span>
               <h3 className="font-heading text-base font-bold text-foreground">
                 Targeted Donor Alert
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                BloodOS matches ABO/Rh compatibility and filters for verified donors in the district who are past their 56-day cooldown.
+                BloodOS matches ABO/Rh compatibility and filters for verified donors in the district who are past their 56-day rest.
               </p>
             </div>
 
-            <div className="space-y-3 rounded-2xl border border-border/80 bg-card/60 p-6">
-              <span className="font-mono text-xs font-bold text-ochre uppercase tracking-wider">
-                Stage 03 • Direct Connection
+            <div className="space-y-2.5 rounded-2xl border border-border bg-card p-6">
+              <span className="font-mono text-xs font-semibold text-amber-600 dark:text-amber-400">
+                Stage 3 • Connection
               </span>
               <h3 className="font-heading text-base font-bold text-foreground">
-                1-Tap Response & Contact
+                1-Tap Response
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Eligible donor taps &quot;I Can Help&quot;. Contact is unlocked directly between donor and hospital coordinator with zero brokers.
+                Eligible donor taps &ldquo;I Can Help&rdquo;. Contact is unlocked directly between donor and coordinator with zero brokers.
               </p>
             </div>
 
-            <div className="space-y-3 rounded-2xl border border-border/80 bg-card/60 p-6">
-              <span className="font-mono text-xs font-bold text-foreground uppercase tracking-wider">
-                Stage 04 • Cooldown Lock
+            <div className="space-y-2.5 rounded-2xl border border-border bg-card p-6">
+              <span className="font-mono text-xs font-semibold text-teal">
+                Stage 4 • Recovery
               </span>
               <h3 className="font-heading text-base font-bold text-foreground">
                 Fulfilled & Safe Rest
@@ -236,21 +224,17 @@ export default function AboutPage() {
       </section>
 
       {/* 4. Interactive FAQs */}
-      <section className="border-b border-border/80 py-16 sm:py-24 bg-card/20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
+      <section className="border-b border-border py-16 sm:py-24 bg-muted/20">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-5 space-y-4">
-              <div className="inline-flex items-center gap-2 text-xs font-semibold text-crimson font-mono">
-                <HelpCircle className="h-4 w-4" />
-                <span>FREQUENTLY ASKED QUESTIONS</span>
-              </div>
               <h2 className="font-heading text-2xl sm:text-4xl font-bold tracking-tight text-foreground">
                 Clinical safety, privacy, and protocol answers.
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Have a specific question not addressed here? You can always reach out directly to our{" "}
-                <Link href="/contact" className="font-semibold text-crimson hover:underline">
-                  24/7 volunteer coordination desk
+                Have a specific question not addressed here? Reach out directly to our{" "}
+                <Link href="/contact" className="font-medium text-primary hover:underline">
+                  coordination desk
                 </Link>.
               </p>
             </div>
@@ -261,23 +245,23 @@ export default function AboutPage() {
                 return (
                   <div
                     key={faq.question}
-                    className="rounded-2xl border border-border bg-background transition-colors"
+                    className="rounded-2xl border border-border bg-card transition-colors"
                   >
                     <button
                       type="button"
                       onClick={() => toggleFaq(index)}
-                      className="flex w-full items-center justify-between p-5 sm:p-6 text-left font-heading text-sm sm:text-base font-bold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson rounded-2xl"
+                      className="flex w-full items-center justify-between p-5 sm:p-6 text-left font-heading text-sm sm:text-base font-bold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl cursor-pointer"
                       aria-expanded={isOpen}
                     >
                       <span className="pr-4">{faq.question}</span>
                       <ChevronDown
                         className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${
-                          isOpen ? "rotate-180 text-crimson" : ""
+                          isOpen ? "rotate-180 text-primary" : ""
                         }`}
                       />
                     </button>
                     {isOpen && (
-                      <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-0 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-border/40 mt-1 animate-in fade-in duration-150">
+                      <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-0 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-border/40 mt-1">
                         {faq.answer}
                       </div>
                     )}
@@ -291,11 +275,11 @@ export default function AboutPage() {
 
       {/* 5. Call to Action Banner */}
       <section className="py-16 sm:py-24 bg-background">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 w-full">
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 sm:p-12 lg:p-16 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 sm:p-12 lg:p-16 shadow-xs flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="space-y-3 max-w-xl text-center md:text-left">
               <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
-                Join 1,400+ verified donors saving lives across Bangladesh.
+                Join verified donors saving lives across Bangladesh.
               </h2>
               <p className="text-sm text-muted-foreground">
                 Register in less than 30 seconds. Protect your privacy and respond to real-time hospital emergencies in your district.

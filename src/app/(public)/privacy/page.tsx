@@ -16,7 +16,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   FileText,
-  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -78,10 +77,6 @@ export default function PrivacyPage() {
       <section className="border-b border-border bg-muted/20 py-12 sm:py-16">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
           <div className="max-w-3xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-teal/20 bg-teal/5 text-teal text-xs font-mono font-medium uppercase tracking-wider">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Clinical Data Governance Framework</span>
-            </div>
             <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground">
               Privacy, Safety & Identity Protection
             </h1>
@@ -108,9 +103,9 @@ export default function PrivacyPage() {
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Safeguard 1 */}
-            <div className="p-5 rounded-xl border border-border bg-card shadow-xs flex flex-col justify-between">
+            <div className="p-5 rounded-2xl border border-border bg-card shadow-xs flex flex-col justify-between">
               <div className="space-y-3">
-                <div className="h-10 w-10 rounded-lg bg-teal/10 border border-teal/20 flex items-center justify-center text-teal">
+                <div className="h-10 w-10 rounded-xl bg-teal/10 flex items-center justify-center text-teal">
                   <EyeOff className="h-5 w-5" />
                 </div>
                 <h3 className="font-heading font-semibold text-base text-foreground">
@@ -120,15 +115,15 @@ export default function PrivacyPage() {
                   All Bangladesh phone numbers are publicly redacted to <code className="font-mono text-teal bg-teal/5 px-1 py-0.5 rounded">01XXX***XXX</code> to stop scrapers and unsolicited harassment.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-border/50 text-[11px] font-mono text-teal flex items-center gap-1">
+              <div className="mt-4 pt-3 border-t border-border text-[11px] font-mono text-teal flex items-center gap-1">
                 <span>Direct match disclosure only</span>
               </div>
             </div>
 
             {/* Safeguard 2 */}
-            <div className="p-5 rounded-xl border border-border bg-card shadow-xs flex flex-col justify-between">
+            <div className="p-5 rounded-2xl border border-border bg-card shadow-xs flex flex-col justify-between">
               <div className="space-y-3">
-                <div className="h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                   <Clock className="h-5 w-5" />
                 </div>
                 <h3 className="font-heading font-semibold text-base text-foreground">
@@ -138,15 +133,15 @@ export default function PrivacyPage() {
                   Post-donation biological lockout is calculated strictly by automated system rules to protect donor cardiovascular and erythropoietic recovery.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-border/50 text-[11px] font-mono text-primary flex items-center gap-1">
+              <div className="mt-4 pt-3 border-t border-border text-[11px] font-mono text-primary flex items-center gap-1">
                 <span>WHO biological safety rule</span>
               </div>
             </div>
 
             {/* Safeguard 3 */}
-            <div className="p-5 rounded-xl border border-border bg-card shadow-xs flex flex-col justify-between">
+            <div className="p-5 rounded-2xl border border-border bg-card shadow-xs flex flex-col justify-between">
               <div className="space-y-3">
-                <div className="h-10 w-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                <div className="h-10 w-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400">
                   <HeartHandshake className="h-5 w-5" />
                 </div>
                 <h3 className="font-heading font-semibold text-base text-foreground">
@@ -156,15 +151,15 @@ export default function PrivacyPage() {
                   We never buy, sell, broker, or monetize blood or donor records. Commercial exchange of blood is strictly illegal and blocked on our platform.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-border/50 text-[11px] font-mono text-amber-600 dark:text-amber-400 flex items-center gap-1">
+              <div className="mt-4 pt-3 border-t border-border text-[11px] font-mono text-amber-600 dark:text-amber-400 flex items-center gap-1">
                 <span>100% Free Public Good</span>
               </div>
             </div>
 
             {/* Safeguard 4 */}
-            <div className="p-5 rounded-xl border border-border bg-card shadow-xs flex flex-col justify-between">
+            <div className="p-5 rounded-2xl border border-border bg-card shadow-xs flex flex-col justify-between">
               <div className="space-y-3">
-                <div className="h-10 w-10 rounded-lg bg-teal/10 border border-teal/20 flex items-center justify-center text-teal">
+                <div className="h-10 w-10 rounded-xl bg-teal/10 flex items-center justify-center text-teal">
                   <UserX className="h-5 w-5" />
                 </div>
                 <h3 className="font-heading font-semibold text-base text-foreground">
@@ -174,7 +169,7 @@ export default function PrivacyPage() {
                   Donors and recipients retain absolute sovereignty over their data with 1-click irreversible account erasure and clinical log de-identification.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-border/50 text-[11px] font-mono text-teal flex items-center gap-1">
+              <div className="mt-4 pt-3 border-t border-border text-[11px] font-mono text-teal flex items-center gap-1">
                 <span>Unconditional Right to Delete</span>
               </div>
             </div>
@@ -187,7 +182,7 @@ export default function PrivacyPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Desktop Table of Contents Sidebar */}
           <aside className="hidden lg:block lg:col-span-4 xl:col-span-3">
-            <div className="sticky top-24 p-5 rounded-xl border border-border bg-card/60 backdrop-blur-md shadow-xs space-y-4">
+            <div className="sticky top-24 p-5 rounded-2xl border border-border bg-card shadow-xs space-y-4">
               <div className="flex items-center gap-2 pb-3 border-b border-border font-heading font-semibold text-sm text-foreground">
                 <FileText className="h-4 w-4 text-teal" />
                 <span>Policy Navigation</span>
@@ -229,15 +224,10 @@ export default function PrivacyPage() {
           <main className="lg:col-span-8 xl:col-span-9 space-y-16">
             {/* Section 1: Overview */}
             <section id="overview" className="scroll-mt-28 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
-                <span>01</span>
-                <ChevronRight className="h-3 w-3" />
-                <span>Scope & Humanitarian Purpose</span>
-              </div>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                 1. Governance & Scope
               </h2>
-              <div className="prose prose-slate dark:prose-invert max-w-none text-muted-foreground text-sm sm:text-base leading-relaxed space-y-3">
+              <div className="text-muted-foreground text-sm sm:text-base leading-relaxed space-y-3">
                 <p>
                   BloodOS is an open humanitarian clinical coordination protocol purpose-built to accelerate emergency blood matching across Bangladesh. This Privacy Policy governs all interactions with the platform across web, mobile viewports, and automated emergency notification channels.
                 </p>
@@ -249,16 +239,11 @@ export default function PrivacyPage() {
 
             {/* Section 2: Data We Collect */}
             <section id="data-collection" className="scroll-mt-28 space-y-6">
-              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
-                <span>02</span>
-                <ChevronRight className="h-3 w-3" />
-                <span>Data Ingestion Taxonomy</span>
-              </div>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                 2. Information We Collect
               </h2>
-              <div className="space-y-4">
-                <div className="p-5 rounded-xl border border-border bg-card space-y-3">
+              <div className="space-y-6">
+                <div className="space-y-3">
                   <h3 className="font-heading font-semibold text-foreground text-base flex items-center gap-2">
                     <Database className="h-4 w-4 text-teal" />
                     Donor Profile Records
@@ -294,7 +279,7 @@ export default function PrivacyPage() {
                   </ul>
                 </div>
 
-                <div className="p-5 rounded-xl border border-border bg-card space-y-3">
+                <div className="space-y-3 pt-4 border-t border-border">
                   <h3 className="font-heading font-semibold text-foreground text-base flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-primary" />
                     Emergency Blood Request Records
@@ -334,11 +319,6 @@ export default function PrivacyPage() {
 
             {/* Section 3: Clinical & Triage Use */}
             <section id="data-utilization" className="scroll-mt-28 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
-                <span>03</span>
-                <ChevronRight className="h-3 w-3" />
-                <span>Purpose-Bound Processing</span>
-              </div>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                 3. How We Process Your Data
               </h2>
@@ -346,16 +326,16 @@ export default function PrivacyPage() {
                 <p>
                   BloodOS enforces strict data minimalism. Data collected is used exclusively for the following operational workflows:
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                  <div className="p-4 rounded-lg border border-border bg-muted/20 space-y-1">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                  <div className="p-4 rounded-xl border border-border bg-muted/20 space-y-1">
                     <span className="font-mono text-xs text-foreground font-semibold">Triage Matching</span>
                     <p className="text-xs text-muted-foreground">Automated cross-checking of ABO/Rh compatibility and geographic proximity within 64 districts.</p>
                   </div>
-                  <div className="p-4 rounded-lg border border-border bg-muted/20 space-y-1">
+                  <div className="p-4 rounded-xl border border-border bg-muted/20 space-y-1">
                     <span className="font-mono text-xs text-foreground font-semibold">Emergency Broadcast</span>
-                    <p className="text-xs text-muted-foreground">Delivering real-time in-app alerts and notifications to eligible matched donors when STAT alerts trigger.</p>
+                    <p className="text-xs text-muted-foreground">Delivering real-time alerts and notifications to eligible matched donors when STAT alerts trigger.</p>
                   </div>
-                  <div className="p-4 rounded-lg border border-border bg-muted/20 space-y-1">
+                  <div className="p-4 rounded-xl border border-border bg-muted/20 space-y-1">
                     <span className="font-mono text-xs text-foreground font-semibold">Abuse Prevention</span>
                     <p className="text-xs text-muted-foreground">Detecting duplicate requests, spam bots, and unauthorized commercial middlemen seeking blood products.</p>
                   </div>
@@ -365,11 +345,6 @@ export default function PrivacyPage() {
 
             {/* Section 4: Phone Masking Standard */}
             <section id="phone-masking" className="scroll-mt-28 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
-                <span>04</span>
-                <ChevronRight className="h-3 w-3" />
-                <span>Anti-Scraping Privacy Protocol</span>
-              </div>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                 4. Automated Phone Masking Standard
               </h2>
@@ -377,7 +352,7 @@ export default function PrivacyPage() {
                 <p>
                   To eliminate unsolicited commercial messages, identity theft, and harassment of female and vulnerable donors, BloodOS implements cryptographic server-side phone redaction:
                 </p>
-                <div className="p-5 rounded-xl border border-teal/20 bg-teal/5 text-foreground space-y-3">
+                <div className="p-5 rounded-2xl border border-teal/20 bg-teal/5 text-foreground space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-xs text-teal font-semibold">Redaction Standard</span>
                     <span className="text-[11px] font-mono text-muted-foreground">Regex: 01XXX***XXX</span>
@@ -399,11 +374,6 @@ export default function PrivacyPage() {
 
             {/* Section 5: 56-Day Cooldown & Medical Integrity */}
             <section id="cooldown-safety" className="scroll-mt-28 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
-                <span>05</span>
-                <ChevronRight className="h-3 w-3" />
-                <span>Biological Safety Safeguards</span>
-              </div>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                 5. 56-Day Cooldown & Clinical Integrity
               </h2>
@@ -419,15 +389,10 @@ export default function PrivacyPage() {
 
             {/* Section 6: Zero Brokerage Guarantee */}
             <section id="zero-brokerage" className="scroll-mt-28 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-amber-600 dark:text-amber-400 uppercase tracking-wider">
-                <span>06</span>
-                <ChevronRight className="h-3 w-3" />
-                <span>Strict Non-Commercial Mandate</span>
-              </div>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                 6. Zero Brokerage & Non-Commercialization
               </h2>
-              <div className="p-5 rounded-xl border border-amber-500/20 bg-amber-500/5 space-y-3 text-sm">
+              <div className="p-5 rounded-2xl border border-amber-500/20 bg-amber-500/5 space-y-3 text-sm">
                 <p className="text-foreground font-medium">
                   Blood is a humanitarian gift, not a commodity.
                 </p>
@@ -439,11 +404,6 @@ export default function PrivacyPage() {
 
             {/* Section 7: User Rights & Data Erasure */}
             <section id="user-rights" className="scroll-mt-28 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
-                <span>07</span>
-                <ChevronRight className="h-3 w-3" />
-                <span>User Sovereignty</span>
-              </div>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                 7. Your Data Rights & Right to Erasure
               </h2>
@@ -451,12 +411,12 @@ export default function PrivacyPage() {
                 <p>
                   You hold complete legal sovereignty over your personal records stored within BloodOS:
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  <div className="p-4 rounded-lg border border-border bg-card space-y-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                  <div className="p-4 rounded-xl border border-border bg-card space-y-1">
                     <span className="text-xs font-mono text-foreground font-semibold">Right to Access & Rectify</span>
                     <p className="text-xs text-muted-foreground">You can update your phone, district, availability, and donation history at any time from your Profile.</p>
                   </div>
-                  <div className="p-4 rounded-lg border border-border bg-card space-y-1">
+                  <div className="p-4 rounded-xl border border-border bg-card space-y-1">
                     <span className="text-xs font-mono text-foreground font-semibold">Right to Erasure (Delete)</span>
                     <p className="text-xs text-muted-foreground">You can request full account deletion. All contact information is wiped and historical logs are permanently anonymized.</p>
                   </div>
@@ -466,11 +426,6 @@ export default function PrivacyPage() {
 
             {/* Section 8: Security Safeguards */}
             <section id="security-architecture" className="scroll-mt-28 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
-                <span>08</span>
-                <ChevronRight className="h-3 w-3" />
-                <span>Infrastructure Protection</span>
-              </div>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                 8. Technical & Clinical Security Safeguards
               </h2>
@@ -497,26 +452,21 @@ export default function PrivacyPage() {
 
             {/* Section 9: DPO Contact */}
             <section id="dpo-contact" className="scroll-mt-28 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
-                <span>09</span>
-                <ChevronRight className="h-3 w-3" />
-                <span>Compliance Inquiries</span>
-              </div>
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                 9. Data Protection Officer & Inquiries
               </h2>
-              <div className="p-6 rounded-xl border border-border bg-card space-y-4">
+              <div className="p-6 rounded-2xl border border-border bg-card space-y-4">
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   For formal data access requests, clinical audit inquiries, or reporting unauthorized contact disclosures, reach our Data Protection & Ethics Committee:
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div className="p-3 rounded-lg bg-muted/40 border border-border">
+                  <div className="p-3.5 rounded-xl bg-muted/30 border border-border">
                     <span className="text-muted-foreground block text-[11px]">Electronic Inquiries</span>
                     <a href="mailto:privacy@bloodos.org" className="font-mono text-teal hover:underline font-medium text-sm">
                       privacy@bloodos.org
                     </a>
                   </div>
-                  <div className="p-3 rounded-lg bg-muted/40 border border-border">
+                  <div className="p-3.5 rounded-xl bg-muted/30 border border-border">
                     <span className="text-muted-foreground block text-[11px]">Direct Support Desk</span>
                     <Link href="/contact" className="font-mono text-foreground hover:underline font-medium text-sm flex items-center gap-1">
                       <span>bloodos.org/contact</span>
