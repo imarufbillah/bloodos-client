@@ -119,14 +119,17 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
             Full Name
           </Label>
           <div className="relative">
-            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
               id="signup-name"
               type="text"
+              inputMode="text"
+              autoCapitalize="words"
+              autoCorrect="off"
               placeholder="e.g. Dr. Sadia Rahman or Maruf Billah"
               autoComplete="name"
               disabled={isLoading || !!rateLimitError}
-              className="h-11 pl-10 bg-background border-border text-sm placeholder:text-muted-foreground/70 focus:border-crimson focus:ring-1 focus:ring-crimson"
+              className="h-11 min-h-[44px] pl-10 bg-background border-border text-base sm:text-sm placeholder:text-muted-foreground/70 focus:border-crimson focus:ring-1 focus:ring-crimson touch-manipulation"
               {...register("name")}
               aria-invalid={!!errors.name}
               aria-describedby={errors.name ? "signup-name-error" : undefined}
@@ -146,14 +149,18 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
             Email Address
           </Label>
           <div className="relative">
-            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
               id="signup-email"
               type="email"
+              inputMode="email"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               placeholder="donor@example.com"
               autoComplete="email"
               disabled={isLoading || !!rateLimitError}
-              className="h-11 pl-10 bg-background border-border text-sm placeholder:text-muted-foreground/70 focus:border-crimson focus:ring-1 focus:ring-crimson"
+              className="h-11 min-h-[44px] pl-10 bg-background border-border text-base sm:text-sm placeholder:text-muted-foreground/70 focus:border-crimson focus:ring-1 focus:ring-crimson touch-manipulation"
               {...register("email")}
               aria-invalid={!!errors.email}
               aria-describedby={errors.email ? "signup-email-error" : undefined}
@@ -173,14 +180,14 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
             Create Password
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
               id="signup-password"
               type={showPassword ? "text" : "password"}
               placeholder="Minimum 8 characters"
               autoComplete="new-password"
               disabled={isLoading || !!rateLimitError}
-              className="h-11 pl-10 pr-10 bg-background border-border text-sm placeholder:text-muted-foreground/70 focus:border-crimson focus:ring-1 focus:ring-crimson"
+              className="h-11 min-h-[44px] pl-10 pr-11 bg-background border-border text-base sm:text-sm placeholder:text-muted-foreground/70 focus:border-crimson focus:ring-1 focus:ring-crimson touch-manipulation"
               {...register("password")}
               aria-invalid={!!errors.password}
               aria-describedby={errors.password ? "signup-password-error" : undefined}
@@ -189,7 +196,7 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors touch-manipulation"
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -208,14 +215,14 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
             Confirm Password
           </Label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
               id="signup-confirm-password"
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Re-enter password"
               autoComplete="new-password"
               disabled={isLoading || !!rateLimitError}
-              className="h-11 pl-10 pr-10 bg-background border-border text-sm placeholder:text-muted-foreground/70 focus:border-crimson focus:ring-1 focus:ring-crimson"
+              className="h-11 min-h-[44px] pl-10 pr-11 bg-background border-border text-base sm:text-sm placeholder:text-muted-foreground/70 focus:border-crimson focus:ring-1 focus:ring-crimson touch-manipulation"
               {...register("confirmPassword")}
               aria-invalid={!!errors.confirmPassword}
               aria-describedby={errors.confirmPassword ? "signup-confirm-password-error" : undefined}
@@ -224,7 +231,7 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 w-8 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors touch-manipulation"
             >
               {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -242,7 +249,7 @@ export function SignUpForm({ callbackUrl }: SignUpFormProps) {
           type="submit"
           size="lg"
           disabled={isLoading || !!rateLimitError}
-          className="w-full h-11 bg-primary hover:bg-primary/90 text-paper font-semibold gap-2 shadow-xs transition-all duration-150 active:scale-[0.98] mt-2"
+          className="w-full h-11 min-h-[44px] bg-primary hover:bg-primary/90 text-paper font-semibold gap-2 shadow-xs transition-all duration-150 active:scale-[0.98] touch-manipulation mt-2"
         >
           <span>{isLoading ? "Creating Account..." : "Create Account"}</span>
           <ArrowRight className="h-4 w-4 opacity-80" />

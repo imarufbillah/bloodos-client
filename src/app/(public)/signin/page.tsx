@@ -26,20 +26,20 @@ async function SignInContent({ searchParams }: SignInPageProps) {
   const destination = redirectParam || callbackUrl || "/profile";
 
   return (
-    <div className="relative min-h-[calc(100dvh-4rem)] flex items-center justify-center py-10 sm:py-16 px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-[calc(100dvh-4rem)] flex items-center justify-center pt-8 pb-24 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Ambient background glow */}
       <div 
-        className="pointer-events-none absolute top-1/3 left-1/2 h-[380px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-crimson/5 blur-[120px]" 
+        className="pointer-events-none absolute top-1/3 left-1/2 h-[380px] w-[600px] max-w-full -translate-x-1/2 -translate-y-1/2 rounded-full bg-crimson/5 blur-[120px]" 
         aria-hidden="true" 
       />
 
       <div className="container relative mx-auto max-w-7xl w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
-          {/* Left Column: Essential System Context */}
+          {/* Left Column: Essential System Context (Desktop / Large Displays) */}
           <div className="lg:col-span-6 space-y-6 hidden lg:flex flex-col justify-center">
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-teal font-mono">
-              <span className="h-2 w-2 rounded-full bg-teal animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-teal animate-pulse motion-reduce:animate-none" />
               <span>VERIFIED LIFESAVER NETWORK • 64 DISTRICTS</span>
             </div>
 
@@ -69,9 +69,9 @@ async function SignInContent({ searchParams }: SignInPageProps) {
             </div>
           </div>
 
-          {/* Right Column: Distilled Auth Capsule */}
+          {/* Right Column: Distilled Auth Capsule (Responsive on Mobile, Tablet & Desktop) */}
           <div className="lg:col-span-6 w-full max-w-md mx-auto">
-            <div className="rounded-2xl border border-border bg-card/95 backdrop-blur-md p-6 sm:p-8 shadow-sm space-y-6">
+            <div className="rounded-2xl border border-border bg-card/95 backdrop-blur-md p-5 sm:p-7 md:p-8 shadow-sm space-y-5 sm:space-y-6">
               
               {/* Card Header */}
               <div className="space-y-1">
@@ -93,13 +93,13 @@ async function SignInContent({ searchParams }: SignInPageProps) {
               {/* Form Component */}
               <SignInForm callbackUrl={destination} />
 
-              {/* Footer Links */}
-              <div className="pt-2 border-t border-border/60 text-center space-y-2">
-                <p className="text-xs text-muted-foreground">
-                  Don&apos;t have an account yet?{" "}
+              {/* Footer Links with Accessible Touch Targets */}
+              <div className="pt-2 border-t border-border/60 text-center space-y-1.5">
+                <p className="text-xs text-muted-foreground flex flex-wrap items-center justify-center gap-1">
+                  <span>Don&apos;t have an account yet?</span>
                   <Link
                     href={`/signup${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ""}`}
-                    className="font-semibold text-crimson hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-crimson rounded"
+                    className="inline-flex items-center min-h-[36px] py-1 font-semibold text-crimson hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-crimson rounded touch-manipulation"
                   >
                     Register here
                   </Link>
@@ -107,7 +107,7 @@ async function SignInContent({ searchParams }: SignInPageProps) {
 
                 <p className="text-[11px] text-muted-foreground/80">
                   By signing in, you agree to our{" "}
-                  <Link href="/privacy" className="underline hover:text-foreground transition-colors">
+                  <Link href="/privacy" className="inline-flex items-center min-h-[32px] py-0.5 underline hover:text-foreground transition-colors touch-manipulation">
                     Privacy Policy
                   </Link>
                 </p>
