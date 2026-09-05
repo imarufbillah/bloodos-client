@@ -245,7 +245,8 @@ export default function DonorDirectoryContent({
             </div>
 
             <Link
-              href="/profile"
+              href={session?.user ? "/profile" : "/signup"}
+              prefetch={false}
               className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-all active:scale-[0.98] self-start sm:self-auto"
             >
               <UserPlus className="h-4 w-4" />
@@ -481,7 +482,8 @@ export default function DonorDirectoryContent({
               </Button>
             ) : (
               <Link
-                href="/profile"
+                href={session?.user ? "/profile" : "/signup"}
+                prefetch={false}
                 className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
               >
                 <UserPlus className="h-3.5 w-3.5" />
