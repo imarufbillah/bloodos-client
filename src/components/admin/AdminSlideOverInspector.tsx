@@ -79,7 +79,7 @@ export function AdminSlideOverInspector({
         aria-hidden="true"
       />
 
-      {/* Slide-over Drawer */}
+      {/* Slide-over Drawer (full width / bottom sheet on mobile, right drawer on sm+) */}
       <div
         role="dialog"
         aria-modal="true"
@@ -88,10 +88,15 @@ export function AdminSlideOverInspector({
             ? `Inspector: Request #${item.data._id.slice(-6)}`
             : `Inspector: User ${item.data.name}`
         }
-        className="relative z-10 w-full max-w-md bg-card border-l border-border h-full shadow-2xl flex flex-col justify-between overflow-hidden animate-in slide-in-from-right duration-250 ease-out"
+        className="relative z-10 w-full sm:max-w-md bg-card border-t sm:border-t-0 sm:border-l border-border max-h-[92dvh] sm:max-h-none sm:h-full rounded-t-3xl sm:rounded-none shadow-2xl flex flex-col justify-between overflow-hidden animate-in slide-in-from-bottom sm:slide-in-from-right duration-250 ease-out mt-auto sm:mt-0"
       >
+        {/* Mobile Drag Indicator */}
+        <div className="flex sm:hidden items-center justify-center pt-2.5 pb-0.5">
+          <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+        </div>
+
         {/* Drawer Header */}
-        <div className="p-5 border-b border-border bg-muted/40 flex items-center justify-between">
+        <div className="p-4 sm:p-5 border-b border-border bg-muted/40 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
               {item.type === "request" ? (
@@ -320,7 +325,7 @@ export function AdminSlideOverInspector({
         </div>
 
         {/* Drawer Action Footer */}
-        <div className="p-4 border-t border-border bg-muted/30">
+        <div className="p-4 sm:p-5 border-t border-border bg-muted/30 pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
           {item.type === "request" ? (
             <div className="flex items-center gap-2">
               {item.data.status === "pending" && onRejectRequest && (

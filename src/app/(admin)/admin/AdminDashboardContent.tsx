@@ -145,8 +145,8 @@ export function AdminDashboardContent({
   return (
     <div className="min-h-[calc(100dvh-4rem)] bg-background pb-12">
       {/* Top Banner / Tactical Command Header */}
-      <div className="border-b border-border bg-card/60 backdrop-blur-xs sticky top-16 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+      <div className="border-b border-border bg-card/60 backdrop-blur-xs sticky top-14 sm:top-16 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             {/* Title & Live Pulse */}
             <div className="flex items-center gap-3.5">
