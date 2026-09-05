@@ -23,6 +23,8 @@ export const HAPTIC_PATTERNS = {
   LIGHT: 10,
   /** Medium tactile click on navigation and selections */
   MEDIUM: 18,
+  /** Heavy pulse on destructive/critical confirmations */
+  HEAVY: 25,
   /** Urgent triple pulse on Emergency SOS dispatch actions */
   EMERGENCY_SOS: [20, 40, 25] as const,
   /** Success feedback on form completion or request fulfillment */
