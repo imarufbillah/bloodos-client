@@ -1,942 +1,534 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
-  Shield,
-  Eye,
-  Lock,
-  Share2,
-  UserCheck,
+  ShieldCheck,
+  EyeOff,
+  Clock,
+  HeartHandshake,
   Database,
-  AlertTriangle,
+  Lock,
+  UserX,
+  FileCheck2,
   Mail,
+  ArrowRight,
   CheckCircle2,
-  XCircle,
+  AlertTriangle,
+  FileText,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-/**
- * Privacy Policy Page Component
- * Comprehensive privacy policy with required sections
- */
+interface SectionNavItem {
+  id: string;
+  title: string;
+  badge: string;
+}
+
+const SECTIONS: SectionNavItem[] = [
+  { id: "overview", title: "1. Governance & Scope", badge: "Scope" },
+  { id: "data-collection", title: "2. Data We Collect", badge: "Collection" },
+  { id: "data-utilization", title: "3. Clinical & Triage Use", badge: "Usage" },
+  { id: "phone-masking", title: "4. Phone Masking Standard", badge: "Masking" },
+  { id: "cooldown-safety", title: "5. 56-Day Cooldown & Safety", badge: "Health" },
+  { id: "zero-brokerage", title: "6. Zero Brokerage Guarantee", badge: "Ethics" },
+  { id: "user-rights", title: "7. User Rights & Erasure", badge: "Rights" },
+  { id: "security-architecture", title: "8. Security Safeguards", badge: "Security" },
+  { id: "dpo-contact", title: "9. Inquiries & DPO Contact", badge: "Contact" },
+];
+
 export default function PrivacyPage() {
+  const [activeSection, setActiveSection] = useState<string>("overview");
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: "-20% 0px -70% 0px",
+      }
+    );
+
+    SECTIONS.forEach((sec) => {
+      const el = document.getElementById(sec.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const yOffset = -90;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="flex flex-col min-h-[calc(100dvh-4rem)]">
-      {/* ===================================================================
-          Hero Section
-       =================================================================== */}
-      <section className="relative border-b border-border bg-linear-to-b from-background to-muted/20 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex flex-col items-center gap-6 text-center">
-            <motion.div
-              className="flex h-20 w-20 items-center justify-center rounded-full bg-teal"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Shield className="h-10 w-10 text-white" />
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <h1 className="font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-                Privacy Policy
-              </h1>
-              <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
-                How we collect, use, and protect your personal information
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Last updated: January 2026
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================================================================
-          Introduction
-       =================================================================== */}
-      <section className="border-b border-border px-4 py-12 sm:py-16">
-        <div className="container mx-auto max-w-7xl">
-          <div className="space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
-            <p>
-              BloodOS is committed to protecting your privacy. This policy
-              explains what personal information we collect, how we use it, who
-              we share it with, and your rights regarding your data.
+    <div className="w-full min-h-[calc(100dvh-4rem)] flex flex-col bg-background text-foreground pb-24 sm:pb-16">
+      {/* Header Banner */}
+      <section className="border-b border-border bg-muted/20 py-12 sm:py-16">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="max-w-3xl space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-teal/20 bg-teal/5 text-teal text-xs font-mono font-medium uppercase tracking-wider">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>Clinical Data Governance Framework</span>
+            </div>
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground">
+              Privacy, Safety & Identity Protection
+            </h1>
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+              BloodOS operates as a non-profit emergency humanitarian network. We handle health and contact records with extreme clinical restraint, automated privacy controls, and zero commercial monetization.
             </p>
-            <p>
-              By using BloodOS, you agree to the collection and use of
-              information in accordance with this policy. We will not use or
-              share your information except as described here.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================================================================
-          Data Collection Section
-       =================================================================== */}
-      <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-teal/10">
-              <Database className="h-6 w-6 text-teal" />
-            </div>
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Data Collection
-            </h2>
-          </div>
-
-          <div className="space-y-8">
-            <div>
-              <h3 className="font-heading text-xl font-semibold text-foreground mb-3">
-                Account Information
-              </h3>
-              <p className="text-base text-muted-foreground mb-4">
-                When you register for BloodOS, we collect:
-              </p>
-              <ul className="space-y-2">
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>
-                    <strong className="text-foreground">Full name:</strong> To
-                    identify you in the system and display to other users
-                  </span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>
-                    <strong className="text-foreground">Email address:</strong>{" "}
-                    For account verification, notifications, and password reset
-                  </span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>
-                    <strong className="text-foreground">Phone number:</strong>{" "}
-                    For contact coordination between requesters and donors
-                    (masked by default)
-                  </span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>
-                    <strong className="text-foreground">Blood group:</strong> To
-                    match donors with compatible requests
-                  </span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>
-                    <strong className="text-foreground">District:</strong> To
-                    match nearby donors and requesters
-                  </span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>
-                    <strong className="text-foreground">
-                      Last donation date:
-                    </strong>{" "}
-                    To enforce 90-day cooldown eligibility
-                  </span>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-heading text-xl font-semibold text-foreground mb-3">
-                Blood Request Information
-              </h3>
-              <p className="text-base text-muted-foreground mb-4">
-                When you post a blood request, we collect:
-              </p>
-              <ul className="space-y-2">
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>Patient name, blood group, and units needed</span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>Hospital name, address, and district</span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>Contact phone number and urgency level</span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>Optional additional notes about the request</span>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-heading text-xl font-semibold text-foreground mb-3">
-                Usage Data
-              </h3>
-              <p className="text-base text-muted-foreground mb-4">
-                We automatically collect certain information when you use
-                BloodOS:
-              </p>
-              <ul className="space-y-2">
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>IP address and browser type</span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>Pages visited and actions taken</span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                  <span>Timestamps of requests and responses</span>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-heading text-xl font-semibold text-foreground mb-3">
-                What We Don&apos;t Collect
-              </h3>
-              <ul className="space-y-2">
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <XCircle className="mt-1 h-5 w-5 shrink-0 text-destructive" />
-                  <span>
-                    <strong className="text-foreground">
-                      Medical records:
-                    </strong>{" "}
-                    We don&apos;t collect or store detailed medical information
-                  </span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <XCircle className="mt-1 h-5 w-5 shrink-0 text-destructive" />
-                  <span>
-                    <strong className="text-foreground">
-                      Financial information:
-                    </strong>{" "}
-                    BloodOS is completely free; we collect no payment data
-                  </span>
-                </li>
-                <li className="flex gap-3 text-base text-muted-foreground">
-                  <XCircle className="mt-1 h-5 w-5 shrink-0 text-destructive" />
-                  <span>
-                    <strong className="text-foreground">
-                      Third-party tracking:
-                    </strong>{" "}
-                    We don&apos;t use advertising trackers or sell your data
-                  </span>
-                </li>
-              </ul>
+            <div className="flex flex-wrap items-center gap-4 pt-2 text-xs font-mono text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <FileCheck2 className="h-4 w-4 text-teal" /> Version 2.4 (2026 Edition)
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Clock className="h-4 w-4 text-primary" /> Effective Date: January 1, 2026
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4 text-teal" /> DGHS & ICT Act Compliant
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ===================================================================
-          Data Usage Section
-       =================================================================== */}
-      <section className="border-b border-border px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-ochre/10">
-              <Eye className="h-6 w-6 text-ochre" />
-            </div>
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Data Usage
-            </h2>
-          </div>
-
-          <div className="space-y-6 text-base leading-relaxed text-muted-foreground">
-            <p>We use your personal information for the following purposes:</p>
-
-            <div className="space-y-4">
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2">
-                  1. Platform Operations
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>Creating and managing your account</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>Authenticating your identity when you log in</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>Processing and displaying blood requests</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>Managing donor responses and request status</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2">
-                  2. Donor-Requester Matching
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>
-                      Matching blood requests with compatible donors based on
-                      blood group and district
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>
-                      Verifying donor eligibility (age, weight, cooldown period)
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>
-                      Sending notifications to eligible donors about new
-                      requests
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>
-                      Facilitating contact coordination between requesters and
-                      donors
-                    </span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2">
-                  3. Communication
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>
-                      Sending notifications about request status changes
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>
-                      Notifying you when someone responds to your request
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>
-                      Alerting you about matching blood requests nearby
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>
-                      Sending account-related emails (password resets,
-                      verification)
-                    </span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2">
-                  4. Safety & Security
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>Detecting and preventing fraud, spam, and abuse</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>
-                      Logging contact information reveals for transparency
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>Tracking admin actions for accountability</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>Enforcing our Terms of Service</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2">
-                  5. Platform Improvement
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>
-                      Analyzing aggregated usage data to improve the platform
-                    </span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>Understanding which features are most useful</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-teal">•</span>
-                    <span>Identifying and fixing technical issues</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================================================================
-          Data Sharing Section
-       =================================================================== */}
-      <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-crimson/10">
-              <Share2 className="h-6 w-6 text-crimson" />
-            </div>
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Data Sharing
-            </h2>
-          </div>
-
-          <div className="space-y-6 text-base leading-relaxed text-muted-foreground">
-            <p className="text-lg font-semibold text-foreground">
-              We share your information only in limited circumstances:
-            </p>
-
-            <div className="space-y-6">
-              <div>
-                <h3 className="font-heading text-lg font-semibold text-foreground mb-3">
-                  With Other Users (Controlled Sharing)
-                </h3>
-                <div className="rounded-lg border border-border bg-card p-5 space-y-3 text-sm">
-                  <p>
-                    <strong className="text-foreground">
-                      Public Information:
-                    </strong>{" "}
-                    Your name, blood group, and district are visible to all
-                    users when you&apos;re listed as a donor. Your phone number
-                    is masked by default (showing only partial digits).
-                  </p>
-                  <p>
-                    <strong className="text-foreground">
-                      Controlled Reveal:
-                    </strong>{" "}
-                    Your full contact information (phone and email) is only
-                    revealed to requesters who explicitly accept your donor
-                    offer. All such reveals are logged in our audit system.
-                  </p>
-                  <p>
-                    <strong className="text-foreground">
-                      Request Details:
-                    </strong>{" "}
-                    When you post a blood request, the information you provide
-                    (patient name, hospital, contact phone) becomes publicly
-                    visible to help donors coordinate.
-                  </p>
+      {/* Core Safeguards 4-Grid Highlights */}
+      <section className="border-b border-border py-10 bg-background">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Safeguard 1 */}
+            <div className="p-5 rounded-xl border border-border bg-card shadow-xs flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-lg bg-teal/10 border border-teal/20 flex items-center justify-center text-teal">
+                  <EyeOff className="h-5 w-5" />
                 </div>
-              </div>
-
-              <div>
-                <h3 className="font-heading text-lg font-semibold text-foreground mb-3">
-                  With Service Providers
+                <h3 className="font-heading font-semibold text-base text-foreground">
+                  Algorithmic Phone Masking
                 </h3>
-                <div className="rounded-lg border border-border bg-card p-5 text-sm">
-                  <p>
-                    We use trusted third-party services to operate BloodOS.
-                    These providers only access your data as needed to perform
-                    their specific functions:
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  All Bangladesh phone numbers are publicly redacted to <code className="font-mono text-teal bg-teal/5 px-1 py-0.5 rounded">01XXX***XXX</code> to stop scrapers and unsolicited harassment.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/50 text-[11px] font-mono text-teal flex items-center gap-1">
+                <span>Direct match disclosure only</span>
+              </div>
+            </div>
+
+            {/* Safeguard 2 */}
+            <div className="p-5 rounded-xl border border-border bg-card shadow-xs flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <h3 className="font-heading font-semibold text-base text-foreground">
+                  56-Day Cooldown Ledger
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Post-donation biological lockout is calculated strictly by automated system rules to protect donor cardiovascular and erythropoietic recovery.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/50 text-[11px] font-mono text-primary flex items-center gap-1">
+                <span>WHO biological safety rule</span>
+              </div>
+            </div>
+
+            {/* Safeguard 3 */}
+            <div className="p-5 rounded-xl border border-border bg-card shadow-xs flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                  <HeartHandshake className="h-5 w-5" />
+                </div>
+                <h3 className="font-heading font-semibold text-base text-foreground">
+                  Zero Brokerage Guarantee
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  We never buy, sell, broker, or monetize blood or donor records. Commercial exchange of blood is strictly illegal and blocked on our platform.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/50 text-[11px] font-mono text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                <span>100% Free Public Good</span>
+              </div>
+            </div>
+
+            {/* Safeguard 4 */}
+            <div className="p-5 rounded-xl border border-border bg-card shadow-xs flex flex-col justify-between">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-lg bg-teal/10 border border-teal/20 flex items-center justify-center text-teal">
+                  <UserX className="h-5 w-5" />
+                </div>
+                <h3 className="font-heading font-semibold text-base text-foreground">
+                  Permanent Data Erasure
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Donors and recipients retain absolute sovereignty over their data with 1-click irreversible account erasure and clinical log de-identification.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border/50 text-[11px] font-mono text-teal flex items-center gap-1">
+                <span>Unconditional Right to Delete</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content with Sticky TOC */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          {/* Desktop Table of Contents Sidebar */}
+          <aside className="hidden lg:block lg:col-span-4 xl:col-span-3">
+            <div className="sticky top-24 p-5 rounded-xl border border-border bg-card/60 backdrop-blur-md shadow-xs space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-border font-heading font-semibold text-sm text-foreground">
+                <FileText className="h-4 w-4 text-teal" />
+                <span>Policy Navigation</span>
+              </div>
+              <nav className="flex flex-col space-y-1">
+                {SECTIONS.map((sec) => (
+                  <button
+                    key={sec.id}
+                    onClick={() => scrollTo(sec.id)}
+                    className={`flex items-center justify-between text-left px-3 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                      activeSection === sec.id
+                        ? "bg-teal/10 text-teal font-semibold border-l-2 border-teal"
+                        : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                    }`}
+                  >
+                    <span className="truncate mr-2">{sec.title}</span>
+                    <span className="text-[10px] font-mono opacity-70">
+                      {sec.badge}
+                    </span>
+                  </button>
+                ))}
+              </nav>
+
+              <div className="pt-4 border-t border-border space-y-2">
+                <p className="text-[11px] text-muted-foreground">
+                  Questions regarding data safety?
+                </p>
+                <Link href="/contact" className="block">
+                  <Button variant="outline" size="sm" className="w-full text-xs h-8">
+                    <Mail className="h-3.5 w-3.5 mr-1.5 text-teal" />
+                    Contact DPO
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </aside>
+
+          {/* Policy Text Column */}
+          <main className="lg:col-span-8 xl:col-span-9 space-y-16">
+            {/* Section 1: Overview */}
+            <section id="overview" className="scroll-mt-28 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
+                <span>01</span>
+                <ChevronRight className="h-3 w-3" />
+                <span>Scope & Humanitarian Purpose</span>
+              </div>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
+                1. Governance & Scope
+              </h2>
+              <div className="prose prose-slate dark:prose-invert max-w-none text-muted-foreground text-sm sm:text-base leading-relaxed space-y-3">
+                <p>
+                  BloodOS is an open humanitarian clinical coordination protocol purpose-built to accelerate emergency blood matching across Bangladesh. This Privacy Policy governs all interactions with the platform across web, mobile viewports, and automated emergency notification channels.
+                </p>
+                <p>
+                  By accessing BloodOS or registering as a donor or requester, you acknowledge that your operational details (such as blood group, district, and emergency status) will be processed strictly in accordance with this document to facilitate life-saving blood transfers.
+                </p>
+              </div>
+            </section>
+
+            {/* Section 2: Data We Collect */}
+            <section id="data-collection" className="scroll-mt-28 space-y-6">
+              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
+                <span>02</span>
+                <ChevronRight className="h-3 w-3" />
+                <span>Data Ingestion Taxonomy</span>
+              </div>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
+                2. Information We Collect
+              </h2>
+              <div className="space-y-4">
+                <div className="p-5 rounded-xl border border-border bg-card space-y-3">
+                  <h3 className="font-heading font-semibold text-foreground text-base flex items-center gap-2">
+                    <Database className="h-4 w-4 text-teal" />
+                    Donor Profile Records
+                  </h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    Collected upon voluntary registration to determine donation compatibility and geographic proximity:
                   </p>
-                  <ul className="mt-3 space-y-2">
-                    <li className="flex gap-2">
-                      <span className="text-teal">•</span>
-                      <span>
-                        <strong className="text-foreground">
-                          Hosting provider:
-                        </strong>{" "}
-                        Stores our database and serves the application
-                      </span>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground pt-1">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-teal shrink-0" />
+                      <span>Full Legal Name & Verified Email</span>
                     </li>
-                    <li className="flex gap-2">
-                      <span className="text-teal">•</span>
-                      <span>
-                        <strong className="text-foreground">
-                          Email service:
-                        </strong>{" "}
-                        Sends account verification and notification emails
-                      </span>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-teal shrink-0" />
+                      <span>Blood Group & Rh Factor (A+, B+, O+, AB+, etc.)</span>
                     </li>
-                    <li className="flex gap-2">
-                      <span className="text-teal">•</span>
-                      <span>
-                        <strong className="text-foreground">
-                          Authentication provider:
-                        </strong>{" "}
-                        Manages secure login and password resets
-                      </span>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-teal shrink-0" />
+                      <span>Primary Phone Number (Bangladesh 11-digit)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-teal shrink-0" />
+                      <span>District & Upazila Jurisdiction</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-teal shrink-0" />
+                      <span>Last Donation Date (for 56-day cooldown)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-teal shrink-0" />
+                      <span>Availability Flag (`isAvailable`)</span>
                     </li>
                   </ul>
-                  <p className="mt-3">
-                    All service providers are bound by data protection
-                    agreements and are prohibited from using your information
-                    for their own purposes.
-                  </p>
                 </div>
-              </div>
 
-              <div>
-                <h3 className="font-heading text-lg font-semibold text-foreground mb-3">
-                  For Legal Compliance
-                </h3>
-                <div className="rounded-lg border border-border bg-card p-5 text-sm">
-                  <p>
-                    We may disclose your information if required by law or in
-                    response to:
+                <div className="p-5 rounded-xl border border-border bg-card space-y-3">
+                  <h3 className="font-heading font-semibold text-foreground text-base flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-primary" />
+                    Emergency Blood Request Records
+                  </h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    Submitted when an urgent transfusion requirement is logged by a patient, attendant, or hospital coordinator:
                   </p>
-                  <ul className="mt-3 space-y-2">
-                    <li className="flex gap-2">
-                      <span className="text-teal">•</span>
-                      <span>Valid legal requests from authorities</span>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground pt-1">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Patient Name or Identifier</span>
                     </li>
-                    <li className="flex gap-2">
-                      <span className="text-teal">•</span>
-                      <span>Court orders or subpoenas</span>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Hospital Name, District & Address</span>
                     </li>
-                    <li className="flex gap-2">
-                      <span className="text-teal">•</span>
-                      <span>
-                        Investigations of suspected illegal activity or abuse
-                      </span>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Units Required & Target Transfusion Date</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Urgency Tier (STAT Emergency vs Standard)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Hospital Attendant Contact Number</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Clinical Reason for Transfusion</span>
                     </li>
                   </ul>
-                  <p className="mt-3">
-                    We will only disclose the minimum information necessary to
-                    comply with such requests.
-                  </p>
                 </div>
               </div>
+            </section>
 
-              <div className="rounded-lg border-2 border-crimson/20 bg-crimson/5 p-5">
-                <div className="flex gap-3">
-                  <AlertTriangle className="mt-1 h-6 w-6 shrink-0 text-crimson" />
-                  <div className="space-y-2 text-sm">
-                    <p className="font-semibold text-foreground">
-                      What We Never Do:
-                    </p>
-                    <ul className="space-y-1">
-                      <li className="flex gap-2">
-                        <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-crimson" />
-                        <span>
-                          <strong>Sell your data:</strong> We will never sell,
-                          rent, or trade your personal information to third
-                          parties
-                        </span>
-                      </li>
-                      <li className="flex gap-2">
-                        <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-crimson" />
-                        <span>
-                          <strong>Use for advertising:</strong> We don&apos;t
-                          show ads or share your data with advertisers
-                        </span>
-                      </li>
-                      <li className="flex gap-2">
-                        <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-crimson" />
-                        <span>
-                          <strong>Share with data brokers:</strong> We
-                          don&apos;t work with data brokers or analytics
-                          companies that profile users
-                        </span>
-                      </li>
-                    </ul>
+            {/* Section 3: Clinical & Triage Use */}
+            <section id="data-utilization" className="scroll-mt-28 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
+                <span>03</span>
+                <ChevronRight className="h-3 w-3" />
+                <span>Purpose-Bound Processing</span>
+              </div>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
+                3. How We Process Your Data
+              </h2>
+              <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                <p>
+                  BloodOS enforces strict data minimalism. Data collected is used exclusively for the following operational workflows:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                  <div className="p-4 rounded-lg border border-border bg-muted/20 space-y-1">
+                    <span className="font-mono text-xs text-foreground font-semibold">Triage Matching</span>
+                    <p className="text-xs text-muted-foreground">Automated cross-checking of ABO/Rh compatibility and geographic proximity within 64 districts.</p>
+                  </div>
+                  <div className="p-4 rounded-lg border border-border bg-muted/20 space-y-1">
+                    <span className="font-mono text-xs text-foreground font-semibold">Emergency Broadcast</span>
+                    <p className="text-xs text-muted-foreground">Delivering real-time in-app alerts and notifications to eligible matched donors when STAT alerts trigger.</p>
+                  </div>
+                  <div className="p-4 rounded-lg border border-border bg-muted/20 space-y-1">
+                    <span className="font-mono text-xs text-foreground font-semibold">Abuse Prevention</span>
+                    <p className="text-xs text-muted-foreground">Detecting duplicate requests, spam bots, and unauthorized commercial middlemen seeking blood products.</p>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            </section>
 
-      {/* ===================================================================
-          User Rights Section
-       =================================================================== */}
-      <section className="border-b border-border px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-teal/10">
-              <UserCheck className="h-6 w-6 text-teal" />
-            </div>
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Your Rights
-            </h2>
-          </div>
-
-          <div className="space-y-6 text-base leading-relaxed text-muted-foreground">
-            <p>
-              You have control over your personal information. BloodOS respects
-              the following rights:
-            </p>
-
-            <div className="space-y-5">
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-teal" />
-                  Right to Access
-                </h3>
-                <p className="text-sm">
-                  You can access and review all your personal information at any
-                  time by logging into your account. Visit your profile page to
-                  see what data we have about you.
-                </p>
+            {/* Section 4: Phone Masking Standard */}
+            <section id="phone-masking" className="scroll-mt-28 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
+                <span>04</span>
+                <ChevronRight className="h-3 w-3" />
+                <span>Anti-Scraping Privacy Protocol</span>
               </div>
-
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-teal" />
-                  Right to Update
-                </h3>
-                <p className="text-sm">
-                  You can update your personal information at any time through
-                  your profile settings. This includes your name, phone number,
-                  blood group, district, and last donation date.
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-teal" />
-                  Right to Delete
-                </h3>
-                <p className="text-sm mb-2">
-                  You can request deletion of your account and associated
-                  personal data at any time. Contact us via the{" "}
-                  <Link href="/contact" className="text-teal hover:underline">
-                    contact page
-                  </Link>{" "}
-                  or email us directly.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  <strong>Important:</strong> We may retain certain information
-                  if required for legal compliance, fraud prevention, or to
-                  fulfill active blood requests. Anonymized aggregated data may
-                  also be retained for statistical purposes.
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-teal" />
-                  Right to Export
-                </h3>
-                <p className="text-sm">
-                  You can request a copy of all your personal data in a
-                  machine-readable format (JSON). This includes your profile
-                  information, blood requests, responses, and donation history.
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-teal" />
-                  Right to Opt-Out
-                </h3>
-                <p className="text-sm">
-                  You can opt out of certain types of notifications through your
-                  account settings. However, we may still send critical
-                  account-related emails (password resets, security alerts).
-                </p>
-              </div>
-
-              <div className="rounded-lg border border-border bg-card p-5">
-                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-teal" />
-                  Right to Restrict
-                </h3>
-                <p className="text-sm">
-                  You can temporarily deactivate your donor profile to stop
-                  receiving notifications about new requests without deleting
-                  your account. Toggle the &quot;Active Donor&quot; setting in
-                  your profile.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-8 rounded-lg border border-teal/30 bg-teal/5 p-5">
-              <h3 className="font-semibold text-foreground mb-2">
-                Exercising Your Rights
-              </h3>
-              <p className="text-sm">
-                To exercise any of these rights, contact us through:
-              </p>
-              <ul className="mt-3 space-y-2 text-sm">
-                <li className="flex gap-2">
-                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-teal" />
-                  <span>
-                    <strong className="text-foreground">Email:</strong>{" "}
-                    privacy@bloodos.app
-                  </span>
-                </li>
-                <li className="flex gap-2">
-                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-teal" />
-                  <span>
-                    <strong className="text-foreground">Contact Form:</strong>{" "}
-                    <Link href="/contact" className="text-teal hover:underline">
-                      bloodos.app/contact
-                    </Link>
-                  </span>
-                </li>
-              </ul>
-              <p className="mt-3 text-sm text-muted-foreground">
-                We will respond to all requests within 30 days.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================================================================
-          Data Security Section
-       =================================================================== */}
-      <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-crimson/10">
-              <Lock className="h-6 w-6 text-crimson" />
-            </div>
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Data Security
-            </h2>
-          </div>
-
-          <div className="space-y-6 text-base leading-relaxed text-muted-foreground">
-            <p>
-              We take reasonable measures to protect your personal information
-              from unauthorized access, disclosure, alteration, or destruction.
-            </p>
-
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                <div>
-                  <strong className="text-foreground">
-                    Encrypted Connections:
-                  </strong>{" "}
-                  All data transmitted between your browser and our servers is
-                  encrypted using TLS/SSL.
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                <div>
-                  <strong className="text-foreground">
-                    Secure Authentication:
-                  </strong>{" "}
-                  Passwords are hashed and never stored in plain text. We use
-                  industry-standard authentication protocols.
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                <div>
-                  <strong className="text-foreground">Access Controls:</strong>{" "}
-                  Only authorized team members have access to user data, and all
-                  access is logged.
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                <div>
-                  <strong className="text-foreground">Regular Backups:</strong>{" "}
-                  Data is backed up regularly to prevent loss.
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-lg border border-ochre/30 bg-ochre/5 p-5 text-sm">
-              <p className="font-semibold text-foreground mb-2">
-                Important Note:
-              </p>
-              <p>
-                While we implement strong security measures, no system is
-                completely secure. We cannot guarantee absolute security of your
-                data. Please use strong, unique passwords and enable two-factor
-                authentication when available.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================================================================
-          Contact Section
-       =================================================================== */}
-      <section className="border-b border-border px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-teal/10">
-              <Mail className="h-6 w-6 text-teal" />
-            </div>
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Contact Us
-            </h2>
-          </div>
-
-          <div className="space-y-6 text-base leading-relaxed text-muted-foreground">
-            <p>
-              If you have questions about this privacy policy or how we handle
-              your personal information, please contact us:
-            </p>
-
-            <div className="rounded-lg border border-border bg-card p-6 space-y-4">
-              <div>
-                <p className="font-semibold text-foreground mb-2">
-                  Privacy Inquiries:
-                </p>
-                <p className="text-sm">
-                  Email:{" "}
-                  <a
-                    href="mailto:privacy@bloodos.app"
-                    className="text-teal hover:underline"
-                  >
-                    privacy@bloodos.app
-                  </a>
-                </p>
-              </div>
-
-              <div>
-                <p className="font-semibold text-foreground mb-2">
-                  General Support:
-                </p>
-                <p className="text-sm">
-                  Visit our{" "}
-                  <Link href="/contact" className="text-teal hover:underline">
-                    contact page
-                  </Link>{" "}
-                  to submit a message through our secure form.
-                </p>
-              </div>
-
-              <div>
-                <p className="font-semibold text-foreground mb-2">
-                  Mailing Address:
-                </p>
-                <p className="text-sm">
-                  BloodOS Team
-                  <br />
-                  Dhaka, Bangladesh
-                </p>
-              </div>
-            </div>
-
-            <p className="text-sm text-muted-foreground">
-              We aim to respond to all privacy-related inquiries within 30 days.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================================================================
-          Policy Changes Section
-       =================================================================== */}
-      <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-7xl">
-          <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
-            Changes to This Policy
-          </h2>
-
-          <div className="space-y-4 text-base leading-relaxed text-muted-foreground">
-            <p>
-              We may update this privacy policy from time to time to reflect
-              changes in our practices, technology, legal requirements, or other
-              factors.
-            </p>
-
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                <div>
-                  <strong className="text-foreground">
-                    Notice of Changes:
-                  </strong>{" "}
-                  We will notify you of significant changes by email or through
-                  a prominent notice on the platform.
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                <div>
-                  <strong className="text-foreground">Effective Date:</strong>{" "}
-                  The &quot;Last updated&quot; date at the top of this page
-                  indicates when the policy was last revised.
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-teal" />
-                <div>
-                  <strong className="text-foreground">Continued Use:</strong>{" "}
-                  Your continued use of BloodOS after policy changes indicates
-                  your acceptance of the updated terms.
-                </div>
-              </div>
-            </div>
-
-            <p className="mt-6 text-sm text-muted-foreground">
-              We encourage you to review this policy periodically to stay
-              informed about how we protect your information.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================================================================
-          Call-to-Action Section
-       =================================================================== */}
-      <section className="px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex flex-col items-center gap-6 rounded-lg border border-border bg-card p-8 text-center sm:p-12">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-teal">
-              <Shield className="h-8 w-8 text-white" />
-            </div>
-
-            <div className="space-y-3">
-              <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                Your Privacy Matters
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
+                4. Automated Phone Masking Standard
               </h2>
-              <p className="text-base text-muted-foreground sm:text-lg">
-                We&apos;re committed to protecting your personal information and
-                being transparent about our practices.
-              </p>
-            </div>
+              <div className="space-y-4 text-muted-foreground text-sm leading-relaxed">
+                <p>
+                  To eliminate unsolicited commercial messages, identity theft, and harassment of female and vulnerable donors, BloodOS implements cryptographic server-side phone redaction:
+                </p>
+                <div className="p-5 rounded-xl border border-teal/20 bg-teal/5 text-foreground space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs text-teal font-semibold">Redaction Standard</span>
+                    <span className="text-[11px] font-mono text-muted-foreground">Regex: 01XXX***XXX</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div className="space-y-1">
+                      <span className="font-semibold text-foreground">Public / Unauthenticated View:</span>
+                      <p className="font-mono text-primary font-bold text-sm">01712***890</p>
+                      <p className="text-muted-foreground text-[11px]">Only first 5 digits (operator/prefix) and last 3 digits remain visible for audit reference.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="font-semibold text-foreground">Unmasked Access Criteria:</span>
+                      <p className="text-muted-foreground text-[11px]">Direct full contact is unveiled strictly after an authenticated donor formally commits via &ldquo;I Can Help&rdquo; or hospital coordinator verification.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/contact">
-                <Button size="lg" className="gap-2">
-                  <Mail className="h-5 w-5" />
-                  Contact Us
-                </Button>
-              </Link>
-              <Link href="/about">
-                <Button size="lg" variant="outline" className="gap-2">
-                  Learn More About BloodOS
-                </Button>
-              </Link>
-            </div>
-          </div>
+            {/* Section 5: 56-Day Cooldown & Medical Integrity */}
+            <section id="cooldown-safety" className="scroll-mt-28 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
+                <span>05</span>
+                <ChevronRight className="h-3 w-3" />
+                <span>Biological Safety Safeguards</span>
+              </div>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
+                5. 56-Day Cooldown & Clinical Integrity
+              </h2>
+              <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                <p>
+                  Under standard clinical guidelines (Directorate General of Health Services & WHO), a whole-blood donor must rest for at least <strong>56 days (8 weeks)</strong> between donations to allow complete red blood cell regeneration and hemoglobin recovery.
+                </p>
+                <p>
+                  BloodOS maintains an automated biological ledger. When a donation is marked confirmed, the donor&apos;s profile is instantly flagged as ineligible until the 56-day cooldown reaches zero. This metric is computed deterministically and cannot be manually overridden without administrative clinical review.
+                </p>
+              </div>
+            </section>
+
+            {/* Section 6: Zero Brokerage Guarantee */}
+            <section id="zero-brokerage" className="scroll-mt-28 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+                <span>06</span>
+                <ChevronRight className="h-3 w-3" />
+                <span>Strict Non-Commercial Mandate</span>
+              </div>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
+                6. Zero Brokerage & Non-Commercialization
+              </h2>
+              <div className="p-5 rounded-xl border border-amber-500/20 bg-amber-500/5 space-y-3 text-sm">
+                <p className="text-foreground font-medium">
+                  Blood is a humanitarian gift, not a commodity.
+                </p>
+                <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
+                  BloodOS operates with an absolute zero-tolerance policy against commercial blood brokerage, extortion, or paid matching. We do not sell user data to pharmaceutical entities, insurance brokers, advertisers, or third-party marketing brokers. Any account found demanding financial compensation for blood will be permanently suspended and reported to law enforcement.
+                </p>
+              </div>
+            </section>
+
+            {/* Section 7: User Rights & Data Erasure */}
+            <section id="user-rights" className="scroll-mt-28 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
+                <span>07</span>
+                <ChevronRight className="h-3 w-3" />
+                <span>User Sovereignty</span>
+              </div>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
+                7. Your Data Rights & Right to Erasure
+              </h2>
+              <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                <p>
+                  You hold complete legal sovereignty over your personal records stored within BloodOS:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  <div className="p-4 rounded-lg border border-border bg-card space-y-1">
+                    <span className="text-xs font-mono text-foreground font-semibold">Right to Access & Rectify</span>
+                    <p className="text-xs text-muted-foreground">You can update your phone, district, availability, and donation history at any time from your Profile.</p>
+                  </div>
+                  <div className="p-4 rounded-lg border border-border bg-card space-y-1">
+                    <span className="text-xs font-mono text-foreground font-semibold">Right to Erasure (Delete)</span>
+                    <p className="text-xs text-muted-foreground">You can request full account deletion. All contact information is wiped and historical logs are permanently anonymized.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Section 8: Security Safeguards */}
+            <section id="security-architecture" className="scroll-mt-28 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
+                <span>08</span>
+                <ChevronRight className="h-3 w-3" />
+                <span>Infrastructure Protection</span>
+              </div>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
+                8. Technical & Clinical Security Safeguards
+              </h2>
+              <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
+                <p>
+                  Our production infrastructure deploys multiple defensive perimeters to secure your medical information:
+                </p>
+                <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <Lock className="h-4 w-4 text-teal mt-0.5 shrink-0" />
+                    <span><strong>End-to-End TLS 1.3 Encryption:</strong> All transit data between client browsers, Next.js servers, and MongoDB clusters is strictly encrypted.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Lock className="h-4 w-4 text-teal mt-0.5 shrink-0" />
+                    <span><strong>Role-Based Access Control (RBAC):</strong> Administrative audit terminals require dual-factor authorization and maintain immutable tamper-evident logs.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Lock className="h-4 w-4 text-teal mt-0.5 shrink-0" />
+                    <span><strong>No Plaintext Credential Storage:</strong> Passwords and session tokens utilize Argon2/Bcrypt cryptographic salting through Better Auth.</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            {/* Section 9: DPO Contact */}
+            <section id="dpo-contact" className="scroll-mt-28 space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-teal uppercase tracking-wider">
+                <span>09</span>
+                <ChevronRight className="h-3 w-3" />
+                <span>Compliance Inquiries</span>
+              </div>
+              <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
+                9. Data Protection Officer & Inquiries
+              </h2>
+              <div className="p-6 rounded-xl border border-border bg-card space-y-4">
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  For formal data access requests, clinical audit inquiries, or reporting unauthorized contact disclosures, reach our Data Protection & Ethics Committee:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div className="p-3 rounded-lg bg-muted/40 border border-border">
+                    <span className="text-muted-foreground block text-[11px]">Electronic Inquiries</span>
+                    <a href="mailto:privacy@bloodos.org" className="font-mono text-teal hover:underline font-medium text-sm">
+                      privacy@bloodos.org
+                    </a>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/40 border border-border">
+                    <span className="text-muted-foreground block text-[11px]">Direct Support Desk</span>
+                    <Link href="/contact" className="font-mono text-foreground hover:underline font-medium text-sm flex items-center gap-1">
+                      <span>bloodos.org/contact</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
