@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import * as React from "react";
+import Link from "next/link";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
 import {
   Calendar,
   MapPin,
@@ -13,56 +13,57 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
+  Building2,
+  Phone,
+  ShieldCheck,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { UrgencyBadge } from "@/components/shared/UrgencyBadge";
 import type { UserResponseHistoryDto } from "@/types/dto/user.dto";
 import type { PaginatedResponse } from "@/types/shared";
 import { apiFetch } from "@/lib/api-client";
 
 interface ResponseHistorySectionProps {
-  userId: string;
+  userId?: string;
 }
 
-/**
- * Get icon and color for response status
- */
 function getResponseStatusDisplay(status: string): {
   icon: React.ReactNode;
   label: string;
-  className: string;
+  badgeClass: string;
 } {
   switch (status) {
     case "offered":
       return {
-        icon: <Clock className="size-3.5" />,
-        label: "Offered",
-        className: "bg-ochre/10 text-ochre",
+        icon: <Clock className="h-3 w-3" />,
+        label: "OFFERED",
+        badgeClass: "bg-ochre/10 text-ochre border-ochre/30",
       };
     case "accepted":
       return {
-        icon: <CheckCircle2 className="size-3.5" />,
-        label: "Accepted",
-        className: "bg-teal/10 text-teal",
+        icon: <CheckCircle2 className="h-3 w-3" />,
+        label: "ACCEPTED",
+        badgeClass: "bg-teal/10 text-teal border-teal/30",
       };
     case "declined":
       return {
-        icon: <XCircle className="size-3.5" />,
-        label: "Declined",
-        className: "bg-slate/10 text-slate",
+        icon: <XCircle className="h-3 w-3" />,
+        label: "DECLINED",
+        badgeClass: "bg-muted text-muted-foreground border-border",
       };
     case "completed":
       return {
-        icon: <CheckCircle2 className="size-3.5" />,
-        label: "Completed",
-        className: "bg-teal/10 text-teal",
+        icon: <CheckCircle2 className="h-3 w-3" />,
+        label: "COMPLETED",
+        badgeClass: "bg-teal/15 text-teal border-teal/40 font-bold",
       };
     default:
       return {
-        icon: <Clock className="size-3.5" />,
-        label: status,
-        className: "bg-muted text-muted-foreground",
+        icon: <Clock className="h-3 w-3" />,
+        label: status.toUpperCase(),
+        badgeClass: "bg-muted text-muted-foreground border-border",
       };
   }
 }
@@ -70,45 +71,53 @@ function getResponseStatusDisplay(status: string): {
 export function ResponseHistorySection({
   userId,
 }: ResponseHistorySectionProps) {
-  const router = useRouter();
-  const [responses, setResponses] = useState<UserResponseHistoryDto[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [responses, setResponses] = React.useState<UserResponseHistoryDto[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchResponses = async () => {
-      setIsLoading(true);
-      setError(null);
+  const fetchResponses = async () => {
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const response = await apiFetch("/api/users/me/responses");
+    try {
+      const response = await apiFetch("/api/users/me/responses");
 
-        if (!response.ok) {
-          throw new Error("Failed to load response history");
-        }
-
-        const data: PaginatedResponse<UserResponseHistoryDto> =
-          await response.json();
-        setResponses(data.data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load responses",
-        );
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to load your response history");
       }
-    };
 
+      const data: PaginatedResponse<UserResponseHistoryDto> =
+        await response.json();
+      setResponses(data.data || []);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to load responses",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
     fetchResponses();
   }, []);
 
   return (
-    <section className="space-y-6">
-      <div className="border-b border-border pb-2">
-        <h2 className="text-lg font-semibold">Response History</h2>
-        <p className="text-sm text-muted-foreground">
-          Blood requests you have responded to as a donor
-        </p>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-2 border-b border-border/70">
+        <div>
+          <h2 className="font-heading text-lg sm:text-xl font-bold tracking-tight text-foreground">
+            My Donor Volunteer Responses
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Emergency requests you volunteered to donate blood for, including coordination status.
+          </p>
+        </div>
+
+        <span className="font-mono text-xs text-muted-foreground">
+          {responses.length} RESPONSE{responses.length === 1 ? "" : "S"}
+        </span>
       </div>
 
       {/* Responses List */}
@@ -117,158 +126,119 @@ export function ResponseHistorySection({
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-32 rounded-lg border border-border bg-muted/30 animate-pulse"
+              className="h-28 rounded-2xl border border-border/60 bg-muted/20 animate-pulse"
             />
           ))}
         </div>
       ) : error ? (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="size-5 text-destructive mt-0.5" />
-            <div>
-              <h3 className="font-semibold text-destructive">
-                Failed to Load Responses
-              </h3>
-              <p className="text-sm text-destructive/80 mt-1">{error}</p>
-            </div>
-          </div>
+        <div className="p-6 rounded-2xl border border-destructive/30 bg-destructive/5 text-center space-y-2">
+          <AlertCircle className="h-6 w-6 text-destructive mx-auto" />
+          <p className="text-xs font-semibold text-destructive">{error}</p>
+          <Button variant="outline" size="sm" onClick={fetchResponses}>
+            Try Again
+          </Button>
         </div>
       ) : responses.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border p-8 text-center">
-          <MessageSquare className="size-12 mx-auto text-muted-foreground mb-3" />
-          <h3 className="font-semibold text-muted-foreground mb-1">
-            No Responses Yet
-          </h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            You haven&apos;t responded to any blood requests yet
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.push("/requests")}
-          >
-            Browse Requests
-          </Button>
+        <div className="py-12 px-4 text-center rounded-2xl border border-dashed border-border bg-card/40 space-y-3">
+          <MessageSquare className="h-8 w-8 text-muted-foreground/40 mx-auto" />
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-foreground">
+              No Volunteer Responses Yet
+            </p>
+            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+              When you volunteer to donate for an emergency request, your coordination log and contact reveals will appear here.
+            </p>
+          </div>
+
+          <div className="pt-2">
+            <Link href="/requests">
+              <Button size="sm" className="bg-crimson hover:bg-crimson/90 text-paper text-xs gap-1.5 rounded-xl font-semibold">
+                <Droplet className="h-3.5 w-3.5 fill-paper" />
+                <span>Browse Emergency Requests</span>
+              </Button>
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="space-y-3">
-          {responses.map((response) => {
-            const responseDate = new Date(response.createdAt);
-            const statusDisplay = getResponseStatusDisplay(response.status);
-            const requestNeededBy = new Date(response.request.neededByDate);
-            const isRequestExpired = requestNeededBy < new Date();
+          {responses.map((resp) => {
+            const statusDisplay = getResponseStatusDisplay(resp.status);
+            const req = resp.request;
 
             return (
               <div
-                key={response._id}
-                className="rounded-lg border border-border p-4 hover:bg-muted/30 transition-colors"
+                key={resp._id}
+                className="group rounded-2xl border border-border bg-card p-4 sm:p-5 hover:border-foreground/25 transition-all shadow-2xs space-y-3"
               >
-                <div className="space-y-3">
-                  {/* Header: Response Status + Date */}
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium ${statusDisplay.className}`}
-                      >
-                        {statusDisplay.icon}
-                        {statusDisplay.label}
-                      </div>
-                      <span className="text-xs text-muted-foreground font-mono tabular-data">
-                        {format(responseDate, "MMM dd, yyyy")}
+                {/* Header: Status + Date */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-border/60">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className={`font-mono text-[10px] px-2 py-0.5 gap-1 ${statusDisplay.badgeClass}`}>
+                      {statusDisplay.icon}
+                      <span>{statusDisplay.label}</span>
+                    </Badge>
+
+                    {req?.bloodGroup && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-crimson/10 border border-crimson/30 text-crimson font-mono font-bold text-xs">
+                        <Droplet className="h-3 w-3 fill-crimson" />
+                        <span>{req.bloodGroup}</span>
                       </span>
-                    </div>
+                    )}
+
+                    <span className="text-sm font-semibold text-foreground truncate">
+                      {req?.patientName ? `For ${req.patientName}` : "Emergency Request"}
+                    </span>
                   </div>
 
-                  {/* Request Details */}
-                  <div className="space-y-2">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <h3 className="font-semibold text-base">
-                          {response.request.patientName}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {response.request.hospitalName}
-                        </p>
-                      </div>
-                      <UrgencyBadge urgency={response.request.urgency as any} />
-                    </div>
-
-                    {/* Request Details Grid */}
-                    <div className="grid gap-2 sm:grid-cols-3 text-sm">
-                      <div className="flex items-center gap-1.5">
-                        <Droplet className="size-4 text-muted-foreground" />
-                        <span className="font-mono font-semibold">
-                          {response.request.bloodGroup}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 text-muted-foreground">
-                        <MapPin className="size-4" />
-                        <span>{response.request.district}</span>
-                      </div>
-
-                      <div
-                        className={`flex items-center gap-1.5 ${
-                          isRequestExpired
-                            ? "text-muted-foreground line-through"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        <Calendar className="size-4" />
-                        <span className="font-mono tabular-data">
-                          {format(requestNeededBy, "MMM dd, yyyy")}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Request Status */}
-                    <div className="flex items-center gap-2 text-sm">
-                      <span className="text-muted-foreground">
-                        Request Status:
-                      </span>
-                      <span className="font-medium capitalize">
-                        {response.request.status.replace("_", " ")}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* User's Message (if provided) */}
-                  {response.message && (
-                    <div className="rounded-md bg-muted/50 p-3 text-sm">
-                      <p className="text-muted-foreground italic">
-                        "{response.message}"
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Actions */}
-                  <div className="flex items-center gap-2 pt-2 border-t border-border/50">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        router.push(`/requests/${response.requestId}`)
-                      }
-                    >
-                      <ExternalLink className="mr-1.5" />
-                      View Request
-                    </Button>
+                  <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
+                    <Calendar className="h-3.5 w-3.5" />
+                    <span>{format(new Date(resp.createdAt), "MMM dd, yyyy")}</span>
                   </div>
                 </div>
+
+                {/* Request Details */}
+                {req && (
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="flex flex-wrap items-center gap-3 text-muted-foreground">
+                      {req.hospitalName && (
+                        <span className="flex items-center gap-1 text-foreground/90 font-medium">
+                          <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span>{req.hospitalName}</span>
+                        </span>
+                      )}
+
+                      {req.district && (
+                        <span className="flex items-center gap-1">
+                          <MapPin className="h-3.5 w-3.5 text-ochre" />
+                          <span>{req.district}</span>
+                        </span>
+                      )}
+
+                      {resp.status === "accepted" && (
+                        <span className="inline-flex items-center gap-1 text-teal font-mono font-semibold">
+                          <ShieldCheck className="h-3.5 w-3.5" />
+                          <span>Contact Coordination Open</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <Link href={`/requests/${req._id || (resp as any).requestId}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-2.5 rounded-lg border-border/80 text-xs font-semibold gap-1.5"
+                      >
+                        <span>View Request</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             );
           })}
-
-          {/* Info if many responses */}
-          {responses.length > 5 && (
-            <div className="text-center pt-2">
-              <p className="text-sm text-muted-foreground">
-                Showing recent responses. Older responses may be archived.
-              </p>
-            </div>
-          )}
         </div>
       )}
-    </section>
+    </div>
   );
 }

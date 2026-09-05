@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import * as React from "react";
+import Link from "next/link";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
 import {
   MapPin,
   Droplet,
@@ -11,68 +11,89 @@ import {
   Settings,
   AlertCircle,
   FileText,
+  Plus,
+  ArrowRight,
+  Activity,
+  Heart,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { UrgencyBadge } from "@/components/shared/UrgencyBadge";
 import type { BloodRequest, PaginatedResponse } from "@/types/shared";
 import { apiFetch } from "@/lib/api-client";
 
 interface PostedRequestsSectionProps {
-  userId: string;
+  userId?: string;
 }
 
 export function PostedRequestsSection({ userId }: PostedRequestsSectionProps) {
-  const router = useRouter();
-  const [requests, setRequests] = useState<BloodRequest[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [requests, setRequests] = React.useState<BloodRequest[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchRequests = async () => {
-      setIsLoading(true);
-      setError(null);
+  const fetchRequests = async () => {
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        // Fetch user's own requests
-        const response = await apiFetch("/api/requests/mine");
+    try {
+      const response = await apiFetch("/api/requests/mine");
 
-        if (!response.ok) {
-          throw new Error("Failed to load your requests");
-        }
-
-        const data: PaginatedResponse<BloodRequest> = await response.json();
-        setRequests(data.data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load requests",
-        );
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to load your posted requests");
       }
-    };
 
+      const data: PaginatedResponse<BloodRequest> = await response.json();
+      setRequests(data.data || []);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to load requests",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
     fetchRequests();
   }, []);
 
   return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between border-b border-border pb-2">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-border/70">
         <div>
-          <h2 className="text-lg font-semibold">Posted Requests</h2>
-          <p className="text-sm text-muted-foreground">
-            Blood requests you have created
+          <h2 className="font-heading text-lg sm:text-xl font-bold tracking-tight text-foreground">
+            My Emergency Blood Requests
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Manage hospital blood requirements you have created and review donor responses.
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => router.push("/requests/manage")}
-        >
-          <Settings className="mr-1.5" />
-          Manage All
-        </Button>
+
+        <div className="flex items-center gap-2">
+          <Link href="/requests/add">
+            <Button
+              size="sm"
+              className="h-9 px-3 rounded-xl bg-crimson hover:bg-crimson/90 text-paper font-semibold text-xs gap-1.5 shadow-xs"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>Create Request</span>
+            </Button>
+          </Link>
+
+          <Link href="/requests/manage">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 px-3 rounded-xl border-border/80 text-xs font-semibold gap-1.5"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              <span>Manage Console</span>
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Requests List */}
@@ -81,133 +102,110 @@ export function PostedRequestsSection({ userId }: PostedRequestsSectionProps) {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-28 rounded-lg border border-border bg-muted/30 animate-pulse"
+              className="h-28 rounded-2xl border border-border/60 bg-muted/20 animate-pulse"
             />
           ))}
         </div>
       ) : error ? (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="size-5 text-destructive mt-0.5" />
-            <div>
-              <h3 className="font-semibold text-destructive">
-                Failed to Load Requests
-              </h3>
-              <p className="text-sm text-destructive/80 mt-1">{error}</p>
-            </div>
-          </div>
+        <div className="p-6 rounded-2xl border border-destructive/30 bg-destructive/5 text-center space-y-2">
+          <AlertCircle className="h-6 w-6 text-destructive mx-auto" />
+          <p className="text-xs font-semibold text-destructive">{error}</p>
+          <Button variant="outline" size="sm" onClick={fetchRequests}>
+            Try Again
+          </Button>
         </div>
       ) : requests.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border p-8 text-center">
-          <FileText className="size-12 mx-auto text-muted-foreground mb-3" />
-          <h3 className="font-semibold text-muted-foreground mb-1">
-            No Requests Yet
-          </h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            You haven&apos;t posted any blood requests
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.push("/requests/add")}
-          >
-            Post a Request
-          </Button>
+        <div className="py-12 px-4 text-center rounded-2xl border border-dashed border-border bg-card/40 space-y-3">
+          <FileText className="h-8 w-8 text-muted-foreground/40 mx-auto" />
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-foreground">
+              No Blood Requests Created Yet
+            </p>
+            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+              If a patient or family member needs blood, create an emergency dispatch request to alert compatible donors.
+            </p>
+          </div>
+
+          <div className="pt-2">
+            <Link href="/requests/add">
+              <Button size="sm" className="bg-crimson hover:bg-crimson/90 text-paper text-xs gap-1.5 rounded-xl font-semibold">
+                <Plus className="h-3.5 w-3.5" />
+                <span>Create Emergency Request</span>
+              </Button>
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="space-y-3">
           {requests.map((request) => {
             const neededByDate = new Date(request.neededByDate);
-            const isUrgent =
-              neededByDate.getTime() - new Date().getTime() <
-              48 * 60 * 60 * 1000; // Within 48 hours
-            const isPast = neededByDate < new Date();
+            const isPast = neededByDate.getTime() < Date.now();
+            const unitsNeeded = request.unitsNeeded || 1;
 
             return (
               <div
                 key={request._id}
-                className="rounded-lg border border-border p-4 hover:bg-muted/30 transition-colors"
+                className="group rounded-2xl border border-border bg-card p-4 sm:p-5 hover:border-foreground/25 transition-all shadow-2xs space-y-3.5"
               >
-                <div className="space-y-3">
-                  {/* Header: Patient Name + Badges */}
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="font-semibold text-base">
-                        {request.patientName}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {request.hospitalName}
-                      </p>
-                    </div>
+                {/* Top Row: Patient Name & Urgency Badges */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-border/60">
+                  <div className="space-y-0.5">
                     <div className="flex items-center gap-2">
-                      <StatusBadge status={request.status} />
-                      <UrgencyBadge urgency={request.urgency} />
+                      <span className="font-heading font-bold text-base text-foreground">
+                        {request.patientName}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        • {request.hospitalName}
+                      </span>
                     </div>
+                    <p className="text-xs text-muted-foreground font-mono">
+                      Requirement: {unitsNeeded} {unitsNeeded === 1 ? "unit" : "units"} whole blood
+                    </p>
                   </div>
 
-                  {/* Details Grid */}
-                  <div className="grid gap-2 sm:grid-cols-3 text-sm">
-                    <div className="flex items-center gap-1.5">
-                      <Droplet className="size-4 text-muted-foreground" />
-                      <span className="font-mono font-semibold">
-                        {request.bloodGroup}
-                      </span>
-                      <span className="text-muted-foreground">
-                        ({request.unitsNeeded}{" "}
-                        {request.unitsNeeded === 1 ? "unit" : "units"})
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <StatusBadge status={request.status} />
+                    <UrgencyBadge urgency={request.urgency} />
+                  </div>
+                </div>
 
-                    <div className="flex items-center gap-1.5 text-muted-foreground">
-                      <MapPin className="size-4" />
+                {/* Bottom Row: Metadata & Actions */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs pt-1">
+                  <div className="flex flex-wrap items-center gap-3 text-muted-foreground">
+                    <span className="inline-flex items-center gap-1 font-mono font-bold text-crimson">
+                      <Droplet className="h-3.5 w-3.5 fill-crimson" />
+                      <span>{request.bloodGroup}</span>
+                    </span>
+
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-3.5 w-3.5 text-ochre" />
                       <span>{request.district}</span>
-                    </div>
+                    </span>
 
-                    <div
-                      className={`flex items-center gap-1.5 ${
-                        isPast
-                          ? "text-destructive"
-                          : isUrgent
-                            ? "text-ochre"
-                            : "text-muted-foreground"
-                      }`}
-                    >
-                      <Clock className="size-4" />
-                      <span className="font-mono tabular-data">
-                        {isPast ? "Expired" : format(neededByDate, "MMM dd")}
-                      </span>
-                    </div>
+                    <span className={`flex items-center gap-1 font-mono ${isPast ? "text-destructive" : "text-muted-foreground"}`}>
+                      <Clock className="h-3.5 w-3.5" />
+                      <span>{isPast ? "Expired" : `Needed by ${format(neededByDate, "MMM dd, yyyy")}`}</span>
+                    </span>
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-2 pt-2 border-t border-border/50">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => router.push(`/requests/${request._id}`)}
-                    >
-                      <ExternalLink className="mr-1.5" />
-                      View Details
-                    </Button>
+                  <div className="flex items-center gap-2">
+                    <Link href={`/requests/${request._id}`}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-2.5 rounded-lg border-border/80 text-xs font-semibold gap-1.5"
+                      >
+                        <span>View Details</span>
+                        <ExternalLink className="h-3 w-3" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </div>
             );
           })}
-
-          {/* Show all link if more than 5 requests */}
-          {requests.length > 5 && (
-            <div className="text-center pt-2">
-              <Button
-                variant="link"
-                onClick={() => router.push("/requests/manage")}
-              >
-                View all {requests.length} requests →
-              </Button>
-            </div>
-          )}
         </div>
       )}
-    </section>
+    </div>
   );
 }

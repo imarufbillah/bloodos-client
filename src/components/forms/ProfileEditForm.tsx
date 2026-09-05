@@ -1,9 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import * as React from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Edit2, Save, X, Check } from "lucide-react";
+import {
+  Edit2,
+  Save,
+  X,
+  Check,
+  User,
+  Phone,
+  MapPin,
+  Droplet,
+  Heart,
+  ShieldCheck,
+  Lock,
+  Sparkles,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,17 +27,20 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
+  SelectGroup,
+  SelectLabel,
 } from "@/components/ui/select";
 
 import {
   updateProfileSchema,
   type UpdateProfileFormData,
 } from "@/lib/validators/profile.schema";
-import { BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
-import { DISTRICTS } from "@/lib/constants/districts";
+import { BLOOD_GROUPS } from "@/types/shared";
+import { DISTRICTS_BY_DIVISION, DISTRICTS } from "@/lib/constants/districts";
 import type { UserDto } from "@/types/dto/user.dto";
 import type { BloodGroup, District } from "@/types/shared";
 import { apiFetch } from "@/lib/api-client";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
 interface ProfileEditFormProps {
   user: UserDto;
@@ -36,12 +52,11 @@ interface FormErrors {
 }
 
 export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [errors, setErrors] = React.useState<FormErrors>({});
 
-  // Local form state
-  const [formData, setFormData] = useState<UpdateProfileFormData>({
+  const [formData, setFormData] = React.useState<UpdateProfileFormData>({
     name: user.name,
     phone: user.phone,
     district: user.district,
@@ -49,23 +64,35 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
     isDonor: user.isDonor,
   });
 
-  // Handle Select onValueChange (can be null when cleared)
-  const handleBloodGroupChange = (value: string | null) => {
+  // Sync when user prop changes
+  React.useEffect(() => {
     setFormData({
-      ...formData,
-      bloodGroup: (value as BloodGroup) || user.bloodGroup,
+      name: user.name,
+      phone: user.phone,
+      district: user.district,
+      bloodGroup: user.bloodGroup,
+      isDonor: user.isDonor,
     });
+  }, [user]);
+
+  const handleBloodGroupSelect = (bg: string) => {
+    triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+    setFormData((prev) => ({
+      ...prev,
+      bloodGroup: bg as BloodGroup,
+    }));
   };
 
   const handleDistrictChange = (value: string | null) => {
-    setFormData({
-      ...formData,
+    triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+    setFormData((prev) => ({
+      ...prev,
       district: (value as District) || user.district,
-    });
+    }));
   };
 
   const handleCancel = () => {
-    // Reset form data to original values
+    triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
     setFormData({
       name: user.name,
       phone: user.phone,
@@ -79,42 +106,38 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    triggerTactileFeedback(HAPTIC_PATTERNS.MEDIUM);
     setIsSubmitting(true);
     setErrors({});
 
     try {
-      // Validate with Zod
       const validated = updateProfileSchema.parse(formData);
 
-      // Filter out empty strings and undefined values
-      // Only send fields that have actual values
       const payload: Record<string, any> = {};
-      if (validated.name) payload.name = validated.name;
-      if (validated.phone) payload.phone = validated.phone;
-      if (validated.district) payload.district = validated.district;
-      if (validated.bloodGroup) payload.bloodGroup = validated.bloodGroup;
+      if (validated.name !== undefined) payload.name = validated.name;
+      if (validated.phone !== undefined) {
+        payload.phone = validated.phone ? validated.phone.replace(/[^0-9]/g, "") : "";
+      }
+      if (validated.district !== undefined) payload.district = validated.district;
+      if (validated.bloodGroup !== undefined) payload.bloodGroup = validated.bloodGroup;
       if (validated.isDonor !== undefined) payload.isDonor = validated.isDonor;
 
-      // Submit to API (Req 13.5)
       const response = await apiFetch("/api/users/me", {
         method: "PATCH",
         body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || "Failed to update profile");
       }
 
       const updatedUser = await response.json();
-
-      // Success
-      toast.success("Profile updated successfully");
+      toast.success("Profile changes saved successfully");
       onUpdate(updatedUser);
       setIsEditing(false);
     } catch (err) {
       if (err instanceof z.ZodError) {
-        // Validation errors
         const fieldErrors: FormErrors = {};
         err.issues.forEach((issue) => {
           if (issue.path[0]) {
@@ -122,9 +145,8 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
           }
         });
         setErrors(fieldErrors);
-        toast.error("Please check the form for errors");
+        toast.error("Please correct the errors in the form");
       } else {
-        // API or network errors
         toast.error(
           err instanceof Error ? err.message : "Failed to update profile",
         );
@@ -134,287 +156,239 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
     }
   };
 
+  const maskedPhone = React.useMemo(() => {
+    if (!formData.phone || formData.phone.length < 5) return "01XXX***XXX";
+    const clean = formData.phone.replace(/[^0-9]/g, "");
+    if (clean.length < 11) return `${clean.slice(0, 5)}***`;
+    return `${clean.slice(0, 5)}***${clean.slice(8, 11)}`;
+  }, [formData.phone]);
+
   if (!isEditing) {
-    // View mode - display current values with edit button
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between border-b border-border pb-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-border/70">
           <div>
-            <h2 className="text-lg font-semibold">Personal Information</h2>
-            <p className="text-sm text-muted-foreground">
-              Your account details and contact information
+            <h2 className="font-heading text-lg sm:text-xl font-bold tracking-tight text-foreground">
+              Account & Contact Settings
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Manage your verified credentials, district dispatch zone, and privacy masking.
             </p>
           </div>
+
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+              setIsEditing(true);
+            }}
+            className="h-9 px-3 rounded-xl border-border/80 text-xs font-semibold gap-1.5 self-start sm:self-auto"
           >
-            <Edit2 className="mr-1.5" />
-            Edit Profile
+            <Edit2 className="h-3.5 w-3.5" />
+            <span>Edit Information</span>
           </Button>
         </div>
 
-        <dl className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1">
-            <dt className="text-sm font-medium text-muted-foreground">Name</dt>
-            <dd className="text-base">{user.name}</dd>
+        {/* Read-only Spec Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-1">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <User className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>Full Name</span>
+            </span>
+            <p className="text-base font-semibold text-foreground">
+              {user.name || "Not specified"}
+            </p>
           </div>
 
-          <div className="space-y-1">
-            <dt className="text-sm font-medium text-muted-foreground">Email</dt>
-            <dd className="text-base">{user.email}</dd>
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-1">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Phone className="h-3.5 w-3.5 text-teal" />
+              <span>Contact Number</span>
+            </span>
+            <div className="flex items-center gap-2">
+              <p className="font-mono text-base font-bold text-foreground">
+                {maskedPhone}
+              </p>
+              <span className="text-[10px] font-mono text-teal bg-teal/10 border border-teal/30 px-1.5 py-0.5 rounded">
+                MASKED
+              </span>
+            </div>
           </div>
 
-          <div className="space-y-1">
-            <dt className="text-sm font-medium text-muted-foreground">Phone</dt>
-            <dd className="font-mono text-base">{user.phone}</dd>
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-1">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Droplet className="h-3.5 w-3.5 text-crimson fill-crimson" />
+              <span>Blood Group</span>
+            </span>
+            <p className="font-mono text-lg font-bold text-crimson">
+              {user.bloodGroup || "Not specified"}
+            </p>
           </div>
 
-          <div className="space-y-1">
-            <dt className="text-sm font-medium text-muted-foreground">
-              Blood Group
-            </dt>
-            <dd className="font-mono text-base">{user.bloodGroup}</dd>
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-1">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5 text-ochre" />
+              <span>Emergency Dispatch District</span>
+            </span>
+            <p className="text-base font-semibold text-foreground">
+              {user.district ? `${user.district}, Bangladesh` : "Not specified"}
+            </p>
           </div>
+        </div>
 
-          <div className="space-y-1">
-            <dt className="text-sm font-medium text-muted-foreground">
-              District
-            </dt>
-            <dd className="text-base">{user.district}</dd>
-          </div>
-
-          <div className="space-y-1">
-            <dt className="text-sm font-medium text-muted-foreground">Role</dt>
-            <dd className="text-base capitalize">{user.role}</dd>
-          </div>
-
-          <div className="space-y-1 sm:col-span-2">
-            <dt className="text-sm font-medium text-muted-foreground">
-              Donor Status
-            </dt>
-            <dd className="flex items-center gap-2 text-base">
-              {user.isDonor ? (
-                <>
-                  <Check className="size-4 text-teal" />
-                  <span>Available as a blood donor</span>
-                </>
-              ) : (
-                <span className="text-muted-foreground">
-                  Not registered as a donor
-                </span>
-              )}
-            </dd>
-          </div>
-        </dl>
+        {/* Account Metadata Bar */}
+        <div className="rounded-2xl border border-border/80 bg-muted/20 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono text-muted-foreground">
+          <span>Account ID: {user._id}</span>
+          <span>
+            Created: {new Date(user.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+          </span>
+        </div>
       </div>
     );
   }
 
-  // Edit mode - show form
+  // Edit Mode
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="flex items-center justify-between border-b border-border pb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-border/70">
         <div>
-          <h2 className="text-lg font-semibold">Edit Personal Information</h2>
-          <p className="text-sm text-muted-foreground">
-            Update your account details
+          <h2 className="font-heading text-lg sm:text-xl font-bold tracking-tight text-foreground">
+            Edit Profile Information
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Update your blood group, emergency district, and masked phone number.
           </p>
+        </div>
+
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleCancel}
+            disabled={isSubmitting}
+            className="h-9 px-3 rounded-xl border-border/80 text-xs font-semibold gap-1"
+          >
+            <X className="h-3.5 w-3.5" />
+            <span>Cancel</span>
+          </Button>
+
+          <Button
+            type="submit"
+            size="sm"
+            disabled={isSubmitting}
+            className="h-9 px-4 rounded-xl bg-primary text-primary-foreground text-xs font-semibold gap-1.5 shadow-xs"
+          >
+            {isSubmitting ? (
+              <span>Saving...</span>
+            ) : (
+              <>
+                <Save className="h-3.5 w-3.5" />
+                <span>Save Changes</span>
+              </>
+            )}
+          </Button>
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Name */}
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="edit-name" className="text-xs font-semibold font-mono uppercase text-foreground">
+            Full Name
+          </Label>
           <Input
-            id="name"
-            name="name"
+            id="edit-name"
             type="text"
-            value={formData.name}
+            value={formData.name || ""}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Your full name"
-            aria-invalid={!!errors.name}
-            aria-describedby={errors.name ? "name-error" : undefined}
+            disabled={isSubmitting}
+            className="h-11 rounded-xl bg-card border-border/80"
           />
-          {errors.name && (
-            <p
-              id="name-error"
-              className="text-sm text-destructive"
-              role="alert"
-            >
-              {errors.name}
-            </p>
-          )}
-        </div>
-
-        {/* Email (read-only) */}
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            value={user.email}
-            disabled
-            className="bg-muted"
-          />
-          <p className="text-xs text-muted-foreground">
-            Email cannot be changed
-          </p>
+          {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
         </div>
 
         {/* Phone */}
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
+          <Label htmlFor="edit-phone" className="text-xs font-semibold font-mono uppercase text-foreground">
+            Phone Number (Bangladesh 11 digits)
+          </Label>
           <Input
-            id="phone"
-            name="phone"
+            id="edit-phone"
             type="tel"
-            value={formData.phone}
-            onChange={(e) =>
-              setFormData({ ...formData, phone: e.target.value })
-            }
             placeholder="01XXXXXXXXX"
-            pattern="01[0-9]{9}"
-            aria-invalid={!!errors.phone}
-            aria-describedby={errors.phone ? "phone-error" : undefined}
+            value={formData.phone || ""}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            disabled={isSubmitting}
+            className="h-11 rounded-xl bg-card border-border/80 font-mono"
           />
-          {errors.phone && (
-            <p
-              id="phone-error"
-              className="text-sm text-destructive"
-              role="alert"
-            >
-              {errors.phone}
-            </p>
-          )}
-        </div>
-
-        {/* Blood Group */}
-        <div className="space-y-2">
-          <Label htmlFor="bloodGroup">Blood Group</Label>
-          <Select
-            value={formData.bloodGroup}
-            onValueChange={handleBloodGroupChange}
-          >
-            <SelectTrigger
-              id="bloodGroup"
-              error={errors.bloodGroup}
-              aria-invalid={!!errors.bloodGroup}
-              aria-describedby={
-                errors.bloodGroup ? "bloodGroup-error" : undefined
-              }
-            >
-              <SelectValue placeholder="Select blood group" />
-            </SelectTrigger>
-            <SelectContent>
-              {BLOOD_GROUPS.map((group) => (
-                <SelectItem key={group} value={group}>
-                  {group}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.bloodGroup && (
-            <p
-              id="bloodGroup-error"
-              className="text-sm text-destructive"
-              role="alert"
-            >
-              {errors.bloodGroup}
+          {errors.phone ? (
+            <p className="text-xs text-destructive">{errors.phone}</p>
+          ) : (
+            <p className="text-[11px] font-mono text-muted-foreground">
+              Preview mask: <strong className="text-foreground">{maskedPhone}</strong>
             </p>
           )}
         </div>
 
         {/* District */}
-        <div className="space-y-2">
-          <Label htmlFor="district">District</Label>
+        <div className="space-y-2 md:col-span-2">
+          <Label htmlFor="edit-district" className="text-xs font-semibold font-mono uppercase text-foreground">
+            Primary Dispatch District
+          </Label>
           <Select
-            value={formData.district}
+            value={formData.district || ""}
             onValueChange={handleDistrictChange}
           >
-            <SelectTrigger
-              id="district"
-              error={errors.district}
-              aria-invalid={!!errors.district}
-              aria-describedby={errors.district ? "district-error" : undefined}
-            >
+            <SelectTrigger id="edit-district" className="h-11 rounded-xl bg-card border-border/80">
               <SelectValue placeholder="Select district" />
             </SelectTrigger>
-            <SelectContent>
-              {DISTRICTS.map((district) => (
-                <SelectItem key={district} value={district}>
-                  {district}
-                </SelectItem>
+            <SelectContent className="max-h-72">
+              {Object.entries(DISTRICTS_BY_DIVISION).map(([division, districts]) => (
+                <SelectGroup key={division}>
+                  <SelectLabel className="font-mono text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-1">
+                    {division} Division
+                  </SelectLabel>
+                  {districts.map((dist) => (
+                    <SelectItem key={dist} value={dist} className="font-medium text-xs">
+                      {dist}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
               ))}
             </SelectContent>
           </Select>
-          {errors.district && (
-            <p
-              id="district-error"
-              className="text-sm text-destructive"
-              role="alert"
-            >
-              {errors.district}
-            </p>
-          )}
+          {errors.district && <p className="text-xs text-destructive">{errors.district}</p>}
         </div>
 
-        {/* Role (read-only) */}
-        <div className="space-y-2">
-          <Label htmlFor="role">Role</Label>
-          <Input
-            id="role"
-            name="role"
-            type="text"
-            value={user.role}
-            disabled
-            className="bg-muted capitalize"
-          />
-          <p className="text-xs text-muted-foreground">
-            Role can only be changed by administrators
-          </p>
-        </div>
-
-        {/* Donor Status */}
-        <div className="space-y-2 sm:col-span-2">
-          <Label htmlFor="isDonor" className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="isDonor"
-              name="isDonor"
-              checked={formData.isDonor}
-              onChange={(e) =>
-                setFormData({ ...formData, isDonor: e.target.checked })
-              }
-              className="size-4 rounded border-input text-primary focus:ring-2 focus:ring-ring"
-            />
-            <span>I am available as a blood donor</span>
+        {/* Blood Group 1-Tap Grid */}
+        <div className="space-y-2.5 md:col-span-2">
+          <Label className="text-xs font-semibold font-mono uppercase text-foreground">
+            Blood Group
           </Label>
-          <p className="text-xs text-muted-foreground">
-            Check this if you want to be listed in the donor directory and
-            receive notifications for matching blood requests
-          </p>
+          <div className="grid grid-cols-4 gap-2 sm:gap-2.5">
+            {BLOOD_GROUPS.map((group) => {
+              const isSelected = formData.bloodGroup === group;
+              return (
+                <button
+                  key={group}
+                  type="button"
+                  onClick={() => handleBloodGroupSelect(group)}
+                  className={`p-3 rounded-xl border font-mono font-bold transition-all text-sm sm:text-base ${
+                    isSelected
+                      ? "border-crimson bg-crimson text-paper shadow-xs"
+                      : "border-border/80 bg-card hover:bg-muted text-foreground"
+                  }`}
+                >
+                  {group}
+                </button>
+              );
+            })}
+          </div>
+          {errors.bloodGroup && <p className="text-xs text-destructive">{errors.bloodGroup}</p>}
         </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-3 border-t border-border pt-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handleCancel}
-          disabled={isSubmitting}
-        >
-          <X className="mr-1.5" />
-          Cancel
-        </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          <Save className="mr-1.5" />
-          {isSubmitting ? "Saving..." : "Save Changes"}
-        </Button>
       </div>
     </form>
   );

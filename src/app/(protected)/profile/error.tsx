@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { AlertCircle, User } from "lucide-react";
+import * as React from "react";
+import { AlertCircle, RotateCcw, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
@@ -10,55 +10,54 @@ type ErrorProps = {
   reset: () => void;
 };
 
-export default function Error({ error, reset }: ErrorProps) {
+export default function ProfileError({ error, reset }: ErrorProps) {
   const router = useRouter();
 
-  useEffect(() => {
-    // Log error to error reporting service
+  React.useEffect(() => {
     console.error("Profile Page Error:", error);
   }, [error]);
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-8">
-      {/* Page Header */}
-      <header className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="flex items-center justify-center size-10 rounded-lg bg-primary/10 text-primary">
-            <User className="size-5" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">My Profile</h1>
-            <p className="text-sm text-muted-foreground">
-              Manage your account and view your donation activity
-            </p>
-          </div>
+    <div className="min-h-[calc(100dvh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 bg-background">
+      <div className="max-w-md w-full rounded-2xl border border-destructive/30 bg-card p-6 sm:p-8 text-center space-y-4 shadow-sm">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive border border-destructive/20">
+          <AlertCircle className="h-7 w-7" />
         </div>
-      </header>
 
-      {/* Error Content */}
-      <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-8">
-        <div className="flex flex-col items-center justify-center text-center">
-          <AlertCircle className="h-16 w-16 text-destructive mb-6" />
-          <h2 className="font-heading text-2xl font-semibold text-foreground mb-3">
-            Failed to Load Profile
-          </h2>
-          <p className="text-muted-foreground mb-2 max-w-md">
-            {error.message ||
-              "An unexpected error occurred while loading your profile"}
+        <div className="space-y-1.5">
+          <h1 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Unable to Load Profile
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {error.message || "An unexpected error occurred while retrieving your responder profile data."}
           </p>
-          {error.digest && (
-            <p className="text-sm text-muted-foreground mb-6 font-mono">
-              Error ID: {error.digest}
-            </p>
-          )}
-          <div className="flex gap-3">
-            <Button onClick={() => reset()} variant="default">
-              Try Again
-            </Button>
-            <Button onClick={() => router.push("/")} variant="outline">
-              Go Home
-            </Button>
-          </div>
+        </div>
+
+        {error.digest && (
+          <p className="text-[11px] font-mono text-muted-foreground bg-muted/40 p-2 rounded-lg border border-border">
+            Digest: {error.digest}
+          </p>
+        )}
+
+        <div className="flex items-center justify-center gap-3 pt-2">
+          <Button
+            onClick={() => reset()}
+            size="sm"
+            className="rounded-xl bg-primary text-primary-foreground text-xs font-semibold gap-1.5"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            <span>Try Again</span>
+          </Button>
+
+          <Button
+            onClick={() => router.push("/")}
+            variant="outline"
+            size="sm"
+            className="rounded-xl border-border/80 text-xs font-semibold gap-1.5"
+          >
+            <Home className="h-3.5 w-3.5" />
+            <span>Go Home</span>
+          </Button>
         </div>
       </div>
     </div>
