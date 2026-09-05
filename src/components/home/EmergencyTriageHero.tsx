@@ -126,7 +126,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
             </div>
 
             {/* Real-time Triage Stat Metrics */}
-            <div className="pt-6 border-t border-border/70 grid grid-cols-2 sm:grid-cols-4 gap-6 animate-triage-4">
+            <div className="pt-6 border-t border-border/70 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 animate-triage-4">
               <div className="space-y-1">
                 <div className="text-2xl sm:text-3xl font-bold text-crimson tabular-nums">
                   {isLoadingStats ? "—" : stats?.activeRequests ?? 0}
