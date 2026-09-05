@@ -204,7 +204,7 @@ export default function RequestDetailsContent({
             className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span>Emergency Triage Feed</span>
+            <span>Back to Blood Requests</span>
           </Link>
 
           <div className="flex items-center gap-3">
@@ -403,7 +403,7 @@ export default function RequestDetailsContent({
 
               {!isOwner && !hasResponded && (
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  To protect families from unsolicited contacts, the full phone number is unveiled upon confirming response.
+                  To protect patient families from unsolicited calls, the attendant&apos;s verified phone number is unlocked upon confirming your willingness to donate.
                 </p>
               )}
             </div>
@@ -475,14 +475,14 @@ export default function RequestDetailsContent({
                     </div>
                     <p className="text-[11px] opacity-90 leading-tight">
                       {isUserCompatible
-                        ? "Your blood group is compatible with this requisition."
-                        : "Whole blood transfusion from this group carries biological risk."}
+                        ? "Your blood group is clinically compatible with this requisition."
+                        : "Whole blood transfusion from this group carries biological incompatibility."}
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-2">
                     <p className="text-[11px] text-muted-foreground">
-                      Check your blood type:
+                      Check your blood type compatibility:
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {Object.values(BLOOD_COMPATIBILITY).map((_, i) => {
@@ -521,7 +521,7 @@ export default function RequestDetailsContent({
               {isOwner ? (
                 <div className="space-y-2">
                   <div className="p-3 rounded-xl bg-muted/60 text-center text-xs text-muted-foreground">
-                    You are the creator of this requisition.
+                    You created this blood requisition.
                   </div>
                   <Link href="/requests/manage" className="block">
                     <Button variant="outline" className="w-full text-xs font-semibold h-10">
@@ -534,10 +534,10 @@ export default function RequestDetailsContent({
                   <div className="p-4 rounded-xl bg-teal/10 border border-teal/30 text-teal text-center space-y-1">
                     <div className="flex items-center justify-center gap-1.5 font-bold text-xs">
                       <Check className="h-4 w-4" />
-                      <span>Response Registered</span>
+                      <span>Commitment Registered</span>
                     </div>
                     <p className="text-[11px] opacity-90">
-                      Contact details have been unlocked above.
+                      Contact number unlocked. Please coordinate with the attendant.
                     </p>
                   </div>
                   <a href={`tel:${request.contactPhone}`} className="block">
@@ -558,7 +558,7 @@ export default function RequestDetailsContent({
                   }`}
                 >
                   <HeartHandshake className="h-5 w-5" />
-                  <span>I Can Help • Respond</span>
+                  <span>Volunteer to Donate</span>
                 </Button>
               )}
 
@@ -570,11 +570,11 @@ export default function RequestDetailsContent({
                 <ul className="space-y-2 text-muted-foreground text-[11px] leading-relaxed">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-3.5 w-3.5 text-teal mt-0.5 shrink-0" />
-                    <span>At least <strong>56 days</strong> since last whole blood donation.</span>
+                    <span>At least <strong>56 days</strong> since your last whole blood donation.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-3.5 w-3.5 text-teal mt-0.5 shrink-0" />
-                    <span>No active fever, infection symptoms, or acute medications.</span>
+                    <span>No active fever, infection symptoms, or acute antibiotics.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-3.5 w-3.5 text-teal mt-0.5 shrink-0" />
@@ -610,13 +610,13 @@ export default function RequestDetailsContent({
           <DialogHeader className="space-y-2">
             <div className="flex items-center gap-2 text-primary font-mono text-xs font-bold uppercase tracking-wider">
               <HeartHandshake className="h-4 w-4" />
-              <span>Confirm Commitment</span>
+              <span>Confirm Volunteer Commitment</span>
             </div>
             <DialogTitle className="font-heading text-xl font-bold text-foreground">
-              Respond to {request.patientName}
+              Volunteer to Donate
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
-              Confirm your readiness to donate at <strong>{request.hospitalName}</strong> in <strong>{request.district}</strong>.
+              Confirm your willingness to donate blood for <strong>{request.patientName}</strong> at <strong>{request.hospitalName}</strong> in <strong>{request.district}</strong>.
             </DialogDescription>
           </DialogHeader>
 
@@ -624,11 +624,11 @@ export default function RequestDetailsContent({
             {/* Summary Box */}
             <div className="p-3.5 rounded-xl bg-muted/40 border border-border/60 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Blood Group:</span>
+                <span className="text-muted-foreground">Required Blood Group:</span>
                 <span className="font-mono font-bold text-primary">{request.bloodGroup}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Required Units:</span>
+                <span className="text-muted-foreground">Quantity Needed:</span>
                 <span className="font-bold text-foreground">{request.unitsNeeded} Bags</span>
               </div>
               <div className="flex items-center justify-between">
@@ -639,10 +639,11 @@ export default function RequestDetailsContent({
 
             {/* Attendant Note Field */}
             <div className="space-y-1.5">
-              <label className="text-[11px] font-medium text-foreground block">
-                Message to Attendant (Optional):
+              <label htmlFor="attendant-message" className="text-[11px] font-medium text-foreground block">
+                Message to Hospital Attendant (Optional):
               </label>
               <input
+                id="attendant-message"
                 type="text"
                 value={customMessage}
                 onChange={(e) => setCustomMessage(e.target.value)}
@@ -652,7 +653,7 @@ export default function RequestDetailsContent({
             </div>
 
             <div className="p-3 rounded-lg bg-teal/10 border border-teal/20 text-teal text-[11px] leading-relaxed">
-              Upon confirming, the attendant&apos;s phone number is unlocked and they receive an instant notification of your response.
+              Upon confirming, the attendant&apos;s phone number is unlocked for direct calling, and they will receive an instant notification of your response.
             </div>
           </div>
 

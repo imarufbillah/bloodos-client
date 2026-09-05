@@ -174,10 +174,10 @@ export default function BrowseRequestsContent({
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="space-y-1.5">
               <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
-                Emergency Blood Triage Feed
+                Emergency Blood Requests
               </h1>
               <p className="text-sm text-muted-foreground">
-                Real-time active hospital requisitions verified across 64 districts in Bangladesh.
+                Verified hospital requisitions needing urgent donor response across Bangladesh.
               </p>
             </div>
 
@@ -189,7 +189,7 @@ export default function BrowseRequestsContent({
                   onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.EMERGENCY_SOS)}
                 >
                   <PlusCircle className="h-4 w-4" />
-                  <span>Post Urgent SOS</span>
+                  <span>Post Blood Request</span>
                 </Button>
               </Link>
             </div>
@@ -203,7 +203,7 @@ export default function BrowseRequestsContent({
           {/* Top Filter Row: Blood Group Quick-Pills & Search */}
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
             {/* Blood Group Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none" role="group" aria-label="Filter by blood group">
               <span className="text-xs font-mono font-semibold text-muted-foreground mr-1 hidden sm:inline">
                 Blood Group:
               </span>
@@ -218,6 +218,7 @@ export default function BrowseRequestsContent({
                     ? "bg-primary text-primary-foreground shadow-xs"
                     : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
+                aria-pressed={filters.bloodGroups.length === 0}
               >
                 ALL
               </button>
@@ -233,6 +234,7 @@ export default function BrowseRequestsContent({
                         ? "bg-primary text-primary-foreground shadow-xs"
                         : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground border border-border/60"
                     }`}
+                    aria-pressed={isSelected}
                   >
                     {bg}
                   </button>
@@ -241,11 +243,12 @@ export default function BrowseRequestsContent({
             </div>
 
             {/* Keyword Search Input */}
-            <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-md" role="search">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <input
                 type="text"
-                placeholder="Search patient, hospital, or city..."
+                placeholder="Search by patient, hospital, or city..."
+                aria-label="Search blood requests by patient name, hospital, or city"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 className="w-full h-10 pl-9 pr-8 rounded-xl bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
@@ -258,6 +261,7 @@ export default function BrowseRequestsContent({
                     applyFilters({ ...filters, search: "" });
                   }}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
+                  aria-label="Clear search text"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -270,14 +274,17 @@ export default function BrowseRequestsContent({
             <div className="flex flex-wrap items-center gap-2.5">
               {/* Urgency Selector */}
               <div className="flex items-center gap-1.5">
-                <span className="text-muted-foreground font-medium text-[11px]">Urgency:</span>
+                <label htmlFor="urgency-filter" className="text-muted-foreground font-medium text-[11px]">
+                  Urgency:
+                </label>
                 <select
+                  id="urgency-filter"
                   value={filters.urgencies[0] || "all"}
                   onChange={(e) => handleUrgencyChange(e.target.value)}
                   className="h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                 >
-                  <option value="all">All Urgencies</option>
-                  <option value={Urgency.CRITICAL}>STAT / Critical</option>
+                  <option value="all">All Urgency Levels</option>
+                  <option value={Urgency.CRITICAL}>Critical / STAT</option>
                   <option value={Urgency.URGENT}>Urgent</option>
                   <option value={Urgency.MODERATE}>Moderate</option>
                 </select>
@@ -285,8 +292,11 @@ export default function BrowseRequestsContent({
 
               {/* District Selector */}
               <div className="flex items-center gap-1.5">
-                <span className="text-muted-foreground font-medium text-[11px]">District:</span>
+                <label htmlFor="district-filter" className="text-muted-foreground font-medium text-[11px]">
+                  District:
+                </label>
                 <select
+                  id="district-filter"
                   value={filters.districts[0] || "all"}
                   onChange={(e) => handleDistrictChange(e.target.value)}
                   className="h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer max-w-[150px] truncate"
@@ -302,16 +312,19 @@ export default function BrowseRequestsContent({
 
               {/* Sort Order */}
               <div className="flex items-center gap-1.5">
-                <span className="text-muted-foreground font-medium text-[11px]">Sort:</span>
+                <label htmlFor="sort-order" className="text-muted-foreground font-medium text-[11px]">
+                  Sort:
+                </label>
                 <select
+                  id="sort-order"
                   value={filters.sort || SortOption.NEWEST}
                   onChange={(e) => handleSortChange(e.target.value)}
                   className="h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                 >
-                  <option value={SortOption.NEWEST}>Newest Requisitions</option>
+                  <option value={SortOption.NEWEST}>Newest First</option>
                   <option value={SortOption.CRITICAL_FIRST}>Critical First</option>
                   <option value={SortOption.MOST_URGENT}>Most Urgent</option>
-                  <option value={SortOption.OLDEST}>Oldest</option>
+                  <option value={SortOption.OLDEST}>Oldest First</option>
                 </select>
               </div>
             </div>
@@ -319,8 +332,8 @@ export default function BrowseRequestsContent({
             {/* Active Count & Clear Action */}
             <div className="flex items-center gap-3">
               <span className="text-muted-foreground text-[11px] font-mono">
-                <strong className="text-foreground">{data.totalCount}</strong> active{" "}
-                {data.totalCount === 1 ? "requisition" : "requisitions"}
+                <strong className="text-foreground">{data.totalCount}</strong>{" "}
+                {data.totalCount === 1 ? "request" : "requests"} found
               </span>
 
               {activeFilterCount > 0 && (
@@ -328,6 +341,7 @@ export default function BrowseRequestsContent({
                   type="button"
                   onClick={handleClearAll}
                   className="inline-flex items-center gap-1 text-[11px] font-semibold text-destructive hover:underline cursor-pointer"
+                  aria-label="Reset all applied filters"
                 >
                   <RotateCcw className="h-3 w-3" />
                   <span>Reset Filters ({activeFilterCount})</span>
@@ -344,15 +358,15 @@ export default function BrowseRequestsContent({
           /* Empty State */
           <div className="py-16 sm:py-24 text-center max-w-md mx-auto space-y-4">
             <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-muted text-muted-foreground shadow-xs">
-              <SearchX className="h-7 w-7" />
+              <SearchX className="h-7 w-7" aria-hidden="true" />
             </div>
             <div className="space-y-1.5">
               <h2 className="font-heading text-xl font-bold text-foreground">
-                No matching blood requisitions found
+                No matching blood requests found
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 {activeFilterCount > 0
-                  ? "Try loosening your search query, selecting additional blood groups, or clearing regional district filters."
+                  ? "Try searching a different location, selecting more blood groups, or clearing your active filters."
                   : "There are currently no active emergency blood requests in this feed."}
               </p>
             </div>
@@ -365,7 +379,7 @@ export default function BrowseRequestsContent({
                   className="w-full sm:w-auto text-xs"
                 >
                   <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
-                  Clear All Filters
+                  Reset All Filters
                 </Button>
               ) : (
                 <Link href="/requests/add" className="w-full sm:w-auto">

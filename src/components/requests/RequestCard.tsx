@@ -182,7 +182,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
             }`}
           >
             <HeartHandshake className="h-4 w-4" />
-            <span>Respond • I Can Help</span>
+            <span>Volunteer to Donate</span>
           </Link>
 
           <a
