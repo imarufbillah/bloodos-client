@@ -3,7 +3,6 @@
 import * as React from "react";
 import { AvatarUpload } from "@/components/shared/AvatarUpload";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import type { UserDto } from "@/types/dto/user.dto";
 import {
   Droplet,
@@ -11,13 +10,6 @@ import {
   Shield,
   ShieldCheck,
   Clock,
-  Heart,
-  Calendar,
-  Sparkles,
-  Phone,
-  CheckCircle2,
-  AlertCircle,
-  Check,
 } from "lucide-react";
 import { toast } from "sonner";
 import { apiFetch } from "@/lib/api-client";
@@ -34,7 +26,7 @@ export function ProfilePassportHeader({
 }: ProfilePassportHeaderProps) {
   const [isTogglingDonor, setIsTogglingDonor] = React.useState(false);
 
-  // 56-day biological cooldown computation (WHO / Bangladesh Red Crescent standard)
+  // 56-day biological cooldown computation
   const cooldown = React.useMemo(() => {
     if (!user.lastDonationDate) {
       return {
@@ -121,20 +113,19 @@ export function ProfilePassportHeader({
       onUpdateUser(updated);
       toast.success(
         newStatus
-          ? "You are now active as an Emergency Volunteer Donor!"
-          : "Donor status paused. You will not receive emergency dispatch alerts."
+          ? "Volunteer donor status activated"
+          : "Volunteer donor status paused"
       );
-    } catch (error) {
-      // Rollback
+    } catch {
       onUpdateUser(user);
-      toast.error("Failed to update donor availability. Please try again.");
+      toast.error("Failed to update donor status. Please retry.");
     } finally {
       setIsTogglingDonor(false);
     }
   };
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 sm:p-7 shadow-xs space-y-6">
+    <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs space-y-6">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         
         {/* Left: Avatar + Identity */}
@@ -158,18 +149,6 @@ export function ProfilePassportHeader({
                   <span>ADMIN</span>
                 </Badge>
               )}
-
-              <Badge
-                variant="outline"
-                className={`font-mono text-[10px] px-2 py-0.5 gap-1 ${
-                  user.isDonor
-                    ? "bg-teal/10 text-teal border-teal/30"
-                    : "bg-muted text-muted-foreground border-border"
-                }`}
-              >
-                <span className={`h-1.5 w-1.5 rounded-full ${user.isDonor ? "bg-teal animate-pulse" : "bg-muted-foreground/60"}`} />
-                <span>{user.isDonor ? "ACTIVE DONOR" : "COORDINATOR"}</span>
-              </Badge>
             </div>
 
             <p className="text-xs sm:text-sm text-muted-foreground truncate font-mono">
@@ -184,19 +163,19 @@ export function ProfilePassportHeader({
                   <span>{user.bloodGroup}</span>
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-mono text-xs">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-muted text-muted-foreground font-mono text-xs">
                   Blood Group Pending
                 </span>
               )}
 
               {user.district && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted/60 border border-border text-xs text-foreground/85">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-muted/60 border border-border text-xs text-foreground/85">
                   <MapPin className="h-3 w-3 text-ochre" />
                   <span>{user.district}, BD</span>
                 </span>
               )}
 
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-background border border-border/80 text-[11px] font-mono text-muted-foreground">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-background border border-border/80 text-[11px] font-mono text-muted-foreground">
                 <ShieldCheck className="h-3 w-3 text-teal" />
                 <span>{maskedPhone}</span>
               </span>
@@ -211,7 +190,7 @@ export function ProfilePassportHeader({
             type="button"
             onClick={handleToggleDonor}
             disabled={isTogglingDonor}
-            className={`flex items-center justify-between sm:justify-center gap-3 px-4 py-2.5 rounded-xl border font-mono text-xs font-semibold transition-all touch-manipulation active:scale-[0.98] ${
+            className={`flex items-center justify-between sm:justify-center gap-3 px-3.5 py-2 rounded-xl border font-mono text-xs font-semibold transition-all touch-manipulation active:scale-[0.98] ${
               user.isDonor
                 ? "border-teal/50 bg-teal/10 text-teal hover:bg-teal/15"
                 : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"
@@ -228,14 +207,14 @@ export function ProfilePassportHeader({
             </span>
           </button>
 
-          {/* 56-Day Biological Rest Indicator Badge */}
+          {/* 56-Day Biological Rest Indicator */}
           <div className="rounded-xl border border-border/70 bg-muted/20 px-3.5 py-2 text-xs space-y-1 w-full sm:w-auto min-w-[220px]">
             <div className="flex items-center justify-between font-mono text-[11px]">
               <span className="text-muted-foreground flex items-center gap-1">
                 <Clock className="h-3 w-3 text-crimson" />
                 <span>56d Biological Rest</span>
               </span>
-              <span className={`font-bold ${cooldown.isEligible ? "text-teal" : "text-ochre"}`}>
+              <span className={`font-bold tabular-nums ${cooldown.isEligible ? "text-teal" : "text-ochre"}`}>
                 {cooldown.isEligible ? "ELIGIBLE NOW" : `${cooldown.daysRemaining}d left`}
               </span>
             </div>
@@ -248,12 +227,6 @@ export function ProfilePassportHeader({
                 style={{ width: `${cooldown.progressPercent}%` }}
               />
             </div>
-
-            {!cooldown.isEligible && cooldown.nextDateFormatted && (
-              <p className="text-[10px] text-muted-foreground text-right">
-                Next eligible: <strong className="text-foreground">{cooldown.nextDateFormatted}</strong>
-              </p>
-            )}
           </div>
         </div>
 
@@ -261,3 +234,4 @@ export function ProfilePassportHeader({
     </div>
   );
 }
+

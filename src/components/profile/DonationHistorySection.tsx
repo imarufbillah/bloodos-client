@@ -141,7 +141,7 @@ export function DonationHistorySection({
             Donation History & Certificates
           </h2>
           <p className="text-xs text-muted-foreground">
-            Audit of verified whole blood donations, hospital logs, and biological recovery tracking.
+            Verified whole blood donations and biological recovery tracking.
           </p>
         </div>
 
@@ -178,9 +178,9 @@ export function DonationHistorySection({
               <h3 className="font-semibold text-sm text-foreground">
                 {eligibility.isEligible
                   ? "Eligible for Emergency Whole Blood Donation"
-                  : "Biological Recovery Cooldown in Progress"}
+                  : "Biological Recovery Cooldown Active"}
               </h3>
-              <span className="font-mono text-xs font-bold text-foreground">
+              <span className="font-mono text-xs font-bold text-foreground tabular-nums">
                 {eligibility.isEligible ? "100% READY" : `${eligibility.daysRemaining}d REMAINING`}
               </span>
             </div>
@@ -196,14 +196,15 @@ export function DonationHistorySection({
 
             <p className="text-xs text-muted-foreground">
               {eligibility.isEligible
-                ? "Your 56-day rest cycle is complete. You can respond to urgent hospital transfusion requests."
+                ? "Your 56-day rest cycle is complete. You can respond to urgent transfusion broadcasts."
                 : eligibility.nextEligibleDate
-                ? `Next eligible donation date: ${format(eligibility.nextEligibleDate, "MMM dd, yyyy")} (${eligibility.daysRemaining} days remaining for safe red blood cell regeneration).`
+                ? `Next eligible donation date: ${format(eligibility.nextEligibleDate, "MMM dd, yyyy")} (${eligibility.daysRemaining} days remaining).`
                 : "Recovery cooldown active."}
             </p>
           </div>
         </div>
       </div>
+
 
       {/* Donations List */}
       {isLoading ? (

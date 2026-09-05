@@ -264,9 +264,10 @@ export function AddRequestForm() {
               <div className="border-b border-border/70 pb-2">
                 <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground flex items-center gap-2">
                   <Activity className="h-4 w-4 text-crimson" />
-                  <span>1. Patient & Transfusion Requirements</span>
+                  <span>1. Patient Requirements</span>
                 </h3>
               </div>
+
 
               {/* Patient Name */}
               <div className="space-y-2">
@@ -360,9 +361,10 @@ export function AddRequestForm() {
               <div className="border-b border-border/70 pb-2">
                 <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground flex items-center gap-2">
                   <Clock className="h-4 w-4 text-ochre" />
-                  <span>2. Clinical Urgency Level *</span>
+                  <span>2. Clinical Urgency</span>
                 </h3>
               </div>
+
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 {/* Critical */}
@@ -473,9 +475,10 @@ export function AddRequestForm() {
               <div className="border-b border-border/70 pb-2">
                 <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground flex items-center gap-2">
                   <Building2 className="h-4 w-4 text-teal" />
-                  <span>3. Hospital Location & Coordinator Contact</span>
+                  <span>3. Facility & Coordinator Contact</span>
                 </h3>
               </div>
+
 
               {/* District */}
               <div className="space-y-2">

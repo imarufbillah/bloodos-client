@@ -16,22 +16,21 @@ export default function ProtectedLayout({
   const { data: session, isPending } = useSession();
 
   useEffect(() => {
-    // Don't redirect while loading
     if (isPending) return;
 
-    // Redirect to login if not authenticated (Req 1.7)
     if (!session) {
-      router.push("/login");
+      router.push("/signin");
     }
   }, [session, isPending, router]);
 
-  // Show nothing while checking auth or redirecting
   if (isPending || !session) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4"></div>
-          <p className="text-sm text-muted-foreground">Loading...</p>
+      <div className="flex min-h-[calc(100dvh-4rem)] items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-7 w-7 animate-spin rounded-full border-2 border-crimson border-t-transparent" />
+          <p className="font-mono text-xs text-muted-foreground">
+            Verifying responder session...
+          </p>
         </div>
       </div>
     );
@@ -46,3 +45,4 @@ export default function ProtectedLayout({
     </div>
   );
 }
+

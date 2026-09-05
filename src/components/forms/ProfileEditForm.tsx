@@ -172,7 +172,7 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
               Account & Contact Settings
             </h2>
             <p className="text-xs text-muted-foreground">
-              Manage your verified credentials, district dispatch zone, and privacy masking.
+              Manage your credentials, district dispatch zone, and phone number.
             </p>
           </div>
 
@@ -191,8 +191,8 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
         </div>
 
         {/* Read-only Spec Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <div className="rounded-2xl border border-border bg-card p-4 space-y-1">
             <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
               <User className="h-3.5 w-3.5 text-muted-foreground" />
               <span>Full Name</span>
@@ -202,13 +202,13 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-1">
+          <div className="rounded-2xl border border-border bg-card p-4 space-y-1">
             <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
               <Phone className="h-3.5 w-3.5 text-teal" />
               <span>Contact Number</span>
             </span>
             <div className="flex items-center gap-2">
-              <p className="font-mono text-base font-bold text-foreground">
+              <p className="font-mono text-base font-bold text-foreground tabular-nums">
                 {maskedPhone}
               </p>
               <span className="text-[10px] font-mono text-teal bg-teal/10 border border-teal/30 px-1.5 py-0.5 rounded">
@@ -217,7 +217,7 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-1">
+          <div className="rounded-2xl border border-border bg-card p-4 space-y-1">
             <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
               <Droplet className="h-3.5 w-3.5 text-crimson fill-crimson" />
               <span>Blood Group</span>
@@ -227,10 +227,10 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-1">
+          <div className="rounded-2xl border border-border bg-card p-4 space-y-1">
             <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5 text-ochre" />
-              <span>Emergency Dispatch District</span>
+              <span>Primary District</span>
             </span>
             <p className="text-base font-semibold text-foreground">
               {user.district ? `${user.district}, Bangladesh` : "Not specified"}
@@ -241,13 +241,14 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
         {/* Account Metadata Bar */}
         <div className="rounded-2xl border border-border/80 bg-muted/20 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono text-muted-foreground">
           <span>Account ID: {user._id}</span>
-          <span>
-            Created: {new Date(user.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+          <span className="tabular-nums">
+            Member Since: {new Date(user.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
           </span>
         </div>
       </div>
     );
   }
+
 
   // Edit Mode
   return (

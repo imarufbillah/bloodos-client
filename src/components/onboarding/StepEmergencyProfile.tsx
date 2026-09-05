@@ -7,7 +7,6 @@ import {
 } from "@/types/shared";
 import {
   DISTRICTS_BY_DIVISION,
-  DISTRICTS,
 } from "@/lib/constants/districts";
 import {
   Select,
@@ -38,8 +37,6 @@ export function StepEmergencyProfile({
   onDistrictChange,
   onNext,
 }: StepEmergencyProfileProps) {
-  const [districtSearch, setDistrictSearch] = React.useState("");
-
   const handleSelectBloodGroup = (bg: string) => {
     triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
     onBloodGroupChange(bg);
@@ -56,10 +53,10 @@ export function StepEmergencyProfile({
     <div className="space-y-6">
       <div className="space-y-1">
         <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-          Select Your Blood Group & District
+          Blood Group & District
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground">
-          Crucial for precision dispatch when emergency hospital transfusion requests arrive.
+          Used to match you with urgent hospital transfusion broadcasts.
         </p>
       </div>
 
@@ -71,7 +68,7 @@ export function StepEmergencyProfile({
             <span>Blood Group (ABO/Rh)</span>
           </Label>
           <span className="text-[11px] text-muted-foreground font-mono">
-            {bloodGroup ? `Selected: ${bloodGroup}` : "Required for triage"}
+            {bloodGroup ? `Selected: ${bloodGroup}` : "Required"}
           </span>
         </div>
 
@@ -83,10 +80,10 @@ export function StepEmergencyProfile({
                 key={group}
                 type="button"
                 onClick={() => handleSelectBloodGroup(group)}
-                className={`relative flex flex-col items-center justify-center p-3 rounded-xl border font-mono font-bold transition-all touch-manipulation active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                className={`relative flex flex-col items-center justify-center p-3 rounded-xl border font-mono font-bold transition-all touch-manipulation active:scale-[0.98] ${
                   isSelected
-                    ? "border-crimson bg-crimson text-paper shadow-sm ring-1 ring-crimson"
-                    : "border-border/80 bg-card hover:bg-accent text-foreground hover:border-foreground/30"
+                    ? "border-crimson bg-crimson text-paper shadow-2xs ring-1 ring-crimson"
+                    : "border-border/80 bg-card hover:bg-muted text-foreground"
                 }`}
               >
                 <span className="text-lg sm:text-xl tracking-tight leading-none">
@@ -123,9 +120,6 @@ export function StepEmergencyProfile({
             <MapPin className="h-3.5 w-3.5 text-ochre" />
             <span>Primary District (64 Districts)</span>
           </Label>
-          <span className="text-[11px] text-muted-foreground">
-            Emergency dispatch zone
-          </span>
         </div>
 
         <Select
@@ -133,7 +127,7 @@ export function StepEmergencyProfile({
           onValueChange={handleDistrictSelect}
         >
           <SelectTrigger id="onboarding-district" className="h-11 rounded-xl bg-card border-border/80">
-            <SelectValue placeholder="Select your district (e.g. Dhaka, Chittagong)" />
+            <SelectValue placeholder="Select district (e.g. Dhaka, Chittagong)" />
           </SelectTrigger>
           <SelectContent className="max-h-72">
             {Object.entries(DISTRICTS_BY_DIVISION).map(
@@ -163,12 +157,13 @@ export function StepEmergencyProfile({
             onNext();
           }}
           disabled={!isComplete}
-          className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold text-xs uppercase tracking-wider gap-2 shadow-xs transition-transform active:scale-[0.99]"
+          className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold text-xs uppercase tracking-wider gap-2 shadow-2xs transition-transform active:scale-[0.99]"
         >
-          <span>Continue to Donor Readiness</span>
+          <span>Continue to Readiness</span>
           <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
     </div>
   );
 }
+

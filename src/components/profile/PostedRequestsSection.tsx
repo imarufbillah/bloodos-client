@@ -65,10 +65,10 @@ export function PostedRequestsSection({ userId }: PostedRequestsSectionProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-border/70">
         <div>
           <h2 className="font-heading text-lg sm:text-xl font-bold tracking-tight text-foreground">
-            My Emergency Blood Requests
+            Emergency Blood Requests
           </h2>
           <p className="text-xs text-muted-foreground">
-            Manage hospital blood requirements you have created and review donor responses.
+            Hospital blood requests created by your account.
           </p>
         </div>
 
@@ -95,6 +95,7 @@ export function PostedRequestsSection({ userId }: PostedRequestsSectionProps) {
           </Link>
         </div>
       </div>
+
 
       {/* Requests List */}
       {isLoading ? (

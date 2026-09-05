@@ -108,10 +108,10 @@ export function ResponseHistorySection({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-2 border-b border-border/70">
         <div>
           <h2 className="font-heading text-lg sm:text-xl font-bold tracking-tight text-foreground">
-            My Donor Volunteer Responses
+            Volunteer Responses
           </h2>
           <p className="text-xs text-muted-foreground">
-            Emergency requests you volunteered to donate blood for, including coordination status.
+            Emergency requests you volunteered to donate blood for.
           </p>
         </div>
 
@@ -119,6 +119,7 @@ export function ResponseHistorySection({
           {responses.length} RESPONSE{responses.length === 1 ? "" : "S"}
         </span>
       </div>
+
 
       {/* Responses List */}
       {isLoading ? (

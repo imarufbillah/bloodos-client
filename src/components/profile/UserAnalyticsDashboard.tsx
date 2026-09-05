@@ -148,21 +148,16 @@ export function UserAnalyticsDashboard({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-2 border-b border-border/70">
         <div>
           <h2 className="font-heading text-lg sm:text-xl font-bold tracking-tight text-foreground">
-            Operational Telemetry & Impact
+            Operational Impact & Analytics
           </h2>
           <p className="text-xs text-muted-foreground">
-            Lifetime verified transfusion metrics, emergency requests, and donor response ratios.
+            Lifetime transfusion metrics, blood requests created, and volunteer responses.
           </p>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs font-mono text-teal">
-          <span className="h-2 w-2 rounded-full bg-teal animate-pulse" />
-          <span>VERIFIED TELEMETRY</span>
         </div>
       </div>
 
       {/* 4 Core Impact Telemetry Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         <StatCard
           label="Lives Saved"
           value={analytics.livesSaved || 0}
@@ -189,6 +184,7 @@ export function UserAnalyticsDashboard({
           icon={Target}
         />
       </div>
+
 
       {/* Impact Statement Card */}
       {analytics.livesSaved > 0 && (

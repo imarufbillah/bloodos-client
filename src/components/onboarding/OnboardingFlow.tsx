@@ -132,44 +132,31 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
   };
 
   return (
-    <div className="min-h-[calc(100dvh-4rem)] flex flex-col justify-between py-6 sm:py-10 px-4 sm:px-6">
-      <div className="mx-auto max-w-6xl w-full space-y-6 sm:space-y-8">
+    <div className="min-h-[calc(100dvh-4rem)] flex flex-col justify-between py-6 sm:py-8 px-4 sm:px-6">
+      <div className="mx-auto max-w-5xl w-full space-y-6">
         
-        {/* Onboarding Navigation & Progress Header */}
+        {/* Onboarding Header */}
         <header className="flex items-center justify-between pb-4 border-b border-border/70">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-crimson text-paper shadow-xs">
-              <Droplet className="h-5 w-5 fill-paper" />
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-crimson text-paper shadow-2xs">
+              <Droplet className="h-4 w-4 fill-paper" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-heading font-bold text-base text-foreground leading-tight">
-                  BloodOS
-                </span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-semibold">
-                  ONBOARDING
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">
+              <h1 className="font-heading font-bold text-base text-foreground leading-tight">
                 Emergency Readiness Setup
+              </h1>
+              <p className="text-xs text-muted-foreground font-mono">
+                BloodOS National Network
               </p>
             </div>
           </div>
 
-          {/* Steps & Time estimate */}
+          {/* Steps Indicator */}
           <div className="flex items-center gap-3">
-            {currentStep < 3 && (
-              <div className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-muted-foreground mr-2">
-                <Clock className="h-3.5 w-3.5 text-ochre" />
-                <span>~90s setup</span>
-              </div>
-            )}
-
-            {/* Visual Step Indicator */}
             {currentStep < 3 && (
               <div className="flex items-center gap-1.5 font-mono text-xs font-semibold">
                 <span
-                  className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] ${
+                  className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] tabular-nums ${
                     currentStep === 1
                       ? "bg-crimson text-paper"
                       : "bg-teal/20 text-teal"
@@ -179,7 +166,7 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
                 </span>
                 <ChevronRight className="h-3 w-3 text-muted-foreground/60" />
                 <span
-                  className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] ${
+                  className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] tabular-nums ${
                     currentStep === 2
                       ? "bg-crimson text-paper"
                       : "bg-muted text-muted-foreground"
@@ -190,15 +177,14 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
               </div>
             )}
 
-            {/* Accessible Skip Button */}
             {currentStep < 3 && (
               <Link href="/">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-xs text-muted-foreground hover:text-foreground h-8 px-2.5"
+                  className="text-xs text-muted-foreground hover:text-foreground h-8 px-2"
                 >
-                  Skip for now
+                  Skip
                 </Button>
               </Link>
             )}
@@ -207,7 +193,7 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
 
         {/* Main Content Area */}
         {currentStep === 3 ? (
-          <div className="max-w-2xl mx-auto py-4">
+          <div className="max-w-xl mx-auto py-4">
             <StepActivationSuccess
               bloodGroup={bloodGroup}
               district={district}
@@ -217,9 +203,9 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
             />
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
             
-            {/* Left Column: Live Serological Radar & Impact Simulation (Aha Moment) */}
+            {/* Left Column: Live Serological Radar (Aha Moment) */}
             <div className="lg:col-span-5 order-2 lg:order-1 lg:sticky lg:top-20">
               <SerologicalRadarPreview
                 bloodGroup={bloodGroup}
@@ -232,9 +218,9 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
               />
             </div>
 
-            {/* Right Column: Tactical Step Input Card */}
+            {/* Right Column: Step Input Container */}
             <div className="lg:col-span-7 order-1 lg:order-2">
-              <div className="rounded-2xl border border-border bg-card p-5 sm:p-7 md:p-8 shadow-sm">
+              <div className="rounded-2xl border border-border bg-card p-5 sm:p-7 shadow-xs">
                 {currentStep === 1 && (
                   <StepEmergencyProfile
                     bloodGroup={bloodGroup}
@@ -270,3 +256,4 @@ export function OnboardingFlow({ initialUser }: OnboardingFlowProps) {
     </div>
   );
 }
+

@@ -8,7 +8,6 @@ import {
   Heart,
   Phone,
   Calendar,
-  ShieldCheck,
   ArrowLeft,
   CheckCircle2,
   Lock,
@@ -55,7 +54,6 @@ export function StepDonorReadiness({
 
   const handleQuickOverTwoMonths = () => {
     triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
-    // Set to 60 days ago
     const date = new Date();
     date.setDate(date.getDate() - 60);
     onLastDonationDateChange(date.toISOString().split("T")[0] || "");
@@ -65,14 +63,14 @@ export function StepDonorReadiness({
     <div className="space-y-6">
       <div className="space-y-1">
         <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-          Donor Readiness & Contact Privacy
+          Donor Readiness & Contact
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground">
-          Set your volunteer donation availability and verify your emergency contact number.
+          Set volunteer donor availability and verify emergency contact.
         </p>
       </div>
 
-      {/* 1. Volunteer Availability Toggle Card */}
+      {/* 1. Volunteer Availability Toggle */}
       <div
         role="button"
         tabIndex={0}
@@ -85,18 +83,18 @@ export function StepDonorReadiness({
         }}
         className={`group relative flex items-start gap-3.5 p-4 rounded-2xl border transition-all cursor-pointer select-none touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
           isDonor
-            ? "border-teal bg-teal/5 ring-1 ring-teal/40"
+            ? "border-teal bg-teal/5 ring-1 ring-teal/30"
             : "border-border/80 bg-card hover:bg-muted/40"
         }`}
       >
         <div
-          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border transition-colors mt-0.5 ${
+          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-lg border transition-colors mt-0.5 ${
             isDonor
               ? "border-teal bg-teal text-paper"
               : "border-muted-foreground/40 bg-background"
           }`}
         >
-          {isDonor && <CheckCircle2 className="h-4 w-4" />}
+          {isDonor && <CheckCircle2 className="h-3.5 w-3.5" />}
         </div>
 
         <div className="space-y-1 flex-1">
@@ -105,12 +103,12 @@ export function StepDonorReadiness({
             <Heart className={`h-3.5 w-3.5 ${isDonor ? "text-crimson fill-crimson" : "text-muted-foreground"}`} />
           </p>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Allow verified hospital coordinators to contact you when matching emergency requests arise in your district.
+            Receive SMS/app notifications when emergency requests arise in your district.
           </p>
         </div>
       </div>
 
-      {/* 2. Emergency Contact Phone */}
+      {/* 2. Contact Phone */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <Label
@@ -121,26 +119,24 @@ export function StepDonorReadiness({
             <span>Mobile Phone Number</span>
           </Label>
           <span className="text-[11px] font-mono text-muted-foreground">
-            Bangladesh 11 digits
+            11 Digits (BD)
           </span>
         </div>
 
-        <div className="relative">
-          <Input
-            id="onboarding-phone"
-            type="tel"
-            placeholder="01XXXXXXXXX"
-            value={phone}
-            onChange={(e) => onPhoneChange(e.target.value)}
-            disabled={isSubmitting}
-            className="h-11 rounded-xl bg-card border-border/80 font-mono text-sm tracking-wider"
-          />
-        </div>
+        <Input
+          id="onboarding-phone"
+          type="tel"
+          placeholder="01XXXXXXXXX"
+          value={phone}
+          onChange={(e) => onPhoneChange(e.target.value)}
+          disabled={isSubmitting}
+          className="h-11 rounded-xl bg-card border-border/80 font-mono text-sm tracking-wider"
+        />
 
         {phoneError ? (
           <p className="text-xs text-destructive">{phoneError}</p>
         ) : (
-          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground pt-0.5">
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-mono">
             <Lock className="h-3 w-3 text-teal shrink-0" />
             <span>Privacy Masked: Displayed as 01XXX***XXX to unverified users.</span>
           </div>
@@ -177,7 +173,7 @@ export function StepDonorReadiness({
             <p className="text-xs text-destructive">{dateError}</p>
           )}
 
-          {/* Fast Quick Selection Chips */}
+          {/* Quick Selection Chips */}
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <button
               type="button"
@@ -198,10 +194,6 @@ export function StepDonorReadiness({
               Over 2 months ago (Eligible)
             </button>
           </div>
-
-          <p className="text-[11px] text-muted-foreground leading-relaxed">
-            Used to track your 56-day rest cycle. You can log certified hospital donation receipts later.
-          </p>
         </div>
       )}
 
@@ -228,14 +220,14 @@ export function StepDonorReadiness({
             onSubmit();
           }}
           disabled={isSubmitting}
-          className="flex-1 h-11 rounded-xl bg-primary text-primary-foreground font-semibold text-xs uppercase tracking-wider gap-2 shadow-xs transition-transform active:scale-[0.99]"
+          className="flex-1 h-11 rounded-xl bg-primary text-primary-foreground font-semibold text-xs uppercase tracking-wider gap-2 shadow-2xs transition-transform active:scale-[0.99]"
         >
           {isSubmitting ? (
-            <span>Activating Profile...</span>
+            <span>Activating...</span>
           ) : (
             <>
               <Sparkles className="h-4 w-4" />
-              <span>Complete Profile & Activate</span>
+              <span>Complete Setup</span>
             </>
           )}
         </Button>
@@ -243,3 +235,4 @@ export function StepDonorReadiness({
     </div>
   );
 }
+
