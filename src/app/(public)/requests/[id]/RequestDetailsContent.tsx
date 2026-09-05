@@ -185,10 +185,10 @@ export default function RequestDetailsContent({
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[calc(100dvh-4rem)] bg-background">
       {/* Back Button */}
       <div className="border-b border-border bg-card">
-        <div className="container mx-auto max-w-4xl px-4 py-4">
+        <div className="container mx-auto max-w-7xl px-4 py-4">
           <Link href="/requests">
             <Button variant="ghost" size="sm" className="gap-2">
               <ArrowLeft className="h-4 w-4" />
@@ -199,7 +199,7 @@ export default function RequestDetailsContent({
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto max-w-4xl px-4 py-8">
+      <div className="container mx-auto max-w-7xl px-4 py-8">
         <div className="space-y-8">
           {/* Section 1: Overview - Hero with urgency indicators */}
           <section

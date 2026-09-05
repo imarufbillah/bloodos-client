@@ -29,7 +29,7 @@ export function ProfileContent({
   };
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-8">
+    <div className="container mx-auto max-w-7xl px-4 py-8 min-h-[calc(100dvh-4rem)] sm:px-6 lg:px-8">
       {/* Page Header */}
       <header className="mb-8">
         <div className="flex items-center gap-3 mb-2">

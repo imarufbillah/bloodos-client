@@ -59,7 +59,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
   };
 
   return (
-    <section className="relative min-h-dvh flex items-center overflow-hidden border-b border-border/80 bg-background pt-20 pb-12 sm:pt-24 sm:pb-16 lg:pt-28 lg:pb-20">
+    <section className="relative min-h-[calc(100dvh-4rem)] flex items-center overflow-hidden border-b border-border/80 bg-background py-10 sm:py-14 lg:py-16">
       {/* Interactive GPU-Accelerated Bangladesh Dispatch Radar Mesh */}
       <EmergencyRadarCanvas 
         selectedDistrict={selectedDistrict || districtSearch}

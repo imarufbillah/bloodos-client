@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 
 export default function AddRequestPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[calc(100dvh-4rem)] bg-background">
       {/* Header */}
       <div className="border-b border-border bg-card">
-        <div className="container mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <Link
             href="/requests"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
@@ -31,7 +31,7 @@ export default function AddRequestPage() {
       </div>
 
       {/* Form Content */}
-      <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="rounded-lg border border-border bg-card p-6 sm:p-8">
           <AddRequestForm />
         </div>

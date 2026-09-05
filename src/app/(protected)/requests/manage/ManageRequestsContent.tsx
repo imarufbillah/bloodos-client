@@ -203,7 +203,7 @@ export function ManageRequestsContent({
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[calc(100dvh-4rem)] bg-background">
       {/* Header */}
       <div className="border-b border-border bg-card">
         <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">

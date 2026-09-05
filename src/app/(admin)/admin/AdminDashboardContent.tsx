@@ -40,18 +40,18 @@ export function AdminDashboardContent({
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="border-b border-slate bg-paper">
+    <div className="min-h-[calc(100dvh-4rem)] bg-background">
+      <div className="border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-crimson/10">
               <Shield className="h-6 w-6 text-crimson" />
             </div>
             <div>
-              <h1 className="font-heading text-2xl font-semibold text-ink">
+              <h1 className="font-heading text-2xl font-semibold text-foreground">
                 Admin Dashboard
               </h1>
-              <p className="text-sm text-slate mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Manage requests, users, and view platform statistics
               </p>
             </div>

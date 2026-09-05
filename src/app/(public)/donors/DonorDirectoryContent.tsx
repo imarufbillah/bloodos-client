@@ -163,7 +163,7 @@ export default function DonorDirectoryContent({
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[calc(100dvh-4rem)] bg-background">
       {/* Page Header */}
       <section className="border-b border-border bg-card">
         <div className="container mx-auto max-w-7xl px-4 py-8">

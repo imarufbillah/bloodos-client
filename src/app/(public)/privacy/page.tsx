@@ -22,12 +22,12 @@ import { Button } from "@/components/ui/button";
  */
 export default function PrivacyPage() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-[calc(100dvh-4rem)]">
       {/* ===================================================================
           Hero Section
        =================================================================== */}
       <section className="relative border-b border-border bg-linear-to-b from-background to-muted/20 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col items-center gap-6 text-center">
             <motion.div
               className="flex h-20 w-20 items-center justify-center rounded-full bg-teal"
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
           Introduction
        =================================================================== */}
       <section className="border-b border-border px-4 py-12 sm:py-16">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
             <p>
               BloodOS is committed to protecting your privacy. This policy
@@ -81,7 +81,7 @@ export default function PrivacyPage() {
           Data Collection Section
        =================================================================== */}
       <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-teal/10">
               <Database className="h-6 w-6 text-teal" />
@@ -241,7 +241,7 @@ export default function PrivacyPage() {
           Data Usage Section
        =================================================================== */}
       <section className="border-b border-border px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-ochre/10">
               <Eye className="h-6 w-6 text-ochre" />
@@ -403,7 +403,7 @@ export default function PrivacyPage() {
           Data Sharing Section
        =================================================================== */}
       <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-crimson/10">
               <Share2 className="h-6 w-6 text-crimson" />
@@ -574,7 +574,7 @@ export default function PrivacyPage() {
           User Rights Section
        =================================================================== */}
       <section className="border-b border-border px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-teal/10">
               <UserCheck className="h-6 w-6 text-teal" />
@@ -711,7 +711,7 @@ export default function PrivacyPage() {
           Data Security Section
        =================================================================== */}
       <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-crimson/10">
               <Lock className="h-6 w-6 text-crimson" />
@@ -784,7 +784,7 @@ export default function PrivacyPage() {
           Contact Section
        =================================================================== */}
       <section className="border-b border-border px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-teal/10">
               <Mail className="h-6 w-6 text-teal" />
@@ -852,7 +852,7 @@ export default function PrivacyPage() {
           Policy Changes Section
        =================================================================== */}
       <section className="border-b border-border bg-muted/20 px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
             Changes to This Policy
           </h2>
@@ -905,7 +905,7 @@ export default function PrivacyPage() {
           Call-to-Action Section
        =================================================================== */}
       <section className="px-4 py-16 sm:py-20">
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col items-center gap-6 rounded-lg border border-border bg-card p-8 text-center sm:p-12">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-teal">
               <Shield className="h-8 w-8 text-white" />

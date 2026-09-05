@@ -11,8 +11,8 @@ function SuspendedContent() {
   const banReason = searchParams.get("reason");
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 pt-16 pb-20 md:pb-0">
-      <div className="max-w-2xl w-full">
+    <div className="min-h-[calc(100dvh-4rem)] bg-background flex items-center justify-center px-4 py-12">
+      <div className="container mx-auto max-w-7xl px-4 flex justify-center"><div className="max-w-2xl w-full">
         {/* Icon and Title */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-destructive/10 rounded-full mb-4">
@@ -108,7 +108,7 @@ function SuspendedContent() {
             .
           </p>
         </div>
-      </div>
+      </div></div>
     </div>
   );
 }

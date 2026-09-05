@@ -26,14 +26,14 @@ async function SignInContent({ searchParams }: SignInPageProps) {
   const destination = redirectParam || callbackUrl || "/profile";
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-[calc(100dvh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       {/* Subtle ambient light aura */}
       <div 
         className="pointer-events-none absolute top-1/4 left-1/2 h-[450px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-crimson/5 blur-[120px]" 
         aria-hidden="true" 
       />
 
-      <div className="container relative mx-auto max-w-6xl w-full">
+      <div className="container relative mx-auto max-w-7xl w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* Left Showcase Column: Tactical Bangladesh Dispatch Telemetry */}
@@ -161,7 +161,7 @@ export default function SignInPage(props: SignInPageProps) {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+        <div className="min-h-[calc(100dvh-4rem)] flex items-center justify-center">
           <div className="space-y-2 text-center">
             <div className="h-8 w-8 rounded-full border-2 border-crimson border-t-transparent animate-spin mx-auto" />
             <p className="font-mono text-xs text-muted-foreground">Initializing BloodOS Authentication...</p>

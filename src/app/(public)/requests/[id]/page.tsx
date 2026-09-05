@@ -48,8 +48,8 @@ export default async function RequestDetailsPage({ params }: PageProps) {
  */
 function RequestDetailsSkeleton() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto max-w-4xl px-4 py-8">
+    <div className="min-h-[calc(100dvh-4rem)] bg-background">
+      <div className="container mx-auto max-w-7xl px-4 py-8">
         <div className="space-y-8 animate-pulse">
           {/* Overview Skeleton */}
           <div className="h-48 bg-muted rounded-lg" />
