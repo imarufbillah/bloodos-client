@@ -5,13 +5,19 @@ import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
-const GoogleAuth = () => {
+interface GoogleAuthProps {
+  label?: string;
+}
+
+export default function GoogleAuth({ label = "Continue with Google" }: GoogleAuthProps) {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/";
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
+    triggerTactileFeedback(HAPTIC_PATTERNS.MEDIUM);
     setLoading(true);
 
     try {
@@ -19,8 +25,8 @@ const GoogleAuth = () => {
         provider: "google",
         callbackURL: redirectTo,
       });
-    } catch (err) {
-      toast.error("Something went wrong. Please try again later.");
+    } catch {
+      toast.error("Google authentication failed. Please try again or use email sign in.");
       setLoading(false);
     }
   };
@@ -31,10 +37,10 @@ const GoogleAuth = () => {
       onClick={handleGoogleSignIn}
       variant="outline"
       size="lg"
-      className="w-full gap-3"
+      className="w-full h-12 gap-3 font-semibold text-sm border-border/80 bg-background hover:bg-muted/60 text-foreground transition-all duration-150 active:scale-[0.98] shadow-xs"
       disabled={loading}
     >
-      <svg className="size-5" viewBox="0 0 24 24">
+      <svg className="size-5 shrink-0" viewBox="0 0 24 24">
         <path
           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
           fill="#4285F4"
@@ -52,9 +58,7 @@ const GoogleAuth = () => {
           fill="#EA4335"
         />
       </svg>
-      Continue with Google
+      <span>{loading ? "Connecting to Google..." : label}</span>
     </Button>
   );
-};
-
-export default GoogleAuth;
+}
