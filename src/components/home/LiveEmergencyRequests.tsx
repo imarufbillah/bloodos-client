@@ -80,7 +80,11 @@ export function LiveEmergencyRequests() {
   const [requests, setRequests] = React.useState<BloodRequestItem[]>(sampleUrgentRequests);
 
   React.useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/requests?limit=4&urgency=critical`)
+    const controller = new AbortController();
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/requests?limit=4&urgency=critical`, {
+      signal: controller.signal,
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
@@ -99,9 +103,14 @@ export function LiveEmergencyRequests() {
           setRequests(mapped);
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        if (err.name === "AbortError") return;
         setRequests(sampleUrgentRequests);
       });
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   return (

@@ -22,7 +22,11 @@ export default function HomePage() {
   const [isLoadingStats, setIsLoadingStats] = React.useState(true);
 
   React.useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/stats`)
+    const controller = new AbortController();
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/stats`, {
+      signal: controller.signal,
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Stats unavailable");
         return res.json();
@@ -31,7 +35,8 @@ export default function HomePage() {
         setStats(data);
         setIsLoadingStats(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        if (err.name === "AbortError") return;
         // Fallback default stats if backend is offline or empty
         setStats({
           activeRequests: 8,
@@ -41,6 +46,10 @@ export default function HomePage() {
         });
         setIsLoadingStats(false);
       });
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   return (

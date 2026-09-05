@@ -62,10 +62,12 @@ export function EmergencyRadarCanvas({
     let height = 0;
     let dpr = 1;
 
+    let rect = canvas.getBoundingClientRect();
+
     const resize = () => {
       if (!canvas) return;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const rect = canvas.getBoundingClientRect();
+      rect = canvas.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
       canvas.width = Math.floor(width * dpr);
@@ -74,7 +76,7 @@ export function EmergencyRadarCanvas({
     };
 
     resize();
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", resize, { passive: true });
 
     // Track visibility to pause RAF
     const observer = new IntersectionObserver(
@@ -88,7 +90,7 @@ export function EmergencyRadarCanvas({
     let radarAngle = 0;
 
     const render = () => {
-      if (!isVisibleRef.current) {
+      if (!isVisibleRef.current || document.hidden) {
         animationFrameId.current = requestAnimationFrame(render);
         return;
       }
@@ -124,7 +126,6 @@ export function EmergencyRadarCanvas({
       ctx.stroke();
 
       // Transform nodes into canvas coordinates
-      // Map nodes into a focused interactive coordinate space in right/center
       const offsetX = width * 0.15;
       const mapWidth = width * 0.7;
       const offsetY = height * 0.1;
@@ -143,13 +144,14 @@ export function EmergencyRadarCanvas({
 
       // Draw mesh connections between neighboring nodes
       for (let i = 0; i < screenNodes.length; i++) {
+        const n1 = screenNodes[i];
+        if (!n1) continue;
         for (let j = i + 1; j < screenNodes.length; j++) {
-          const n1 = screenNodes[i]!;
-          const n2 = screenNodes[j]!;
+          const n2 = screenNodes[j];
+          if (!n2) continue;
           const dx = n1.screenX - n2.screenX;
           const dy = n1.screenY - n2.screenY;
           const dist = Math.sqrt(dx * dx + dy * dy);
-
           if (dist < 180) {
             const isHighPriority = n1.isMatchedDistrict || n2.isMatchedDistrict || Boolean(selectedBloodGroup);
             ctx.beginPath();
@@ -236,7 +238,6 @@ export function EmergencyRadarCanvas({
     render();
 
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
       mousePos.current = {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top,
@@ -247,11 +248,17 @@ export function EmergencyRadarCanvas({
       mousePos.current = null;
     };
 
-    canvas.addEventListener("mousemove", handleMouseMove);
-    canvas.addEventListener("mouseleave", handleMouseLeave);
+    const handleMouseEnter = () => {
+      rect = canvas.getBoundingClientRect();
+    };
+
+    canvas.addEventListener("mouseenter", handleMouseEnter, { passive: true });
+    canvas.addEventListener("mousemove", handleMouseMove, { passive: true });
+    canvas.addEventListener("mouseleave", handleMouseLeave, { passive: true });
 
     return () => {
       window.removeEventListener("resize", resize);
+      canvas.removeEventListener("mouseenter", handleMouseEnter);
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseleave", handleMouseLeave);
       observer.disconnect();
