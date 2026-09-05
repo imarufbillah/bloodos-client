@@ -57,7 +57,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
   };
 
   return (
-    <section className="relative min-h-dvh flex items-center overflow-hidden border-b border-border/80 bg-background py-12 lg:py-16">
+    <section className="relative min-h-dvh flex items-center overflow-hidden border-b border-border/80 bg-background pt-20 pb-12 sm:pt-24 sm:pb-16 lg:pt-28 lg:pb-20">
       {/* Subtle coordinate grid & background triage aura */}
       <div 
         className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
