@@ -59,26 +59,20 @@ export function DonorCard({
 
   return (
     <article
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs transition-all duration-200 hover:border-teal/40 hover:shadow-md focus-within:border-teal focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+      className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-4 sm:p-5 transition-all duration-200 hover:border-foreground/20 hover:shadow-sm"
       style={{
-        animationDelay: `${Math.min(staggerIndex * 40, 400)}ms`,
+        animationDelay: `${Math.min(staggerIndex * 30, 300)}ms`,
       }}
     >
-      {/* Top Status Accent Bar for Active/Eligible Donors */}
-      {eligibility.eligible && (
-        <div className="absolute top-0 left-0 right-0 h-1 bg-teal" />
-      )}
-
-      {/* Main Card Content */}
-      <div className="space-y-3.5">
-        {/* Top Meta Bar: District + Eligibility Pill */}
+      {/* Main Content Area */}
+      <div className="space-y-4">
+        {/* Header: District + Eligibility Status */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <MapPin className="h-3.5 w-3.5 text-teal shrink-0" aria-hidden="true" />
             <span className="font-medium text-foreground/90">{donor.district}</span>
           </div>
 
-          {/* Biological Eligibility Status Badge */}
           <EligibilityBadge
             eligible={eligibility.eligible}
             reason={eligibility.reason}
@@ -86,30 +80,28 @@ export function DonorCard({
           />
         </div>
 
-        {/* Hero Identity: Blood Group Badge + Donor Name */}
-        <div className="flex items-center gap-3 pt-0.5">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground font-heading text-lg font-bold shadow-xs transition-transform duration-200 group-hover:scale-105">
+        {/* Donor Identity: Hero Blood Badge + Name */}
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground font-heading text-lg font-bold shadow-xs">
             <span>{donor.bloodGroup}</span>
           </div>
 
-          <div className="min-w-0 flex-1 space-y-0.5">
-            <h3 className="font-heading text-base font-bold text-foreground truncate group-hover:text-primary transition-colors">
+          <div className="min-w-0 flex-1">
+            <h3 className="font-heading text-base font-bold text-foreground truncate">
               {donor.name}
             </h3>
-
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <ShieldCheck className="h-3.5 w-3.5 text-teal shrink-0" aria-hidden="true" />
-              <span>Verified Blood Donor</span>
-            </div>
+            <p className="text-xs font-mono text-muted-foreground tabular-nums truncate">
+              {donor.phone}
+            </p>
           </div>
         </div>
 
-        {/* Clinical Donation History Telemetry Block */}
-        <div className="rounded-xl bg-muted/40 p-3 border border-border/50 space-y-2 text-xs">
+        {/* Clinical History & Readiness Telemetry */}
+        <div className="space-y-2 pt-2 border-t border-border/60 text-xs">
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground flex items-center gap-1.5">
               <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
-              Last Donated
+              Last Donation
             </span>
             <span className="font-mono font-semibold tabular-nums text-foreground">
               {donor.lastDonationDate
@@ -118,14 +110,14 @@ export function DonorCard({
             </span>
           </div>
 
-          <div className="flex items-center justify-between border-t border-border/40 pt-1.5">
+          <div className="flex items-center justify-between">
             <span className="text-muted-foreground flex items-center gap-1.5">
               {eligibility.eligible ? (
                 <CheckCircle2 className="h-3.5 w-3.5 text-teal" aria-hidden="true" />
               ) : (
                 <Clock className="h-3.5 w-3.5 text-amber-500" aria-hidden="true" />
               )}
-              Readiness
+              Status
             </span>
             <span
               className={`font-medium ${
@@ -138,39 +130,25 @@ export function DonorCard({
             </span>
           </div>
         </div>
-
-        {/* Masked Contact Previews */}
-        <div className="space-y-1.5 pt-1 text-xs text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Phone className="h-3.5 w-3.5 text-muted-foreground/70 shrink-0" aria-hidden="true" />
-            <span className="font-mono tabular-nums tracking-wide">{donor.phone}</span>
-          </div>
-          {donor.email && (
-            <div className="flex items-center gap-2">
-              <Mail className="h-3.5 w-3.5 text-muted-foreground/70 shrink-0" aria-hidden="true" />
-              <span className="font-mono tabular-nums truncate">{donor.email}</span>
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Footer Area: Request Contact Action */}
+      {/* Action Footer */}
       <div className="pt-3.5 mt-3.5 border-t border-border/60">
         <button
           type="button"
           onClick={handleRequestContact}
           disabled={isRequestingContact}
-          className="w-full h-11 sm:h-10 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs disabled:opacity-60 disabled:pointer-events-none cursor-pointer"
+          className="w-full h-10 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60 disabled:pointer-events-none cursor-pointer"
         >
           {isRequestingContact ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Retrieving Contact...</span>
+              <span>Retrieving...</span>
             </>
           ) : (
             <>
               <PhoneCall className="h-4 w-4" />
-              <span>Request Verified Contact</span>
+              <span>Request Contact</span>
             </>
           )}
         </button>

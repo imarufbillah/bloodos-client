@@ -136,17 +136,17 @@ export function DonorCardSkeleton({
   return (
     <div
       className={cn(
-        "relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs",
+        "relative flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-4 sm:p-5",
         className,
       )}
       style={{
-        animationDelay: `${Math.min(staggerIndex * 40, 400)}ms`,
+        animationDelay: `${Math.min(staggerIndex * 30, 300)}ms`,
       }}
       role="status"
       aria-label="Loading donor profile"
     >
-      <div className="space-y-3.5">
-        {/* Header: District + Eligibility Badge */}
+      <div className="space-y-4">
+        {/* Header: District + Eligibility Status */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5">
             <Skeleton className="h-3.5 w-3.5 rounded-full" />
@@ -155,43 +155,31 @@ export function DonorCardSkeleton({
           <Skeleton className="h-5 w-24 rounded-full" />
         </div>
 
-        {/* Hero Identity: Blood Group + Name */}
-        <div className="flex items-center gap-3 pt-0.5">
+        {/* Hero Identity: Blood Group + Name + Masked Phone */}
+        <div className="flex items-center gap-3">
           <Skeleton className="h-12 w-12 shrink-0 rounded-xl" />
-          <div className="min-w-0 flex-1 space-y-1.5">
+          <div className="min-w-0 flex-1 space-y-1">
             <Skeleton className="h-5 w-3/4" />
-            <Skeleton className="h-3.5 w-1/2" />
+            <Skeleton className="h-3.5 w-28" />
           </div>
         </div>
 
-        {/* Donation History Telemetry Block */}
-        <div className="rounded-xl bg-muted/40 p-3 border border-border/50 space-y-2">
+        {/* History Telemetry */}
+        <div className="space-y-2 pt-2 border-t border-border/60">
           <div className="flex items-center justify-between">
             <Skeleton className="h-3.5 w-20" />
             <Skeleton className="h-3.5 w-24" />
           </div>
-          <div className="flex items-center justify-between border-t border-border/40 pt-1.5">
+          <div className="flex items-center justify-between">
             <Skeleton className="h-3.5 w-16" />
             <Skeleton className="h-3.5 w-28" />
-          </div>
-        </div>
-
-        {/* Contact info placeholders */}
-        <div className="space-y-1.5 pt-1">
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-3.5 w-3.5" />
-            <Skeleton className="h-3.5 w-28" />
-          </div>
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-3.5 w-3.5" />
-            <Skeleton className="h-3.5 w-36" />
           </div>
         </div>
       </div>
 
       {/* Footer Button */}
       <div className="pt-3.5 mt-3.5 border-t border-border/60">
-        <Skeleton className="h-11 sm:h-10 w-full rounded-xl" />
+        <Skeleton className="h-10 w-full rounded-xl" />
       </div>
     </div>
   );
