@@ -192,7 +192,7 @@ export function ProfilePassportHeader({
             aria-pressed={user.isDonor}
             onClick={handleToggleDonor}
             disabled={isTogglingDonor}
-            className={`flex items-center justify-between sm:justify-center gap-3 px-3.5 py-2 rounded-xl border font-mono text-xs font-semibold transition-all touch-manipulation active:scale-[0.98] ${
+            className={`flex items-center justify-between sm:justify-center gap-3 px-3.5 py-2.5 min-h-[44px] rounded-xl border font-mono text-xs font-semibold transition-all touch-manipulation active:scale-[0.98] ${
               user.isDonor
                 ? "border-teal/50 bg-teal/10 text-teal hover:bg-teal/15"
                 : "border-border bg-muted/40 text-muted-foreground hover:bg-muted"

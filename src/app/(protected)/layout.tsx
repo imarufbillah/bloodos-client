@@ -39,7 +39,7 @@ export default function ProtectedLayout({
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground antialiased selection:bg-crimson/20 selection:text-crimson">
       <Navbar />
-      <main className="flex-1 pt-14 pb-16 sm:pt-16 md:pb-0">{children}</main>
+      <main className="flex-1 pt-14 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pt-16 md:pb-0">{children}</main>
       <Footer />
       <MobileBottomNav />
     </div>

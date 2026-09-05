@@ -621,7 +621,7 @@ export function AddRequestForm() {
         </div>
 
         {/* Right Column: Live National Dispatch Radar Preview (Sticky) */}
-        <div className="lg:col-span-5 order-first lg:order-last lg:sticky lg:top-20 space-y-4">
+        <div className="lg:col-span-5 order-last lg:sticky lg:top-20 space-y-4">
           <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border/70">
               <div className="flex items-center gap-2">

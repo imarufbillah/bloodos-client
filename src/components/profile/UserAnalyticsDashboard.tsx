@@ -87,33 +87,33 @@ function StatCard({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-4 sm:p-5 transition-all ${
+      className={`rounded-2xl border p-3.5 sm:p-5 transition-all ${
         highlight
           ? "border-crimson/30 bg-crimson/5 ring-1 ring-crimson/10"
           : "border-border bg-card shadow-2xs"
       }`}
     >
-      <div className="flex items-start justify-between">
-        <div className="space-y-1">
-          <p className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground">
+      <div className="flex items-start justify-between gap-2">
+        <div className="space-y-0.5 sm:space-y-1 min-w-0">
+          <p className="text-[10px] sm:text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground truncate">
             {label}
           </p>
-          <p className="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-foreground tabular-nums">
+          <p className="font-mono text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-foreground tabular-nums truncate">
             {value}
           </p>
           {subtitle && (
-            <p className="text-xs text-muted-foreground pt-0.5">{subtitle}</p>
+            <p className="text-[11px] sm:text-xs text-muted-foreground pt-0.5 truncate">{subtitle}</p>
           )}
         </div>
 
         <div
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+          className={`flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl ${
             highlight
               ? "bg-crimson/10 text-crimson"
               : "bg-muted text-muted-foreground"
           }`}
         >
-          <Icon className="h-5 w-5" />
+          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
         </div>
       </div>
     </div>

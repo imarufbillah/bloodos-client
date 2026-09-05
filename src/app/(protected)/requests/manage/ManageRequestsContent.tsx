@@ -334,7 +334,7 @@ export function ManageRequestsContent({
           <div
             role="tablist"
             aria-label="Filter requests by status"
-            className="flex flex-wrap items-center gap-1.5"
+            className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-manipulation pb-1 sm:pb-0"
           >
             {(
               [
@@ -355,9 +355,9 @@ export function ManageRequestsContent({
                     triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
                     setStatusFilter(tab.id);
                   }}
-                  className={`px-3 py-1.5 rounded-xl font-mono text-xs font-semibold transition-all ${
+                  className={`px-3.5 py-2 rounded-xl font-mono text-xs font-semibold whitespace-nowrap transition-all touch-manipulation ${
                     isSelected
-                      ? "bg-foreground text-background shadow-xs"
+                      ? "bg-foreground text-background shadow-xs font-bold"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                   }`}
                 >
@@ -493,7 +493,7 @@ export function ManageRequestsContent({
                           router.push(`/requests/${request._id}`);
                         }}
                         disabled={isActionLoading}
-                        className="rounded-xl text-xs font-mono h-9 gap-1.5"
+                        className="rounded-xl text-xs font-mono h-9 gap-1.5 touch-manipulation"
                       >
                         <Eye className="h-3.5 w-3.5" />
                         <span>View Dispatch</span>
@@ -507,7 +507,7 @@ export function ManageRequestsContent({
                           aria-label={`Mark blood request for ${request.patientName} as fulfilled`}
                           onClick={() => handleStatusChange(request._id, "fulfilled")}
                           disabled={isActionLoading}
-                          className="rounded-xl text-xs font-mono h-9 gap-1.5 text-teal border-teal/30 hover:bg-teal/10 hover:text-teal"
+                          className="rounded-xl text-xs font-mono h-9 gap-1.5 text-teal border-teal/30 hover:bg-teal/10 hover:text-teal touch-manipulation"
                         >
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           <span>Mark Fulfilled</span>
@@ -522,7 +522,7 @@ export function ManageRequestsContent({
                           aria-label={`Cancel emergency broadcast for ${request.patientName}`}
                           onClick={() => handleStatusChange(request._id, "cancelled")}
                           disabled={isActionLoading}
-                          className="rounded-xl text-xs font-mono h-9 gap-1.5 text-ochre border-ochre/30 hover:bg-ochre/10 hover:text-ochre"
+                          className="rounded-xl text-xs font-mono h-9 gap-1.5 text-ochre border-ochre/30 hover:bg-ochre/10 hover:text-ochre touch-manipulation"
                         >
                           <XCircle className="h-3.5 w-3.5" />
                           <span>Cancel Broadcast</span>
@@ -536,7 +536,7 @@ export function ManageRequestsContent({
                         aria-label={`Delete emergency request for ${request.patientName}`}
                         onClick={() => openDeleteDialog(request._id, request.patientName)}
                         disabled={isActionLoading}
-                        className="rounded-xl text-xs font-mono h-9 text-destructive hover:bg-destructive/10 hover:text-destructive px-2.5"
+                        className="rounded-xl text-xs font-mono h-9 text-destructive hover:bg-destructive/10 hover:text-destructive px-2.5 touch-manipulation"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                         <span className="sr-only">Delete</span>
@@ -569,7 +569,7 @@ export function ManageRequestsContent({
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialog.isOpen} onOpenChange={closeDeleteDialog}>
-        <DialogContent className="rounded-2xl">
+        <DialogContent className="max-w-md max-h-[90dvh] overflow-y-auto rounded-2xl p-5 sm:p-6">
           <DialogHeader>
             <div className="h-10 w-10 rounded-full bg-destructive/10 text-destructive flex items-center justify-center mb-2">
               <ShieldAlert className="h-5 w-5" />

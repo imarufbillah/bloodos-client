@@ -333,7 +333,7 @@ export function DonationHistorySection({
 
       {/* Digital Donation Certificate Dialog */}
       <Dialog open={!!selectedDonation} onOpenChange={(open) => !open && setSelectedDonation(null)}>
-        <DialogContent className="max-w-md rounded-2xl p-6 space-y-4">
+        <DialogContent className="max-w-md max-h-[90dvh] overflow-y-auto rounded-2xl p-5 sm:p-6 space-y-4">
           <DialogHeader className="text-center space-y-2">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-teal/10 text-teal border border-teal/30">
               <Award className="h-6 w-6" />
