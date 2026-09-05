@@ -132,7 +132,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                   {isLoadingStats ? "—" : stats?.activeRequests ?? 0}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Active SOS
+                  Active Requests
                 </div>
               </div>
 
@@ -150,7 +150,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                   {isLoadingStats ? "—" : `${stats?.fulfilledRequests ?? 0}+`}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Lives Saved
+                  Fulfilled
                 </div>
               </div>
 
@@ -195,19 +195,22 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                       <button
                         type="button"
                         onClick={() => setSelectedBloodGroup("")}
+                        aria-label="Clear selected blood group"
                         className="text-[11px] text-muted-foreground hover:text-crimson transition-colors"
                       >
                         Clear
                       </button>
                     )}
                   </div>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-4 gap-2" role="group" aria-label="Select blood group">
                     {BLOOD_GROUPS.map((bg) => {
                       const isSelected = selectedBloodGroup === bg;
                       return (
                         <button
                           key={bg}
                           type="button"
+                          aria-pressed={isSelected}
+                          aria-label={`Blood group ${bg}`}
                           onClick={() => setSelectedBloodGroup(isSelected ? "" : bg)}
                           className={`h-11 rounded-lg font-mono font-bold text-sm transition-all duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson ${
                             isSelected
@@ -246,6 +249,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                     {(selectedDistrict || districtSearch) && (
                       <button
                         type="button"
+                        aria-label="Clear district input"
                         onClick={() => {
                           setSelectedDistrict("");
                           setDistrictSearch("");

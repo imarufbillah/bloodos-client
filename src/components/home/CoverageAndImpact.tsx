@@ -52,13 +52,15 @@ export function CoverageAndImpact() {
         <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
 
           {/* Division Buttons */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5" role="group" aria-label="Select administrative division">
             {divisionHighlights.map((div) => {
               const isSelected = selectedDivision === div.name;
               return (
                 <button
                   key={div.name}
                   type="button"
+                  aria-pressed={isSelected}
+                  aria-label={`${div.name} division, ${div.count}`}
                   onClick={() => setSelectedDivision(div.name)}
                   className={`flex flex-col items-center justify-center p-3.5 rounded-xl border text-center transition-all duration-150 active:scale-95 ${
                     isSelected
@@ -92,6 +94,7 @@ export function CoverageAndImpact() {
                 <Link
                   key={district}
                   href={`/donors?district=${encodeURIComponent(district)}`}
+                  aria-label={`Find donors in ${district}, ${selectedDivision}`}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-background px-3.5 py-2 text-xs font-medium text-foreground hover:border-crimson hover:text-crimson hover:bg-crimson/5 hover:-translate-y-0.5 transition-all duration-150 shadow-xs"
                 >
                   <MapPin className="h-3 w-3 text-muted-foreground" />

@@ -103,13 +103,16 @@ export function CompatibilityMatrixExplorer() {
             </div>
 
             {/* Blood Group Pill Tabs */}
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2.5">
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2.5" role="tablist" aria-label="Blood group compatibility selector">
               {BLOOD_GROUPS.map((bg) => {
                 const isSelected = activeGroup === bg;
                 return (
                   <button
                     key={bg}
                     type="button"
+                    role="tab"
+                    aria-selected={isSelected}
+                    aria-label={`View compatibility for ${bg} blood group`}
                     onClick={() => setActiveGroup(bg)}
                     className={`h-12 rounded-lg font-mono font-bold text-sm transition-all duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson ${
                       isSelected

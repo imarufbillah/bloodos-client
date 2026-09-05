@@ -187,7 +187,7 @@ export function LiveEmergencyRequests() {
                       variant="secondary"
                       className="w-full text-xs font-semibold justify-between group h-9 transition-all duration-150 active:scale-[0.98]"
                     >
-                      <span>Respond / Details</span>
+                      <span>Respond to Request</span>
                       <HeartHandshake className="h-3.5 w-3.5 text-crimson transition-transform duration-200 group-hover:scale-125" />
                     </Button>
                   </Link>
