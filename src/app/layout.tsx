@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Public_Sans, Fraunces, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import "@/lib/performance-patch";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 

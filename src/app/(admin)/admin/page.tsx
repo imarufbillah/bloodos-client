@@ -73,10 +73,9 @@ async function fetchUsers(): Promise<AdminUser[]> {
 }
 
 export default async function AdminDashboardPage() {
-  // Fetch all data in parallel server-side
-  // Cookies are automatically forwarded by apiFetch
-  const [stats, requests, users] = await Promise.all([
-    fetchAdminStats(),
+  // Fetch stats first (handles 401/403 redirects cleanly)
+  const stats = await fetchAdminStats();
+  const [requests, users] = await Promise.all([
     fetchModerationRequests(),
     fetchUsers(),
   ]);

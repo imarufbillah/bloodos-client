@@ -54,10 +54,8 @@ async function fetchUserAnalytics(): Promise<UserAnalytics> {
 }
 
 export default async function ProfilePage() {
-  const [user, analytics] = await Promise.all([
-    fetchUserProfile(),
-    fetchUserAnalytics(),
-  ]);
+  const user = await fetchUserProfile();
+  const analytics = await fetchUserAnalytics();
 
   return <ProfileContent initialUser={user} initialAnalytics={analytics} />;
 }
