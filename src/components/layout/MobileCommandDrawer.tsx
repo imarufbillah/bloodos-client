@@ -323,17 +323,21 @@ export function MobileCommandDrawer({
             
             <div className="grid grid-cols-1 gap-1.5">
               <Link
-                href="/about#how-it-works"
+                href="/privacy"
                 onClick={() => onOpenChange(false)}
-                className="flex items-center justify-between rounded-xl p-3 text-xs border border-border/70 bg-card hover:bg-muted/60 text-foreground transition-all"
+                className={`flex items-center justify-between rounded-xl p-3 text-xs border transition-all ${
+                  pathname === "/privacy"
+                    ? "border-crimson/40 bg-crimson/5 text-crimson font-semibold"
+                    : "border-border/70 bg-card hover:bg-muted/60 text-foreground"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-foreground">
-                    <FileText className="h-4 w-4" />
+                    <ShieldCheck className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">Coordination Protocol</p>
-                    <p className="text-[10px] text-muted-foreground">Zero spam, privacy masking & verified safety</p>
+                    <p className="font-semibold text-foreground">Privacy & Data Rights</p>
+                    <p className="text-[10px] text-muted-foreground">Phone masking, cooldown & zero brokerage</p>
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />

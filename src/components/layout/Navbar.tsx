@@ -43,26 +43,13 @@ import {
 interface NavLink {
   href: string;
   label: string;
-  requireAuth?: boolean;
-  adminOnly?: boolean;
 }
 
-const publicLinks: NavLink[] = [
-  { href: "/", label: "Home" },
+const primaryNavLinks: NavLink[] = [
   { href: "/requests", label: "Live Requests" },
   { href: "/donors", label: "Find Donors" },
-  { href: "/about#how-it-works", label: "How It Works" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
-];
-
-const protectedLinks: NavLink[] = [
-  { href: "/requests/manage", label: "My Requests", requireAuth: true },
-  { href: "/profile", label: "Profile", requireAuth: true },
-];
-
-const adminLinks: NavLink[] = [
-  { href: "/admin", label: "Admin Panel", adminOnly: true },
 ];
 
 function getInitials(name?: string | null, email?: string | null) {
@@ -99,14 +86,10 @@ export function Navbar() {
     }
   };
 
-  const visibleLinks = React.useMemo(() => {
-    const links = [...publicLinks];
-    if (user) {
-      links.push(...protectedLinks);
-      if (isAdmin) links.push(...adminLinks);
-    }
-    return links;
-  }, [user, isAdmin]);
+  const isLinkActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 w-full border-b border-border/80 bg-background/95 backdrop-blur-md supports-backdrop-filter:bg-background/80">
@@ -137,13 +120,13 @@ export function Navbar() {
         {/* Desktop Navigation Links */}
         <div className="hidden lg:flex items-center gap-1">
           <ul className="flex items-center gap-1">
-            {visibleLinks.slice(0, 5).map((link) => {
-              const isActive = pathname === link.href;
+            {primaryNavLinks.map((link) => {
+              const isActive = isLinkActive(link.href);
               return (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className={`relative inline-flex items-center px-3 py-2 text-xs font-semibold uppercase tracking-wider transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    className={`relative inline-flex items-center px-3.5 py-2 text-xs font-semibold uppercase tracking-wider transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       isActive
                         ? "text-crimson"
                         : "text-foreground/75 hover:text-foreground hover:bg-muted/50"
@@ -151,7 +134,7 @@ export function Navbar() {
                   >
                     {link.label}
                     {isActive && (
-                      <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-crimson" />
+                      <span className="absolute bottom-0 left-3.5 right-3.5 h-0.5 rounded-full bg-crimson" />
                     )}
                   </Link>
                 </li>
