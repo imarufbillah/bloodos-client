@@ -22,10 +22,15 @@ import {
   ShieldAlert,
   Radio,
   FileSpreadsheet,
+  Pencil,
+  Lock,
+  Check,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -43,9 +48,23 @@ import type {
   BloodRequest,
   PaginatedResponse,
   RequestStatus,
+  Urgency,
 } from "@/types/shared";
 import { apiFetch } from "@/lib/api-client";
 import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
+
+function toLocalDatetimeInput(dateStr: string | Date | undefined): string {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "";
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  const year = d.getFullYear();
+  const month = pad(d.getMonth() + 1);
+  const day = pad(d.getDate());
+  const hours = pad(d.getHours());
+  const minutes = pad(d.getMinutes());
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
 
 type ManageRequestsContentProps = {
   initialData: PaginatedResponse<BloodRequest>;
@@ -84,6 +103,39 @@ export function ManageRequestsContent({
     requestId: null,
     patientName: null,
   });
+
+  // Edit requisition dialog state
+  const [editDialog, setEditDialog] = React.useState<{
+    isOpen: boolean;
+    request: BloodRequest | null;
+  }>({
+    isOpen: false,
+    request: null,
+  });
+
+  // Edit form data state
+  const [editForm, setEditForm] = React.useState<{
+    patientName: string;
+    hospitalName: string;
+    hospitalAddress: string;
+    contactPhone: string;
+    unitsNeeded: number;
+    urgency: Urgency;
+    neededByDate: string;
+    additionalNotes: string;
+  }>({
+    patientName: "",
+    hospitalName: "",
+    hospitalAddress: "",
+    contactPhone: "",
+    unitsNeeded: 1,
+    urgency: "urgent",
+    neededByDate: "",
+    additionalNotes: "",
+  });
+
+  const [editErrors, setEditErrors] = React.useState<Record<string, string>>({});
+  const [isSavingEdit, setIsSavingEdit] = React.useState(false);
 
   // Action status loading
   const [actionLoading, setActionLoading] = React.useState<string | null>(null);
@@ -232,6 +284,101 @@ export function ManageRequestsContent({
   // Close delete confirmation dialog
   const closeDeleteDialog = () => {
     setDeleteDialog({ isOpen: false, requestId: null, patientName: null });
+  };
+
+  // Open edit dialog with existing request values
+  const openEditDialog = (request: BloodRequest) => {
+    triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+    setEditDialog({
+      isOpen: true,
+      request,
+    });
+    setEditForm({
+      patientName: request.patientName || "",
+      hospitalName: request.hospitalName || "",
+      hospitalAddress: request.hospitalAddress || "",
+      contactPhone: request.contactPhone || "",
+      unitsNeeded: request.unitsNeeded || 1,
+      urgency: request.urgency || "urgent",
+      neededByDate: toLocalDatetimeInput(request.neededByDate),
+      additionalNotes: request.additionalNotes || "",
+    });
+    setEditErrors({});
+  };
+
+  // Close edit dialog
+  const closeEditDialog = () => {
+    setEditDialog({ isOpen: false, request: null });
+    setEditErrors({});
+  };
+
+  // Handle saving edit updates
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editDialog.request) return;
+
+    const errors: Record<string, string> = {};
+    if (!editForm.patientName.trim()) {
+      errors.patientName = "Patient name is required";
+    }
+    if (!editForm.hospitalName.trim()) {
+      errors.hospitalName = "Hospital name is required";
+    }
+    if (!editForm.hospitalAddress.trim()) {
+      errors.hospitalAddress = "Hospital address or bed/ward details are required";
+    }
+    const cleanPhone = editForm.contactPhone.replace(/\s+/g, "");
+    if (!/^01[3-9]\d{8}$/.test(cleanPhone)) {
+      errors.contactPhone = "Enter a valid 11-digit Bangladesh phone number (01XXXXXXXXX)";
+    }
+    if (editForm.unitsNeeded < 1 || editForm.unitsNeeded > 10) {
+      errors.unitsNeeded = "Units needed must be between 1 and 10";
+    }
+    if (!editForm.neededByDate) {
+      errors.neededByDate = "Required date and time is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setEditErrors(errors);
+      triggerTactileFeedback(HAPTIC_PATTERNS.HEAVY);
+      return;
+    }
+
+    setIsSavingEdit(true);
+    triggerTactileFeedback(HAPTIC_PATTERNS.MEDIUM);
+
+    try {
+      const response = await apiFetch(`/api/requests/${editDialog.request._id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          patientName: editForm.patientName.trim(),
+          hospitalName: editForm.hospitalName.trim(),
+          hospitalAddress: editForm.hospitalAddress.trim(),
+          contactPhone: cleanPhone,
+          unitsNeeded: Number(editForm.unitsNeeded),
+          urgency: editForm.urgency,
+          neededByDate: new Date(editForm.neededByDate).toISOString(),
+          additionalNotes: editForm.additionalNotes.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to update blood request");
+      }
+
+      toast.success("Requisition details updated successfully");
+      triggerTactileFeedback(HAPTIC_PATTERNS.SUCCESS);
+      closeEditDialog();
+      router.refresh();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update requisition",
+      );
+      triggerTactileFeedback(HAPTIC_PATTERNS.HEAVY);
+    } finally {
+      setIsSavingEdit(false);
+    }
   };
 
   return (
@@ -423,6 +570,8 @@ export function ManageRequestsContent({
               const canFulfill = request.status === "in_progress";
               const canCancel =
                 request.status === "open" || request.status === "in_progress";
+              const canEdit =
+                request.status === "open" || request.status === "in_progress";
 
               return (
                 <div
@@ -498,6 +647,21 @@ export function ManageRequestsContent({
                         <Eye className="h-3.5 w-3.5" />
                         <span>View Dispatch</span>
                       </Button>
+
+                      {/* Edit Details Action */}
+                      {canEdit && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          aria-label={`Edit requisition details for ${request.patientName}`}
+                          onClick={() => openEditDialog(request)}
+                          disabled={isActionLoading}
+                          className="rounded-xl text-xs font-mono h-9 gap-1.5 hover:bg-muted/80 touch-manipulation"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                          <span>Edit Details</span>
+                        </Button>
+                      )}
 
                       {/* Fulfill Action */}
                       {canFulfill && (
@@ -613,6 +777,275 @@ export function ManageRequestsContent({
               )}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Requisition Modal */}
+      <Dialog open={editDialog.isOpen} onOpenChange={closeEditDialog}>
+        <DialogContent className="max-w-xl max-h-[90dvh] overflow-y-auto rounded-2xl p-5 sm:p-6">
+          <DialogHeader>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-teal/10 text-teal border border-teal/20 font-mono text-[10px] font-bold uppercase tracking-wider">
+                <Pencil className="h-3 w-3" />
+                Edit Requisition
+              </span>
+              {editDialog.request && (
+                <span className="font-mono text-xs text-muted-foreground">
+                  ID: #{editDialog.request._id.slice(-6)}
+                </span>
+              )}
+            </div>
+            <DialogTitle className="font-heading font-bold text-lg text-foreground">
+              Update Broadcast Details
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
+              Modify hospital ward, contact number, or schedule without canceling your active donor broadcast.
+            </DialogDescription>
+          </DialogHeader>
+
+          {editDialog.request && (
+            <form onSubmit={handleSaveEdit} className="space-y-4 pt-2">
+              {/* Immutable Blood Group Banner */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-muted/40 border border-border/80">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-crimson/10 border border-crimson/20 text-crimson font-mono font-bold text-sm">
+                    {editDialog.request.bloodGroup}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-semibold text-foreground font-mono">
+                        Blood Group: {editDialog.request.bloodGroup}
+                      </span>
+                      <Badge variant="outline" className="text-[10px] font-mono gap-1 text-muted-foreground py-0">
+                        <Lock className="h-2.5 w-2.5" />
+                        Locked
+                      </Badge>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      District: <span className="font-medium text-foreground">{editDialog.request.district}</span> • Locked for donor matching integrity
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Patient Name */}
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-patientName" className="text-xs font-mono font-semibold">
+                  Patient Name <span className="text-crimson">*</span>
+                </Label>
+                <Input
+                  id="edit-patientName"
+                  value={editForm.patientName}
+                  onChange={(e) => {
+                    setEditForm((prev) => ({ ...prev, patientName: e.target.value }));
+                    if (editErrors["patientName"]) setEditErrors((prev) => ({ ...prev, patientName: "" }));
+                  }}
+                  placeholder="e.g. Rahima Begum"
+                  className="h-10 rounded-xl bg-background text-sm font-sans"
+                  disabled={isSavingEdit}
+                />
+                {editErrors["patientName"] && (
+                  <p className="text-[11px] text-destructive font-mono">{editErrors["patientName"]}</p>
+                )}
+              </div>
+
+              {/* Hospital Name & Units Needed in 2 cols */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label htmlFor="edit-hospitalName" className="text-xs font-mono font-semibold">
+                    Hospital / Clinic <span className="text-crimson">*</span>
+                  </Label>
+                  <Input
+                    id="edit-hospitalName"
+                    value={editForm.hospitalName}
+                    onChange={(e) => {
+                      setEditForm((prev) => ({ ...prev, hospitalName: e.target.value }));
+                      if (editErrors["hospitalName"]) setEditErrors((prev) => ({ ...prev, hospitalName: "" }));
+                    }}
+                    placeholder="e.g. Dhaka Medical College Hospital"
+                    className="h-10 rounded-xl bg-background text-sm font-sans"
+                    disabled={isSavingEdit}
+                  />
+                  {editErrors["hospitalName"] && (
+                    <p className="text-[11px] text-destructive font-mono">{editErrors["hospitalName"]}</p>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="edit-unitsNeeded" className="text-xs font-mono font-semibold">
+                    Units (Bags) <span className="text-crimson">*</span>
+                  </Label>
+                  <Input
+                    id="edit-unitsNeeded"
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={editForm.unitsNeeded}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value, 10);
+                      setEditForm((prev) => ({
+                        ...prev,
+                        unitsNeeded: isNaN(val) ? 1 : Math.max(1, Math.min(10, val)),
+                      }));
+                      if (editErrors["unitsNeeded"]) setEditErrors((prev) => ({ ...prev, unitsNeeded: "" }));
+                    }}
+                    className="h-10 rounded-xl bg-background text-sm font-mono text-center"
+                    disabled={isSavingEdit}
+                  />
+                  {editErrors["unitsNeeded"] && (
+                    <p className="text-[11px] text-destructive font-mono">{editErrors["unitsNeeded"]}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Hospital Address / Ward / Bed */}
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-hospitalAddress" className="text-xs font-mono font-semibold">
+                  Address / Ward / Cabin No. <span className="text-crimson">*</span>
+                </Label>
+                <Input
+                  id="edit-hospitalAddress"
+                  value={editForm.hospitalAddress}
+                  onChange={(e) => {
+                    setEditForm((prev) => ({ ...prev, hospitalAddress: e.target.value }));
+                    if (editErrors["hospitalAddress"]) setEditErrors((prev) => ({ ...prev, hospitalAddress: "" }));
+                  }}
+                  placeholder="e.g. Ward 4, Bed 12, New Building, Secretariate Road"
+                  className="h-10 rounded-xl bg-background text-sm font-sans"
+                  disabled={isSavingEdit}
+                />
+                {editErrors["hospitalAddress"] && (
+                  <p className="text-[11px] text-destructive font-mono">{editErrors["hospitalAddress"]}</p>
+                )}
+              </div>
+
+              {/* Contact Phone & Urgency */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label htmlFor="edit-contactPhone" className="text-xs font-mono font-semibold">
+                    Contact Phone <span className="text-crimson">*</span>
+                  </Label>
+                  <Input
+                    id="edit-contactPhone"
+                    value={editForm.contactPhone}
+                    onChange={(e) => {
+                      setEditForm((prev) => ({ ...prev, contactPhone: e.target.value }));
+                      if (editErrors["contactPhone"]) setEditErrors((prev) => ({ ...prev, contactPhone: "" }));
+                    }}
+                    placeholder="01712345678"
+                    maxLength={11}
+                    className="h-10 rounded-xl bg-background text-sm font-mono"
+                    disabled={isSavingEdit}
+                  />
+                  {editErrors["contactPhone"] ? (
+                    <p className="text-[11px] text-destructive font-mono">{editErrors["contactPhone"]}</p>
+                  ) : (
+                    <p className="text-[10px] text-muted-foreground font-mono">11-digit BD mobile number</p>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-mono font-semibold">
+                    Urgency Level <span className="text-crimson">*</span>
+                  </Label>
+                  <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+                    {(["critical", "urgent", "moderate"] as const).map((lvl) => {
+                      const isSelected = editForm.urgency === lvl;
+                      return (
+                        <button
+                          key={lvl}
+                          type="button"
+                          onClick={() => {
+                            triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+                            setEditForm((prev) => ({ ...prev, urgency: lvl }));
+                          }}
+                          className={`h-10 rounded-xl border text-xs font-mono font-semibold capitalize transition-all touch-manipulation flex items-center justify-center ${
+                            isSelected
+                              ? lvl === "critical"
+                                ? "bg-crimson text-paper border-crimson shadow-xs"
+                                : lvl === "urgent"
+                                  ? "bg-ochre text-background border-ochre font-bold shadow-xs"
+                                  : "bg-foreground text-background border-foreground font-bold shadow-xs"
+                              : "border-border/80 bg-background text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                          }`}
+                        >
+                          {lvl}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Needed By Date / Time */}
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-neededByDate" className="text-xs font-mono font-semibold">
+                  Required By Date & Time <span className="text-crimson">*</span>
+                </Label>
+                <Input
+                  id="edit-neededByDate"
+                  type="datetime-local"
+                  value={editForm.neededByDate}
+                  onChange={(e) => {
+                    setEditForm((prev) => ({ ...prev, neededByDate: e.target.value }));
+                    if (editErrors["neededByDate"]) setEditErrors((prev) => ({ ...prev, neededByDate: "" }));
+                  }}
+                  className="h-10 rounded-xl bg-background text-sm font-mono"
+                  disabled={isSavingEdit}
+                />
+                {editErrors["neededByDate"] && (
+                  <p className="text-[11px] text-destructive font-mono">{editErrors["neededByDate"]}</p>
+                )}
+              </div>
+
+              {/* Additional Clinical Notes */}
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-additionalNotes" className="text-xs font-mono font-semibold">
+                  Additional Clinical Notes (Optional)
+                </Label>
+                <Textarea
+                  id="edit-additionalNotes"
+                  value={editForm.additionalNotes}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({ ...prev, additionalNotes: e.target.value }))
+                  }
+                  placeholder="e.g. Cross-matching done, patient in ICU, donor needed by 3:00 PM."
+                  rows={2}
+                  className="rounded-xl bg-background text-xs font-sans resize-none"
+                  disabled={isSavingEdit}
+                />
+              </div>
+
+              <DialogFooter className="gap-2 sm:gap-0 pt-3 border-t border-border/60">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={closeEditDialog}
+                  disabled={isSavingEdit}
+                  className="rounded-xl text-xs font-mono"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isSavingEdit}
+                  className="rounded-xl bg-crimson hover:bg-crimson/90 text-paper text-xs font-mono font-semibold gap-1.5 shadow-xs"
+                >
+                  {isSavingEdit ? (
+                    <>
+                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-paper border-t-transparent" />
+                      <span>Saving Changes...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="h-3.5 w-3.5" />
+                      <span>Save Requisition</span>
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
         </DialogContent>
       </Dialog>
     </div>
