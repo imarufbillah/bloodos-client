@@ -81,10 +81,18 @@ export function CoverageAndImpact() {
           </div>
 
           {/* District Badges of Selected Division */}
-          <div className="rounded-xl border border-border/70 bg-muted/20 p-6 space-y-3 transition-all duration-200">
-            <div className="flex items-center justify-between text-xs font-semibold text-foreground">
-              <span>Districts in {selectedDivision} Division ({activeDistricts.length})</span>
-              <span className="text-muted-foreground font-normal text-[11px]">Click a district to find active donors</span>
+          <div className="rounded-xl border border-border/70 bg-muted/20 p-6 space-y-4 transition-all duration-200">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
+              <div>
+                <span className="text-xs font-bold text-foreground">Districts in {selectedDivision} Division ({activeDistricts.length})</span>
+                <span className="text-muted-foreground font-normal text-[11px] block sm:inline sm:ml-2">Click any district to explore verified standby donors</span>
+              </div>
+              <div className="text-[11px] text-muted-foreground flex items-center gap-1">
+                <span className="font-semibold text-foreground/80">Major Centers:</span>
+                <span className="text-teal font-medium">
+                  {divisionHighlights.find((d) => d.name === selectedDivision)?.hospitals}
+                </span>
+              </div>
             </div>
             <div className="flex flex-wrap gap-2.5">
               {activeDistricts.map((district) => (

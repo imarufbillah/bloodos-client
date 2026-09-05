@@ -11,6 +11,49 @@ import {
 import { BloodGroup, BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { getCompatibleDonors, getCompatibleRecipients } from "@/lib/constants/compatibility";
 
+const groupInsights: Record<BloodGroup, { hero: string; fact: string; bdShare: string }> = {
+  [BloodGroup.A_POSITIVE]: {
+    hero: "A+ is the second most common blood type in Bangladesh (~24%).",
+    fact: "Can receive red blood cells from A+, A-, O+, and O- donors in hospitals across the country.",
+    bdShare: "~24% National Share",
+  },
+  [BloodGroup.A_NEGATIVE]: {
+    hero: "A- is a rare and precious blood group in South Asia (<2%).",
+    fact: "Can donate red blood cells to A+, A-, AB+, and AB- recipients safely.",
+    bdShare: "< 2% Rare Group",
+  },
+  [BloodGroup.B_POSITIVE]: {
+    hero: "B+ is the single most prevalent blood type in Bangladesh (~32%).",
+    fact: "Due to population demographics, B+ represents the highest volume of emergency hospital requests.",
+    bdShare: "~32% High Demand",
+  },
+  [BloodGroup.B_NEGATIVE]: {
+    hero: "B- is rare (<1.5%) and critically vital during trauma and surgery.",
+    fact: "Can donate to B+, B-, AB+, and AB- patients in emergency wards.",
+    bdShare: "< 1.5% Rare Group",
+  },
+  [BloodGroup.AB_POSITIVE]: {
+    hero: "AB+ is the Universal Recipient for red blood cells.",
+    fact: "Can safely receive blood from ANY blood group. AB+ plasma is also universally compatible.",
+    bdShare: "~9% Universal Receiver",
+  },
+  [BloodGroup.AB_NEGATIVE]: {
+    hero: "AB- is the rarest standard blood type in Bangladesh (<0.5%).",
+    fact: "Can receive red cells from all negative blood groups (AB-, A-, B-, O-).",
+    bdShare: "< 0.5% Extremely Rare",
+  },
+  [BloodGroup.O_POSITIVE]: {
+    hero: "O+ is the primary whole blood pillar in emergency wards (~31%).",
+    fact: "Can be transfused to any Rh-positive patient (O+, A+, B+, AB+), matching ~85% of recipients.",
+    bdShare: "~31% National Pillar",
+  },
+  [BloodGroup.O_NEGATIVE]: {
+    hero: "O- is the Universal Red Blood Cell Donor (<1.5% in BD).",
+    fact: "Can save any patient regardless of blood group during catastrophic emergency triage.",
+    bdShare: "< 1.5% Universal Lifesaver",
+  },
+};
+
 export function CompatibilityMatrixExplorer() {
   const [activeGroup, setActiveGroup] = React.useState<BloodGroup>(BloodGroup.O_POSITIVE);
   
@@ -25,6 +68,7 @@ export function CompatibilityMatrixExplorer() {
     return getCompatibleRecipients(activeGroup);
   }, [activeGroup]);
 
+  const currentInsight = groupInsights[activeGroup];
   const isUniversalDonor = activeGroup === BloodGroup.O_NEGATIVE;
   const isUniversalReceiver = activeGroup === BloodGroup.AB_POSITIVE;
 
@@ -81,6 +125,24 @@ export function CompatibilityMatrixExplorer() {
                   </button>
                 );
               })}
+            </div>
+
+            {/* Demographic Insight Card */}
+            <div className="rounded-xl border border-border/80 bg-muted/30 p-4 space-y-2 transition-all duration-200">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-heading text-sm font-bold text-foreground flex items-center gap-1.5">
+                  <span className="font-mono text-xs px-2 py-0.5 rounded bg-crimson/10 text-crimson font-bold">
+                    {activeGroup}
+                  </span>
+                  <span>{currentInsight.hero}</span>
+                </span>
+                <span className="font-mono text-[10px] font-bold text-teal bg-teal/10 px-2 py-0.5 rounded-full border border-teal/20 shrink-0">
+                  {currentInsight.bdShare}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {currentInsight.fact}
+              </p>
             </div>
 
             {/* Special Designation Banner */}

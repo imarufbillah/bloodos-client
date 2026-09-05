@@ -52,6 +52,14 @@ export function VolunteerCallToAction() {
               </div>
             </div>
 
+            {/* Impact Fact Box */}
+            <div className="rounded-xl border border-teal/25 bg-teal/[0.05] p-3.5 text-xs text-foreground/90 flex items-start gap-2.5">
+              <Heart className="h-4 w-4 text-crimson fill-crimson shrink-0 mt-0.5" />
+              <p className="leading-relaxed text-muted-foreground text-[12px]">
+                <strong className="text-foreground font-semibold">How 1 donation saves 3 lives:</strong> Whole blood separates into Red Blood Cells (trauma/surgery), Platelets (dengue/chemotherapy), and Plasma (burns & clotting), helping three distinct patients.
+              </p>
+            </div>
+
             {/* Actions */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-4">
               <Link href="/signup">
