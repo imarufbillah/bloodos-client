@@ -4,29 +4,24 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { BloodRequest, BloodGroup } from "@/types/shared";
-import { RequestStatus, Urgency } from "@/types/shared";
+import { Urgency } from "@/types/shared";
 import { useSession } from "@/lib/auth-client";
 import type { ExtendedUser } from "@/types/auth";
 import { Button } from "@/components/ui/button";
 import { RequestCard } from "@/components/requests/RequestCard";
 import { toast } from "sonner";
 import {
-  Calendar,
   MapPin,
   Droplet,
   Hospital,
   Phone,
-  AlertCircle,
   Clock,
-  User,
   FileText,
   ArrowLeft,
-  Heart,
   Navigation,
   ShieldCheck,
   CheckCircle2,
   HeartHandshake,
-  MessageSquare,
   HelpCircle,
   AlertTriangle,
   ExternalLink,
@@ -209,7 +204,7 @@ export default function RequestDetailsContent({
             className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to Emergency Triage Feed</span>
+            <span>Emergency Triage Feed</span>
           </Link>
 
           <div className="flex items-center gap-3">
@@ -225,7 +220,7 @@ export default function RequestDetailsContent({
       <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
           {/* Left Column (8 cols): Clinical Dossier */}
-          <div className="lg:col-span-8 space-y-8">
+          <div className="lg:col-span-8 space-y-6 sm:space-y-8">
             {/* Header Requisition Card */}
             <div
               className={`rounded-2xl border p-6 sm:p-8 bg-card shadow-xs space-y-6 relative overflow-hidden ${
@@ -240,7 +235,7 @@ export default function RequestDetailsContent({
 
               {/* Status & Urgency Tier */}
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2">
                   <div
                     className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider ${
                       isCritical
@@ -256,12 +251,12 @@ export default function RequestDetailsContent({
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
                       </span>
                     )}
-                    <span>{request.urgency.toUpperCase()} URGENCY</span>
+                    <span>{request.urgency.toUpperCase()}</span>
                   </div>
 
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted border border-border text-xs font-mono font-semibold text-foreground">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted/60 border border-border text-xs font-mono font-semibold text-muted-foreground">
                     <span className="h-1.5 w-1.5 rounded-full bg-teal" />
-                    <span>STATUS: {request.status.toUpperCase()}</span>
+                    <span>{request.status.toUpperCase()}</span>
                   </div>
                 </div>
 
@@ -276,13 +271,13 @@ export default function RequestDetailsContent({
                   {request.patientName}
                 </h1>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  Hospital Requisition logged {formatDistanceToNow(createdAt, { addSuffix: true })}
+                  Hospital requisition logged {formatDistanceToNow(createdAt, { addSuffix: true })}
                 </p>
               </div>
 
               {/* Key Medical Telemetry Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2 border-t border-border/70">
-                <div className="p-3.5 rounded-xl bg-muted/30 border border-border space-y-1">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pt-2 border-t border-border/60">
+                <div className="p-3.5 rounded-xl bg-muted/40 border border-border/60 space-y-1">
                   <span className="text-[11px] text-muted-foreground block font-medium">Blood Group</span>
                   <div className="flex items-center gap-1.5 font-heading text-2xl font-bold text-primary">
                     <Droplet className="h-5 w-5 text-primary" />
@@ -290,14 +285,14 @@ export default function RequestDetailsContent({
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-muted/30 border border-border space-y-1">
+                <div className="p-3.5 rounded-xl bg-muted/40 border border-border/60 space-y-1">
                   <span className="text-[11px] text-muted-foreground block font-medium">Units Required</span>
                   <div className="font-heading text-2xl font-bold text-foreground">
-                    {request.unitsNeeded} <span className="text-sm font-normal text-muted-foreground">Bags</span>
+                    {request.unitsNeeded} <span className="text-xs font-normal text-muted-foreground">Bags</span>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-muted/30 border border-border space-y-1 col-span-2 sm:col-span-2">
+                <div className="p-3.5 rounded-xl bg-muted/40 border border-border/60 space-y-1 col-span-2 sm:col-span-2">
                   <span className="text-[11px] text-muted-foreground block font-medium">Transfusion Target</span>
                   <div className="flex items-center gap-1.5 text-sm sm:text-base font-bold text-foreground">
                     <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
@@ -312,7 +307,7 @@ export default function RequestDetailsContent({
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2 font-heading font-bold text-lg text-foreground">
                   <Hospital className="h-5 w-5 text-teal" />
-                  <span>Hospital Facility & Location</span>
+                  <span>Hospital & Location</span>
                 </div>
 
                 <a
@@ -327,13 +322,13 @@ export default function RequestDetailsContent({
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-muted/30 border border-border space-y-1">
-                  <span className="text-[11px] text-muted-foreground block font-medium">Facility Name</span>
+                <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-1">
+                  <span className="text-[11px] text-muted-foreground block font-medium">Facility</span>
                   <p className="font-semibold text-sm text-foreground">{request.hospitalName}</p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-muted/30 border border-border space-y-1">
-                  <span className="text-[11px] text-muted-foreground block font-medium">District & Jurisdiction</span>
+                <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-1">
+                  <span className="text-[11px] text-muted-foreground block font-medium">District</span>
                   <div className="flex items-center gap-1 font-semibold text-sm text-foreground">
                     <MapPin className="h-3.5 w-3.5 text-teal shrink-0" />
                     <span>{request.district}, Bangladesh</span>
@@ -342,7 +337,7 @@ export default function RequestDetailsContent({
               </div>
 
               {request.hospitalAddress && (
-                <div className="p-4 rounded-xl bg-muted/20 border border-border space-y-1 text-xs text-muted-foreground">
+                <div className="p-4 rounded-xl bg-muted/30 border border-border/60 space-y-1 text-xs text-muted-foreground">
                   <span className="font-medium text-foreground block">Facility Address:</span>
                   <p className="leading-relaxed">{request.hospitalAddress}</p>
                 </div>
@@ -356,7 +351,7 @@ export default function RequestDetailsContent({
               >
                 <Button variant="outline" className="w-full text-xs gap-2 font-semibold h-10">
                   <Navigation className="h-4 w-4 text-teal" />
-                  <span>Open Hospital Route in Google Maps</span>
+                  <span>Open Route in Google Maps</span>
                 </Button>
               </a>
             </div>
@@ -366,9 +361,9 @@ export default function RequestDetailsContent({
               <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-3 shadow-xs">
                 <div className="flex items-center gap-2 font-heading font-bold text-lg text-foreground">
                   <FileText className="h-5 w-5 text-primary" />
-                  <span>Clinical Indication & Attendant Remarks</span>
+                  <span>Clinical Notes & Remarks</span>
                 </div>
-                <div className="p-4 rounded-xl bg-muted/30 border border-border text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                <div className="p-4 rounded-xl bg-muted/40 border border-border/60 text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
                   {request.additionalNotes}
                 </div>
               </div>
@@ -378,10 +373,10 @@ export default function RequestDetailsContent({
             <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-4 shadow-xs">
               <div className="flex items-center gap-2 font-heading font-bold text-lg text-foreground">
                 <Phone className="h-5 w-5 text-teal" />
-                <span>Contact Verification & Privacy</span>
+                <span>Contact Verification & Safeguards</span>
               </div>
 
-              <div className="p-5 rounded-xl bg-muted/30 border border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="p-5 rounded-xl bg-muted/40 border border-border/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="space-y-1">
                   <span className="text-xs text-muted-foreground">Emergency Contact Phone</span>
                   <p className="font-mono text-lg font-bold text-foreground tracking-wider">
@@ -408,7 +403,7 @@ export default function RequestDetailsContent({
 
               {!isOwner && !hasResponded && (
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  To protect patient families from predatory middlemen and unsolicited calls, the full contact number is unveiled immediately upon clicking <strong>&ldquo;Respond • I Can Help&rdquo;</strong>.
+                  To protect families from unsolicited contacts, the full phone number is unveiled upon confirming response.
                 </p>
               )}
             </div>
@@ -418,10 +413,10 @@ export default function RequestDetailsContent({
               <div className="space-y-4 pt-4">
                 <div className="space-y-1">
                   <h2 className="font-heading text-xl font-bold text-foreground">
-                    Other Urgent Requests in {request.district}
+                    Other Requests in {request.district}
                   </h2>
                   <p className="text-xs text-muted-foreground">
-                    Additional verified blood requirements in this regional health zone.
+                    Additional verified blood requisitions in this district.
                   </p>
                 </div>
 
@@ -447,14 +442,14 @@ export default function RequestDetailsContent({
                   Donor Action Terminal
                 </h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Confirm your readiness to donate blood at {request.hospitalName}.
+                  Confirm your readiness to donate blood for this patient.
                 </p>
               </div>
 
               {/* Biological Compatibility Module */}
-              <div className="p-4 rounded-xl border border-border bg-muted/20 space-y-3">
+              <div className="p-4 rounded-xl border border-border/60 bg-muted/40 space-y-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-mono font-semibold text-foreground">Compatibility Status</span>
+                  <span className="font-mono font-semibold text-foreground">Compatibility</span>
                   <span className="text-[11px] font-mono text-muted-foreground">Target: {request.bloodGroup}</span>
                 </div>
 
@@ -474,20 +469,20 @@ export default function RequestDetailsContent({
                       )}
                       <span>
                         {isUserCompatible
-                          ? `Compatible Donor (${effectiveBloodGroup})`
+                          ? `Compatible Match (${effectiveBloodGroup})`
                           : `Incompatible (${effectiveBloodGroup} to ${request.bloodGroup})`}
                       </span>
                     </div>
                     <p className="text-[11px] opacity-90 leading-tight">
                       {isUserCompatible
-                        ? "Your blood type is clinically matched for this patient."
-                        : "Whole blood transfusion from this group carries serological risk."}
+                        ? "Your blood group is compatible with this requisition."
+                        : "Whole blood transfusion from this group carries biological risk."}
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-2">
                     <p className="text-[11px] text-muted-foreground">
-                      Test your blood type compatibility:
+                      Check your blood type:
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {Object.values(BLOOD_COMPATIBILITY).map((_, i) => {
@@ -503,7 +498,7 @@ export default function RequestDetailsContent({
                             className={`px-2 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
                               manualBloodGroup === bgKey
                                 ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground border border-border"
+                                : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground border border-border/70"
                             }`}
                           >
                             {bgKey}
@@ -515,7 +510,7 @@ export default function RequestDetailsContent({
                 )}
 
                 <div className="pt-2 border-t border-border/50 text-[11px] text-muted-foreground">
-                  <span>Acceptable donor groups: </span>
+                  <span>Acceptable groups: </span>
                   <span className="font-mono font-bold text-foreground">
                     {compatibleDonorsList.join(", ")}
                   </span>
@@ -525,7 +520,7 @@ export default function RequestDetailsContent({
               {/* Action Button */}
               {isOwner ? (
                 <div className="space-y-2">
-                  <div className="p-3 rounded-xl bg-muted text-center text-xs text-muted-foreground">
+                  <div className="p-3 rounded-xl bg-muted/60 text-center text-xs text-muted-foreground">
                     You are the creator of this requisition.
                   </div>
                   <Link href="/requests/manage" className="block">
@@ -542,13 +537,13 @@ export default function RequestDetailsContent({
                       <span>Response Registered</span>
                     </div>
                     <p className="text-[11px] opacity-90">
-                      Contact details have been revealed above.
+                      Contact details have been unlocked above.
                     </p>
                   </div>
                   <a href={`tel:${request.contactPhone}`} className="block">
                     <Button className="w-full bg-teal text-teal-foreground hover:bg-teal/90 text-xs font-semibold h-11 gap-2">
                       <PhoneCall className="h-4 w-4" />
-                      <span>Call Attendant Now</span>
+                      <span>Call Attendant</span>
                     </Button>
                   </a>
                 </div>
@@ -568,35 +563,35 @@ export default function RequestDetailsContent({
               )}
 
               {/* 3-Point Donor Readiness Checklist */}
-              <div className="space-y-3 pt-4 border-t border-border/70 text-xs">
+              <div className="space-y-3 pt-4 border-t border-border/60 text-xs">
                 <span className="font-mono font-semibold text-foreground block text-[11px] uppercase tracking-wider">
                   Donor Self-Screening
                 </span>
                 <ul className="space-y-2 text-muted-foreground text-[11px] leading-relaxed">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-3.5 w-3.5 text-teal mt-0.5 shrink-0" />
-                    <span>At least <strong>56 days</strong> since your last whole blood donation.</span>
+                    <span>At least <strong>56 days</strong> since last whole blood donation.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-3.5 w-3.5 text-teal mt-0.5 shrink-0" />
-                    <span>No active fever, flu symptoms, or acute medication.</span>
+                    <span>No active fever, infection symptoms, or acute medications.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-3.5 w-3.5 text-teal mt-0.5 shrink-0" />
-                    <span>Able to reach {request.hospitalName} within the timeline.</span>
+                    <span>Able to reach {request.hospitalName} within the needed window.</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* 24/7 Helpline Support Box */}
-            <div className="p-4 rounded-2xl border border-border bg-muted/20 space-y-2 text-xs text-muted-foreground">
+            <div className="p-4 rounded-2xl border border-border bg-muted/30 space-y-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5 font-semibold text-foreground">
                 <HelpCircle className="h-4 w-4 text-primary" />
                 <span>Need Coordination Support?</span>
               </div>
               <p className="text-[11px] leading-relaxed">
-                Our 24/7 volunteer escalation team is available for urgent transport or hospital coordination:
+                Our volunteer escalation team is available for urgent coordination assistance:
               </p>
               <a
                 href="tel:+8801700000000"
@@ -615,29 +610,29 @@ export default function RequestDetailsContent({
           <DialogHeader className="space-y-2">
             <div className="flex items-center gap-2 text-primary font-mono text-xs font-bold uppercase tracking-wider">
               <HeartHandshake className="h-4 w-4" />
-              <span>Confirm Volunteer Commitment</span>
+              <span>Confirm Commitment</span>
             </div>
             <DialogTitle className="font-heading text-xl font-bold text-foreground">
               Respond to {request.patientName}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
-              Confirm your willingness to donate at <strong>{request.hospitalName}</strong> in <strong>{request.district}</strong>.
+              Confirm your readiness to donate at <strong>{request.hospitalName}</strong> in <strong>{request.district}</strong>.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2 text-xs">
             {/* Summary Box */}
-            <div className="p-3.5 rounded-xl bg-muted/40 border border-border space-y-2">
+            <div className="p-3.5 rounded-xl bg-muted/40 border border-border/60 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Required Blood Group:</span>
+                <span className="text-muted-foreground">Blood Group:</span>
                 <span className="font-mono font-bold text-primary">{request.bloodGroup}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Quantity Needed:</span>
-                <span className="font-bold text-foreground">{request.unitsNeeded} Units</span>
+                <span className="text-muted-foreground">Required Units:</span>
+                <span className="font-bold text-foreground">{request.unitsNeeded} Bags</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Target Transfusion:</span>
+                <span className="text-muted-foreground">Transfusion Target:</span>
                 <span className="font-medium text-foreground">{getTimeLabel()}</span>
               </div>
             </div>
@@ -645,19 +640,19 @@ export default function RequestDetailsContent({
             {/* Attendant Note Field */}
             <div className="space-y-1.5">
               <label className="text-[11px] font-medium text-foreground block">
-                Message to Hospital Attendant (Optional):
+                Message to Attendant (Optional):
               </label>
               <input
                 type="text"
                 value={customMessage}
                 onChange={(e) => setCustomMessage(e.target.value)}
-                placeholder="e.g., I live near the hospital and can arrive in 30 minutes."
+                placeholder="e.g. I live nearby and can arrive within 30 minutes."
                 className="w-full h-10 px-3 rounded-lg bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
               />
             </div>
 
             <div className="p-3 rounded-lg bg-teal/10 border border-teal/20 text-teal text-[11px] leading-relaxed">
-              Upon confirming, the attendant&apos;s full phone number will be revealed, and they will receive an immediate in-app notification of your commitment.
+              Upon confirming, the attendant&apos;s phone number is unlocked and they receive an instant notification of your response.
             </div>
           </div>
 
