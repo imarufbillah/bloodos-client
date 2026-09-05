@@ -315,9 +315,10 @@ export default function RequestDetailsContent({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal hover:underline font-mono"
+                  aria-label={`View ${request.hospitalName} on Google Maps (opens in a new tab)`}
                 >
                   <span>Google Maps</span>
-                  <ExternalLink className="h-3.5 w-3.5" />
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                 </a>
               </div>
 
@@ -330,7 +331,7 @@ export default function RequestDetailsContent({
                 <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-1">
                   <span className="text-[11px] text-muted-foreground block font-medium">District</span>
                   <div className="flex items-center gap-1 font-semibold text-sm text-foreground">
-                    <MapPin className="h-3.5 w-3.5 text-teal shrink-0" />
+                    <MapPin className="h-3.5 w-3.5 text-teal shrink-0" aria-hidden="true" />
                     <span>{request.district}, Bangladesh</span>
                   </div>
                 </div>
@@ -348,9 +349,10 @@ export default function RequestDetailsContent({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full block"
+                aria-label={`Get directions to ${request.hospitalName} in Google Maps`}
               >
                 <Button variant="outline" className="w-full text-xs gap-2 font-semibold h-10">
-                  <Navigation className="h-4 w-4 text-teal" />
+                  <Navigation className="h-4 w-4 text-teal" aria-hidden="true" />
                   <span>Open Route in Google Maps</span>
                 </Button>
               </a>
@@ -360,7 +362,7 @@ export default function RequestDetailsContent({
             {request.additionalNotes && (
               <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-3 shadow-xs">
                 <div className="flex items-center gap-2 font-heading font-bold text-lg text-foreground">
-                  <FileText className="h-5 w-5 text-primary" />
+                  <FileText className="h-5 w-5 text-primary" aria-hidden="true" />
                   <span>Clinical Notes & Remarks</span>
                 </div>
                 <div className="p-4 rounded-xl bg-muted/40 border border-border/60 text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
@@ -372,7 +374,7 @@ export default function RequestDetailsContent({
             {/* Contact Safeguard & Verification Card */}
             <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-4 shadow-xs">
               <div className="flex items-center gap-2 font-heading font-bold text-lg text-foreground">
-                <Phone className="h-5 w-5 text-teal" />
+                <Phone className="h-5 w-5 text-teal" aria-hidden="true" />
                 <span>Contact Verification & Safeguards</span>
               </div>
 
@@ -387,15 +389,15 @@ export default function RequestDetailsContent({
                 </div>
 
                 {isOwner || hasResponded ? (
-                  <a href={`tel:${request.contactPhone}`}>
+                  <a href={`tel:${request.contactPhone}`} aria-label={`Call emergency attendant at ${request.contactPhone}`}>
                     <Button size="sm" className="bg-teal text-teal-foreground hover:bg-teal/90 gap-2 font-semibold">
-                      <PhoneCall className="h-4 w-4" />
+                      <PhoneCall className="h-4 w-4" aria-hidden="true" />
                       <span>Direct Call</span>
                     </Button>
                   </a>
                 ) : (
                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal/10 border border-teal/20 text-teal text-xs font-mono">
-                    <ShieldCheck className="h-4 w-4" />
+                    <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                     <span>Redacted for Privacy</span>
                   </div>
                 )}
@@ -484,7 +486,7 @@ export default function RequestDetailsContent({
                     <p className="text-[11px] text-muted-foreground">
                       Check your blood type compatibility:
                     </p>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1.5" role="group" aria-label="Select your blood group to test compatibility">
                       {Object.values(BLOOD_COMPATIBILITY).map((_, i) => {
                         const bgKey = Object.keys(BLOOD_COMPATIBILITY)[i] as BloodGroup;
                         return (
@@ -500,6 +502,8 @@ export default function RequestDetailsContent({
                                 ? "bg-primary text-primary-foreground"
                                 : "bg-card text-muted-foreground hover:bg-muted hover:text-foreground border border-border/70"
                             }`}
+                            aria-pressed={manualBloodGroup === bgKey}
+                            aria-label={`Test compatibility for blood group ${bgKey}`}
                           >
                             {bgKey}
                           </button>

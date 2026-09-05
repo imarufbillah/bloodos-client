@@ -73,13 +73,13 @@ export async function generateMetadata({ params }: PageProps) {
   try {
     const request = await fetchRequest(id);
     return {
-      title: `Emergency ${request.bloodGroup} Blood Request: ${request.patientName} | BloodOS`,
+      title: `Emergency ${request.bloodGroup} Blood Request: ${request.patientName} | BloodOS Bangladesh`,
       description:
-        `Urgent requisition for ${request.unitsNeeded} units of ${request.bloodGroup} blood at ${request.hospitalName}, ${request.district}. Respond directly to volunteer.`,
+        `Urgent requisition for ${request.unitsNeeded} ${request.unitsNeeded === 1 ? "bag" : "bags"} of ${request.bloodGroup} blood at ${request.hospitalName}, ${request.district}. Volunteer to donate.`,
     };
   } catch {
     return {
-      title: "Blood Donation Request Details | BloodOS",
+      title: "Blood Donation Request Details | BloodOS Bangladesh",
       description: "View verified emergency blood donation request details on BloodOS.",
     };
   }
