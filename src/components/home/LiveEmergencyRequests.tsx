@@ -7,12 +7,15 @@ import {
   Building2, 
   Clock, 
   ArrowRight, 
-  HeartHandshake
+  HeartHandshake,
+  WifiOff,
+  RefreshCw
 } from "lucide-react";
 import { BloodGroup, Urgency } from "@/types/shared";
 import { BloodGroupBadge } from "@/components/shared/BloodGroupBadge";
 import { UrgencyBadge } from "@/components/shared/UrgencyBadge";
 import { Button } from "@/components/ui/button";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
 interface BloodRequestItem {
   id: string;
@@ -78,46 +81,74 @@ const sampleUrgentRequests: BloodRequestItem[] = [
 
 export function LiveEmergencyRequests() {
   const [requests, setRequests] = React.useState<BloodRequestItem[]>(sampleUrgentRequests);
+  const [isOffline, setIsOffline] = React.useState<boolean>(false);
+  const [isReconnecting, setIsReconnecting] = React.useState<boolean>(false);
+
+  const fetchLiveRequests = React.useCallback(async (signal?: AbortSignal) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/requests?limit=4&urgency=critical`,
+        { signal }
+      );
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data: { requests?: ApiRequestPayload[] } = await res.json();
+      if (data && data.requests && data.requests.length > 0) {
+        const mapped: BloodRequestItem[] = data.requests.map((r) => ({
+          id: r.id || r._id || "req",
+          bloodGroup: r.bloodGroup,
+          unitsNeeded: r.unitsNeeded || 1,
+          hospitalName: r.hospitalName || "General Hospital",
+          district: r.district || "Dhaka",
+          urgency: r.urgency || Urgency.CRITICAL,
+          createdAt: r.createdAt
+            ? new Date(r.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+            : "Recently",
+        }));
+        setRequests(mapped);
+      }
+      setIsOffline(false);
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") return;
+      setIsOffline(true);
+      setRequests(sampleUrgentRequests);
+    } finally {
+      setIsReconnecting(false);
+    }
+  }, []);
 
   React.useEffect(() => {
     const controller = new AbortController();
+    fetchLiveRequests(controller.signal);
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/requests?limit=4&urgency=critical`, {
-      signal: controller.signal,
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch");
-        return res.json();
-      })
-      .then((data: { requests?: ApiRequestPayload[] }) => {
-        if (data && data.requests && data.requests.length > 0) {
-          const mapped: BloodRequestItem[] = data.requests.map((r) => ({
-            id: r.id || r._id || "req",
-            bloodGroup: r.bloodGroup,
-            unitsNeeded: r.unitsNeeded || 1,
-            hospitalName: r.hospitalName || "General Hospital",
-            district: r.district || "Dhaka",
-            urgency: r.urgency || Urgency.CRITICAL,
-            createdAt: r.createdAt ? new Date(r.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
-          }));
-          setRequests(mapped);
-        }
-      })
-      .catch((err) => {
-        if (err.name === "AbortError") return;
-        setRequests(sampleUrgentRequests);
-      });
+    const handleOnline = () => {
+      setIsReconnecting(true);
+      fetchLiveRequests();
+    };
+    const handleOffline = () => {
+      setIsOffline(true);
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
       controller.abort();
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
-  }, []);
+  }, [fetchLiveRequests]);
+
+  const handleManualReconnect = () => {
+    triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+    setIsReconnecting(true);
+    fetchLiveRequests();
+  };
 
   return (
     <section className="border-b border-border/80 bg-muted/20 py-16 sm:py-20">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
           <div className="space-y-1.5">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               Critical Emergency Requests
@@ -127,13 +158,44 @@ export function LiveEmergencyRequests() {
             </p>
           </div>
 
-          <Link href="/requests" className="shrink-0">
-            <Button variant="outline" size="sm" className="gap-2 font-medium border-border transition-all duration-150 active:scale-[0.98]">
-              <span>View All Requests</span>
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3 shrink-0">
+            <Link href="/requests">
+              <Button variant="outline" size="sm" className="gap-2 font-medium border-border transition-all duration-150 active:scale-[0.98]">
+                <span>View All Requests</span>
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
+
+        {/* Offline / Reconnect Banner Notification */}
+        {isOffline && (
+          <div 
+            role="status" 
+            aria-live="polite"
+            className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-xl border border-ochre/30 bg-ochre/10 px-4 py-3 text-xs text-foreground animate-in fade-in duration-200"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-ochre/20 text-ochre">
+                <WifiOff className="h-3.5 w-3.5" />
+              </span>
+              <div>
+                <span className="font-semibold">Offline Mode · Showing cached emergency records.</span>
+                <span className="text-muted-foreground hidden md:inline ml-1">Live updates paused until connection is restored.</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleManualReconnect}
+              disabled={isReconnecting}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-ochre/40 bg-card px-2.5 py-1 font-mono text-[11px] font-bold text-ochre hover:bg-ochre/15 transition-all duration-150 active:scale-95 disabled:opacity-50"
+            >
+              <RefreshCw className={`h-3 w-3 ${isReconnecting ? "animate-spin" : ""}`} />
+              <span>{isReconnecting ? "Reconnecting..." : "Reconnect"}</span>
+            </button>
+          </div>
+        )}
 
         {/* Requests Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
