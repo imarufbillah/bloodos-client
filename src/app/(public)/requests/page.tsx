@@ -1,13 +1,21 @@
 import { Suspense } from "react";
-import { RequestsGridSkeleton } from "@/components/shared/SkeletonLoaders";
+import { Metadata } from "next";
+import Loading from "./loading";
 import BrowseRequestsContent from "./BrowseRequestsContent";
 import type {
   BloodGroup,
   District,
   PaginatedResponse,
   BloodRequest,
+  Urgency,
+  SortOption,
 } from "@/types/shared";
-import type { Urgency, SortOption } from "@/components/shared/Filters";
+
+export const metadata: Metadata = {
+  title: "Live Emergency Blood Requests | BloodOS Bangladesh",
+  description:
+    "Real-time emergency blood requests feed across 64 districts in Bangladesh. Search by ABO/Rh blood group, district, and urgency level.",
+};
 
 /**
  * Fetch requests from backend - Server-side
@@ -40,21 +48,32 @@ async function fetchRequests(params: {
   if (params.page) queryParams.set("page", params.page.toString());
   if (params.limit) queryParams.set("limit", params.limit.toString());
 
-  // Use direct backend URL for server-side fetch (no rewrite needed on server)
   const API_BASE_URL =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
   const url = `${API_BASE_URL}/api/requests?${queryParams.toString()}`;
 
-  const response = await fetch(url, {
-    // Revalidate every 60 seconds
-    next: { revalidate: 60, tags: ["requests"] },
-  });
+  try {
+    const response = await fetch(url, {
+      next: { revalidate: 30, tags: ["requests"] },
+    });
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch requests: ${response.statusText}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch requests: ${response.statusText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching requests:", error);
+    return {
+      data: [],
+      page: 1,
+      limit: params.limit || 12,
+      totalPages: 0,
+      totalCount: 0,
+      hasNextPage: false,
+      hasPrevPage: false,
+    };
   }
-
-  return response.json();
 }
 
 type PageProps = {
@@ -68,10 +87,6 @@ type PageProps = {
   }>;
 };
 
-/**
- * Browse Requests Page Component (Server Component)
- * Fetches data on the server for better performance and SEO
- */
 export default async function BrowseRequestsPage({ searchParams }: PageProps) {
   const params = await searchParams;
 
@@ -107,7 +122,7 @@ export default async function BrowseRequestsPage({ searchParams }: PageProps) {
   });
 
   return (
-    <Suspense fallback={<RequestsGridSkeleton count={12} />}>
+    <Suspense fallback={<Loading />}>
       <BrowseRequestsContent
         initialData={data}
         initialFilters={{

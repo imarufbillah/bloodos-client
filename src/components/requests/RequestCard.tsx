@@ -1,229 +1,211 @@
+"use client";
+
+import * as React from "react";
 import Link from "next/link";
-import { type BloodRequest, Urgency } from "@/types/shared";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { type BloodRequest, type BloodGroup, Urgency } from "@/types/shared";
+import { useSession } from "@/lib/auth-client";
+import type { ExtendedUser } from "@/types/auth";
+import { isCompatible } from "@/lib/constants/compatibility";
 import {
-  Calendar,
   MapPin,
   Droplet,
   Hospital,
-  AlertCircle,
   Clock,
+  ArrowUpRight,
+  ShieldCheck,
+  HeartHandshake,
+  Navigation,
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, isPast, isToday, isTomorrow, format } from "date-fns";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
 interface RequestCardProps {
   request: BloodRequest;
-  /**
-   * Stagger index for card-fade-in animation
-   * Pass the array index when rendering in a grid
-   */
   staggerIndex?: number;
 }
 
 export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
+  const { data: session } = useSession();
+  const user = session?.user as ExtendedUser | undefined;
+
   const isCritical = request.urgency === Urgency.CRITICAL;
+  const isUrgent = request.urgency === Urgency.URGENT;
   const neededByDate = new Date(request.neededByDate);
-  const createdAt = new Date(request.createdAt);
-  const isExpiringSoon =
-    neededByDate.getTime() - Date.now() < 24 * 60 * 60 * 1000; // <24 hours
+  const isExpired = isPast(neededByDate);
 
-  // Format dates
-  const neededByFormatted = formatDistanceToNow(neededByDate, {
-    addSuffix: true,
-  });
-  const createdAtFormatted = formatDistanceToNow(createdAt, {
-    addSuffix: true,
-  });
+  // Time remaining calculation
+  const getTimeLabel = () => {
+    if (isExpired) return "Transfusion time passed";
+    if (isToday(neededByDate)) {
+      return `Needed Today • ${format(neededByDate, "h:mm a")}`;
+    }
+    if (isTomorrow(neededByDate)) {
+      return `Needed Tomorrow • ${format(neededByDate, "h:mm a")}`;
+    }
+    return `Needed ${formatDistanceToNow(neededByDate, { addSuffix: true })}`;
+  };
 
-  // Truncate description to 120 characters
-  const truncatedDescription = request.additionalNotes
-    ? request.additionalNotes.length > 120
-      ? `${request.additionalNotes.slice(0, 120)}...`
-      : request.additionalNotes
-    : "No additional notes provided.";
+  // Compatibility evaluation
+  const userBloodGroup = user?.bloodGroup as BloodGroup | undefined;
+  const userIsCompatible = userBloodGroup
+    ? isCompatible(userBloodGroup, request.bloodGroup)
+    : null;
+
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    `${request.hospitalName}, ${request.hospitalAddress || ""}, ${request.district}, Bangladesh`
+  )}`;
 
   return (
     <article
-      className="card-grid-item relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-crimson/40 focus-within:border-crimson focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
-      style={{ "--stagger-index": staggerIndex } as React.CSSProperties}
+      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-200 bg-card p-5 sm:p-6 shadow-xs hover:shadow-md ${
+        isCritical
+          ? "border-destructive/40 hover:border-destructive bg-destructive/[0.02]"
+          : isUrgent
+          ? "border-amber-500/30 hover:border-amber-500/60"
+          : "border-border hover:border-foreground/20"
+      }`}
+      style={{
+        animationDelay: `${Math.min(staggerIndex * 50, 400)}ms`,
+      }}
     >
-      {/* Critical pulse bar - signature element */}
-      {isCritical && <div className="critical-pulse-bar" aria-hidden="true" />}
+      {/* Critical STAT Aura Bar */}
+      {isCritical && (
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-destructive via-destructive/80 to-destructive" />
+      )}
 
-      {/* Card Content */}
-      <div className="flex flex-1 flex-col gap-2.5 p-4">
-        {/* Header: Kicker + Urgency Badge */}
+      {/* Top Header Row: Blood Group, Urgency Tier, Time Countdown */}
+      <div className="space-y-4">
         <div className="flex items-start justify-between gap-3">
-          {/* Kicker: Blood Group + District */}
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Droplet className="h-3.5 w-3.5 text-crimson" aria-hidden="true" />
-            <span className="font-mono font-medium tabular-data">
-              {request.bloodGroup}
-            </span>
-            <span aria-hidden="true">•</span>
-            <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>{request.district}</span>
+          {/* Blood Group Hero Badge */}
+          <div className="flex items-center gap-3">
+            <div
+              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl font-heading text-lg font-bold shadow-xs transition-transform duration-200 group-hover:scale-105 ${
+                isCritical
+                  ? "bg-destructive text-destructive-foreground"
+                  : "bg-primary text-primary-foreground"
+              }`}
+            >
+              <span>{request.bloodGroup}</span>
+            </div>
+
+            <div className="space-y-0.5">
+              <span className="font-mono text-xs font-semibold text-foreground">
+                {request.unitsNeeded} {request.unitsNeeded === 1 ? "Unit" : "Units"} Required
+              </span>
+              <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
+                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className={isCritical ? "font-semibold text-destructive" : ""}>
+                  {getTimeLabel()}
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Urgency Badge - top-right */}
-          <UrgencyBadge urgency={request.urgency} />
-        </div>
-
-        {/* Patient Name - Fraunces heading */}
-        <h3 className="font-heading text-base font-semibold leading-tight tracking-tight text-foreground">
-          {request.patientName}
-        </h3>
-
-        {/* Hospital Info */}
-        <div className="flex items-start gap-2 text-sm text-muted-foreground">
-          <Hospital className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-          <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-foreground">
-              {request.hospitalName}
-            </span>
-            <span className="text-xs">{request.hospitalAddress}</span>
-          </div>
-        </div>
-
-        {/* Units Needed */}
-        <div className="flex items-center gap-2 text-sm">
-          <Droplet className="h-4 w-4 text-crimson" aria-hidden="true" />
-          <span className="text-muted-foreground">
-            <span className="font-medium tabular-data text-foreground">
-              {request.unitsNeeded}
-            </span>{" "}
-            {request.unitsNeeded === 1 ? "unit" : "units"} needed
-          </span>
-        </div>
-
-        {/* Needed By Date */}
-        <div className="flex items-center gap-2 text-sm">
-          {isExpiringSoon ? (
-            <AlertCircle
-              className="h-4 w-4 text-ochre"
-              aria-hidden="true"
-              aria-label="Expiring soon"
-            />
-          ) : (
-            <Calendar className="h-4 w-4" aria-hidden="true" />
-          )}
-          <span
-            className={
-              isExpiringSoon
-                ? "font-medium text-ochre"
-                : "text-muted-foreground"
-            }
+          {/* Urgency Badge */}
+          <div
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
+              isCritical
+                ? "bg-destructive/10 text-destructive border border-destructive/20"
+                : isUrgent
+                ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                : "bg-teal/10 text-teal border border-teal/20"
+            }`}
           >
-            Needed {neededByFormatted}
-          </span>
+            {isCritical && (
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-destructive" />
+              </span>
+            )}
+            <span>{request.urgency.toUpperCase()}</span>
+          </div>
         </div>
 
-        {/* Description - truncated */}
-        {request.additionalNotes && (
-          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-            {truncatedDescription}
-          </p>
+        {/* Patient & Hospital Info */}
+        <div className="space-y-2 pt-1 border-t border-border/60">
+          <div className="flex items-baseline justify-between gap-2">
+            <h3 className="font-heading text-base sm:text-lg font-bold text-foreground leading-snug group-hover:text-primary transition-colors">
+              <Link href={`/requests/${request._id}`} className="hover:underline focus-visible:outline-none">
+                {request.patientName}
+              </Link>
+            </h3>
+            <span className="text-[11px] font-mono text-muted-foreground shrink-0">
+              {request.district}
+            </span>
+          </div>
+
+          <div className="flex items-start gap-2 text-xs text-muted-foreground leading-relaxed">
+            <Hospital className="h-4 w-4 shrink-0 text-muted-foreground mt-0.5" />
+            <div className="min-w-0">
+              <p className="font-medium text-foreground truncate">{request.hospitalName}</p>
+              {request.hospitalAddress && (
+                <p className="text-[11px] text-muted-foreground truncate">{request.hospitalAddress}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Additional Clinical Notes */}
+          {request.additionalNotes && (
+            <p className="text-xs text-muted-foreground line-clamp-2 italic pt-1">
+              &ldquo;{request.additionalNotes}&rdquo;
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Footer Area: Compatibility Match + Action Button */}
+      <div className="space-y-3 pt-4 mt-4 border-t border-border/60">
+        {/* Compatibility Match Tag (if logged in with blood group) */}
+        {userBloodGroup && (
+          <div
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium ${
+              userIsCompatible
+                ? "bg-teal/10 text-teal border border-teal/20"
+                : "bg-muted text-muted-foreground"
+            }`}
+          >
+            <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
+            <span>
+              {userIsCompatible
+                ? `Compatible with your ${userBloodGroup} profile`
+                : `Incompatible with ${userBloodGroup}`}
+            </span>
+          </div>
         )}
 
-        {/* Status Badge */}
-        <div className="mt-auto pt-2">
-          <StatusBadge status={request.status} />
-        </div>
-
-        {/* Footer: Created time + CTA */}
-        <div className="flex items-center justify-between gap-3 pt-2 border-t border-border">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>Posted {createdAtFormatted}</span>
-          </div>
-
-          {/* View Details CTA */}
-          <Link href={`/requests/${request._id}`}>
-            <Button size="sm">View Details</Button>
+        {/* Action Row */}
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/requests/${request._id}`}
+            onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
+            className="flex-1"
+          >
+            <button
+              type="button"
+              className={`w-full h-10 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all duration-150 active:scale-[0.98] cursor-pointer ${
+                isCritical
+                  ? "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-xs"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs"
+              }`}
+            >
+              <HeartHandshake className="h-4 w-4" />
+              <span>Respond • I Can Help</span>
+            </button>
           </Link>
+
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
+            className="h-10 w-10 shrink-0 rounded-xl border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+            aria-label={`Get directions to ${request.hospitalName}`}
+            title="Google Maps Route"
+          >
+            <Navigation className="h-4 w-4" />
+          </a>
         </div>
       </div>
     </article>
-  );
-}
-
-// ============================================================================
-// Inline Badge Components (will be extracted to 7h)
-// ============================================================================
-
-function UrgencyBadge({ urgency }: { urgency: string }) {
-  const variants = {
-    critical: {
-      className: "bg-crimson text-paper border-crimson",
-      icon: AlertCircle,
-      label: "Critical",
-    },
-    urgent: {
-      className: "bg-ochre text-ink border-ochre",
-      icon: Clock,
-      label: "Urgent",
-    },
-    moderate: {
-      className: "border-slate text-slate bg-transparent",
-      icon: Clock,
-      label: "Moderate",
-    },
-  };
-
-  const variant =
-    variants[urgency as keyof typeof variants] || variants.moderate;
-  const Icon = variant.icon;
-
-  return (
-    <Badge
-      variant="outline"
-      className={`flex items-center gap-1 text-xs font-medium ${variant.className}`}
-    >
-      <Icon className="h-3 w-3" aria-hidden="true" />
-      <span>{variant.label}</span>
-    </Badge>
-  );
-}
-
-/**
- * StatusBadge - text-only label for request status
- * Uses ink-on-paper, no urgency color channel
- */
-function StatusBadge({ status }: { status: string }) {
-  const statusLabels = {
-    open: "Open",
-    in_progress: "In Progress",
-    fulfilled: "Fulfilled",
-    cancelled: "Cancelled",
-    expired: "Expired",
-  };
-
-  const statusColors = {
-    open: "text-teal",
-    in_progress: "text-ochre",
-    fulfilled: "text-teal",
-    cancelled: "text-muted-foreground",
-    expired: "text-muted-foreground",
-  };
-
-  const label = statusLabels[status as keyof typeof statusLabels] || status;
-  const colorClass =
-    statusColors[status as keyof typeof statusColors] || "text-foreground";
-
-  return (
-    <div className="inline-flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5">
-      <div
-        className={`h-1.5 w-1.5 rounded-full ${
-          status === "open" || status === "in_progress"
-            ? "bg-teal"
-            : status === "fulfilled"
-              ? "bg-teal/50"
-              : "bg-muted-foreground/40"
-        }`}
-        aria-hidden="true"
-      />
-      <span className={`text-[11px] font-medium ${colorClass}`}>{label}</span>
-    </div>
   );
 }
