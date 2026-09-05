@@ -10,7 +10,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
  */
 async function fetchRequest(id: string): Promise<BloodRequest> {
   const response = await fetch(`${API_BASE_URL}/api/requests/${id}`, {
-    next: { revalidate: 60 }, // Revalidate every minute
+    next: { revalidate: 30 },
   });
 
   if (!response.ok) {
@@ -27,13 +27,8 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-/**
- * Request Details Page Component
- */
 export default async function RequestDetailsPage({ params }: PageProps) {
   const { id } = await params;
-
-  // Fetch request data (server-side)
   const request = await fetchRequest(id);
 
   return (
@@ -43,25 +38,28 @@ export default async function RequestDetailsPage({ params }: PageProps) {
   );
 }
 
-/**
- * Loading skeleton for request details
- */
 function RequestDetailsSkeleton() {
   return (
-    <div className="min-h-[calc(100dvh-4rem)] bg-background">
-      <div className="container mx-auto max-w-7xl px-4 py-8">
-        <div className="space-y-8 animate-pulse">
-          {/* Overview Skeleton */}
-          <div className="h-48 bg-muted rounded-lg" />
+    <div className="w-full min-h-[calc(100dvh-4rem)] flex flex-col bg-background pb-24 sm:pb-16">
+      {/* Sub-nav Skeleton */}
+      <div className="border-b border-border bg-card/60 py-3">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+          <div className="h-4 w-40 bg-muted animate-pulse rounded" />
+          <div className="h-8 w-20 bg-muted animate-pulse rounded-lg" />
+        </div>
+      </div>
 
-          {/* Sections Skeleton */}
-          <div className="space-y-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="space-y-3">
-                <div className="h-6 bg-muted rounded w-1/4" />
-                <div className="h-20 bg-muted rounded" />
-              </div>
-            ))}
+      {/* Main 2-Col Grid Skeleton */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10 flex-1">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          <div className="lg:col-span-8 space-y-8">
+            <div className="h-72 rounded-2xl bg-muted animate-pulse" />
+            <div className="h-56 rounded-2xl bg-muted animate-pulse" />
+            <div className="h-40 rounded-2xl bg-muted animate-pulse" />
+          </div>
+          <div className="lg:col-span-4 space-y-6">
+            <div className="h-96 rounded-2xl bg-muted animate-pulse" />
+            <div className="h-32 rounded-2xl bg-muted animate-pulse" />
           </div>
         </div>
       </div>
@@ -69,26 +67,20 @@ function RequestDetailsSkeleton() {
   );
 }
 
-/**
- * Generate metadata for SEO
- */
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
 
   try {
     const request = await fetchRequest(id);
     return {
-      title: `${request.patientName} needs ${request.bloodGroup} blood - BloodOS`,
+      title: `Emergency ${request.bloodGroup} Blood Request: ${request.patientName} | BloodOS`,
       description:
-        `${request.urgency} blood request for ${request.unitsNeeded} units of ${request.bloodGroup} blood at ${request.hospitalName}, ${request.district}. ${request.additionalNotes || ""}`.slice(
-          0,
-          160,
-        ),
+        `Urgent requisition for ${request.unitsNeeded} units of ${request.bloodGroup} blood at ${request.hospitalName}, ${request.district}. Respond directly to volunteer.`,
     };
   } catch {
     return {
-      title: "Request Details - BloodOS",
-      description: "View blood donation request details",
+      title: "Blood Donation Request Details | BloodOS",
+      description: "View verified emergency blood donation request details on BloodOS.",
     };
   }
 }
