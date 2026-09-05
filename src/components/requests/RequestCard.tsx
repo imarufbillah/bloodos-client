@@ -7,11 +7,8 @@ import { useSession } from "@/lib/auth-client";
 import type { ExtendedUser } from "@/types/auth";
 import { isCompatible } from "@/lib/constants/compatibility";
 import {
-  MapPin,
-  Droplet,
   Hospital,
   Clock,
-  ArrowUpRight,
   ShieldCheck,
   HeartHandshake,
   Navigation,
@@ -35,14 +32,14 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
 
   // Time remaining calculation
   const getTimeLabel = () => {
-    if (isExpired) return "Transfusion time passed";
+    if (isExpired) return "Transfusion window passed";
     if (isToday(neededByDate)) {
-      return `Needed Today • ${format(neededByDate, "h:mm a")}`;
+      return `Today • ${format(neededByDate, "h:mm a")}`;
     }
     if (isTomorrow(neededByDate)) {
-      return `Needed Tomorrow • ${format(neededByDate, "h:mm a")}`;
+      return `Tomorrow • ${format(neededByDate, "h:mm a")}`;
     }
-    return `Needed ${formatDistanceToNow(neededByDate, { addSuffix: true })}`;
+    return format(neededByDate, "MMM d • h:mm a");
   };
 
   // Compatibility evaluation
@@ -70,11 +67,11 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
     >
       {/* Critical STAT Aura Bar */}
       {isCritical && (
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-destructive via-destructive/80 to-destructive" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-destructive" />
       )}
 
       {/* Top Header Row: Blood Group, Urgency Tier, Time Countdown */}
-      <div className="space-y-4">
+      <div className="space-y-3.5">
         <div className="flex items-start justify-between gap-3">
           {/* Blood Group Hero Badge */}
           <div className="flex items-center gap-3">
@@ -90,10 +87,10 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
 
             <div className="space-y-0.5">
               <span className="font-mono text-xs font-semibold text-foreground">
-                {request.unitsNeeded} {request.unitsNeeded === 1 ? "Unit" : "Units"} Required
+                {request.unitsNeeded} {request.unitsNeeded === 1 ? "Bag" : "Bags"} Needed
               </span>
               <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
-                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                 <span className={isCritical ? "font-semibold text-destructive" : ""}>
                   {getTimeLabel()}
                 </span>
@@ -146,7 +143,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
 
           {/* Additional Clinical Notes */}
           {request.additionalNotes && (
-            <p className="text-xs text-muted-foreground line-clamp-2 italic pt-1">
+            <p className="text-xs text-muted-foreground line-clamp-2 italic pt-0.5">
               &ldquo;{request.additionalNotes}&rdquo;
             </p>
           )}
@@ -154,20 +151,20 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
       </div>
 
       {/* Footer Area: Compatibility Match + Action Button */}
-      <div className="space-y-3 pt-4 mt-4 border-t border-border/60">
+      <div className="space-y-2.5 pt-3.5 mt-3.5 border-t border-border/60">
         {/* Compatibility Match Tag (if logged in with blood group) */}
         {userBloodGroup && (
           <div
             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium ${
               userIsCompatible
                 ? "bg-teal/10 text-teal border border-teal/20"
-                : "bg-muted text-muted-foreground"
+                : "bg-muted/60 text-muted-foreground"
             }`}
           >
             <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
             <span>
               {userIsCompatible
-                ? `Compatible with your ${userBloodGroup} profile`
+                ? `Matched for your ${userBloodGroup} profile`
                 : `Incompatible with ${userBloodGroup}`}
             </span>
           </div>
@@ -178,19 +175,14 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
           <Link
             href={`/requests/${request._id}`}
             onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
-            className="flex-1"
+            className={`flex-1 h-10 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all duration-150 active:scale-[0.98] ${
+              isCritical
+                ? "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-xs"
+                : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs"
+            }`}
           >
-            <button
-              type="button"
-              className={`w-full h-10 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all duration-150 active:scale-[0.98] cursor-pointer ${
-                isCritical
-                  ? "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-xs"
-                  : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs"
-              }`}
-            >
-              <HeartHandshake className="h-4 w-4" />
-              <span>Respond • I Can Help</span>
-            </button>
+            <HeartHandshake className="h-4 w-4" />
+            <span>Respond • I Can Help</span>
           </Link>
 
           <a
