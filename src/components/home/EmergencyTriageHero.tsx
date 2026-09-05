@@ -16,6 +16,7 @@ import {
 import { BloodGroup, BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
 import { DISTRICTS } from "@/lib/constants/districts";
 import { Button } from "@/components/ui/button";
+import { EmergencyRadarCanvas } from "./EmergencyRadarCanvas";
 
 interface EmergencyTriageHeroProps {
   stats: {
@@ -58,18 +59,16 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
 
   return (
     <section className="relative min-h-dvh flex items-center overflow-hidden border-b border-border/80 bg-background pt-20 pb-12 sm:pt-24 sm:pb-16 lg:pt-28 lg:pb-20">
-      {/* Subtle coordinate grid & background triage aura */}
-      <div 
-        className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
-        style={{
-          backgroundImage: "radial-gradient(var(--foreground) 1px, transparent 1px)",
-          backgroundSize: "24px 24px"
-        }}
-        aria-hidden="true"
+      {/* Interactive GPU-Accelerated Bangladesh Dispatch Radar Mesh */}
+      <EmergencyRadarCanvas 
+        selectedDistrict={selectedDistrict || districtSearch}
+        selectedBloodGroup={selectedBloodGroup}
       />
+
+      {/* Subtle ambient light aura */}
       <div 
         className="pointer-events-none absolute top-0 left-1/2 h-[500px] w-[900px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-crimson/8 blur-[130px]" 
-        aria-hidden="true"
+        aria-hidden="true" 
       />
 
       <div className="container relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">

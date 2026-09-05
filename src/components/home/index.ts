@@ -5,3 +5,4 @@ export * from "./CompatibilityMatrixExplorer";
 export * from "./CoverageAndImpact";
 export * from "./CoordinationProtocol";
 export * from "./VolunteerCallToAction";
+export * from "./EmergencyRadarCanvas";
