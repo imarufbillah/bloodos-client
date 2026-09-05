@@ -102,14 +102,14 @@ export function EmergencyRadarCanvas({
       }
 
       const isDarkMode = document.documentElement.classList.contains("dark");
-      const gridColor = isDarkMode ? "rgba(255, 255, 255, 0.025)" : "rgba(30, 20, 40, 0.025)";
-      const lineColor = isDarkMode ? "rgba(230, 50, 70, 0.12)" : "rgba(200, 30, 50, 0.08)";
-      const activeLineColor = isDarkMode ? "rgba(230, 50, 70, 0.4)" : "rgba(200, 30, 50, 0.3)";
-      const beaconColor = isDarkMode ? "rgba(240, 60, 80, 0.85)" : "rgba(210, 35, 55, 0.85)";
-      const tealColor = isDarkMode ? "rgba(60, 200, 180, 0.8)" : "rgba(20, 140, 120, 0.8)";
+      const gridColor = isDarkMode ? "rgba(255, 255, 255, 0.012)" : "rgba(30, 20, 40, 0.012)";
+      const lineColor = isDarkMode ? "rgba(230, 50, 70, 0.04)" : "rgba(200, 30, 50, 0.03)";
+      const activeLineColor = isDarkMode ? "rgba(230, 50, 70, 0.2)" : "rgba(200, 30, 50, 0.15)";
+      const beaconColor = isDarkMode ? "rgba(240, 60, 80, 0.65)" : "rgba(210, 35, 55, 0.65)";
+      const tealColor = isDarkMode ? "rgba(60, 200, 180, 0.5)" : "rgba(20, 140, 120, 0.5)";
 
       // Draw subtle telemetry coordinate grid lines
-      const gridSize = 48;
+      const gridSize = 56;
       ctx.beginPath();
       ctx.strokeStyle = gridColor;
       ctx.lineWidth = 1;
@@ -154,7 +154,7 @@ export function EmergencyRadarCanvas({
             const isHighPriority = n1.isMatchedDistrict || n2.isMatchedDistrict || Boolean(selectedBloodGroup);
             ctx.beginPath();
             ctx.strokeStyle = isHighPriority ? activeLineColor : lineColor;
-            ctx.lineWidth = isHighPriority ? 1.5 : 0.8;
+            ctx.lineWidth = isHighPriority ? 1 : 0.6;
             ctx.moveTo(n1.screenX, n1.screenY);
             ctx.lineTo(n2.screenX, n2.screenY);
             ctx.stroke();
@@ -170,11 +170,11 @@ export function EmergencyRadarCanvas({
           const dx = node.screenX - mx;
           const dy = node.screenY - my;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 160) {
-            const alpha = (1 - dist / 160) * 0.25;
+          if (dist < 140) {
+            const alpha = (1 - dist / 140) * 0.12;
             ctx.beginPath();
             ctx.strokeStyle = `rgba(230, 50, 70, ${alpha})`;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 0.8;
             ctx.moveTo(node.screenX, node.screenY);
             ctx.lineTo(mx, my);
             ctx.stroke();
@@ -190,29 +190,29 @@ export function EmergencyRadarCanvas({
         }
 
         const isHighlighted = node.isMatchedDistrict || (selectedBloodGroup && node.isMajor);
-        const radius = isHighlighted ? node.baseRadius * 1.5 : node.baseRadius;
+        const radius = isHighlighted ? node.baseRadius * 1.2 : node.baseRadius * 0.8;
 
         // Outer beacon wave
         if (!prefersReducedMotion) {
-          const waveRadius = radius + (Math.sin(node.pulsePhase) + 1) * 8;
-          const waveOpacity = 0.5 * (1 - (waveRadius - radius) / 16);
+          const waveRadius = radius + (Math.sin(node.pulsePhase) + 1) * 6;
+          const waveOpacity = 0.25 * (1 - (waveRadius - radius) / 14);
           ctx.beginPath();
           ctx.arc(node.screenX, node.screenY, waveRadius, 0, Math.PI * 2);
-          ctx.strokeStyle = isHighlighted ? `rgba(230, 50, 70, ${waveOpacity})` : `rgba(60, 200, 180, ${waveOpacity * 0.6})`;
-          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = isHighlighted ? `rgba(230, 50, 70, ${waveOpacity})` : `rgba(60, 200, 180, ${waveOpacity * 0.4})`;
+          ctx.lineWidth = 0.8;
           ctx.stroke();
         }
 
         // Core Node
         ctx.beginPath();
         ctx.arc(node.screenX, node.screenY, radius, 0, Math.PI * 2);
-        ctx.fillStyle = isHighlighted ? beaconColor : node.isMajor ? tealColor : isDarkMode ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.3)";
+        ctx.fillStyle = isHighlighted ? beaconColor : node.isMajor ? tealColor : isDarkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.15)";
         ctx.fill();
 
-        // Node targeting label on highlight or major hubs
-        if (isHighlighted || (node.isMajor && width > 640)) {
-          ctx.font = `600 ${isHighlighted ? "10px" : "9px"} monospace`;
-          ctx.fillStyle = isHighlighted ? beaconColor : isDarkMode ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)";
+        // Node targeting label on active highlight
+        if (isHighlighted) {
+          ctx.font = `600 9px monospace`;
+          ctx.fillStyle = beaconColor;
           ctx.fillText(node.name.toUpperCase(), node.screenX + radius + 4, node.screenY + 3);
         }
 

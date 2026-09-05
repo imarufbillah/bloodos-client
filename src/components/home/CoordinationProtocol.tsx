@@ -55,7 +55,7 @@ export function CoordinationProtocol() {
             <Droplet className="h-3.5 w-3.5" />
             <span>DIRECT COORDINATION PROTOCOL</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
             How BloodOS Protects & Accelerates Transfusions
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">

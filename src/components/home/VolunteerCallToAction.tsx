@@ -24,7 +24,7 @@ export function VolunteerCallToAction() {
               <span>BECOME A REGISTERED DONOR</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-[1.12]">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground leading-[1.14]">
               One donation can save up to <span className="text-crimson">3 lives</span>.
             </h2>
 

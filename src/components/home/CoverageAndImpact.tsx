@@ -34,7 +34,7 @@ export function CoverageAndImpact() {
               <MapPin className="h-3.5 w-3.5" />
               <span>NATIONWIDE EMERGENCY COVERAGE</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
               64 Districts. 8 Divisions. 1 Unified Network.
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground max-w-xl leading-relaxed">

@@ -85,7 +85,7 @@ export function CompatibilityMatrixExplorer() {
             <Droplet className="h-3.5 w-3.5" />
             <span>MEDICAL COMPATIBILITY & COOLDOWN RULES</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
             Blood Compatibility & Eligibility Engine
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">

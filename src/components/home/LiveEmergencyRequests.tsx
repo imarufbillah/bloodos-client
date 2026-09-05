@@ -112,14 +112,13 @@ export function LiveEmergencyRequests() {
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-crimson opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-crimson" />
+                <span className="inline-flex h-2 w-2 rounded-full bg-crimson" />
               </span>
               <span className="font-mono text-xs font-semibold uppercase tracking-wider text-crimson">
                 Real-Time Hospital Dispatch
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               Critical Emergency Requests
             </h2>
             <p className="text-sm text-muted-foreground max-w-lg">

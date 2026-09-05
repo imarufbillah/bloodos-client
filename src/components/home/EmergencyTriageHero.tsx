@@ -74,16 +74,15 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
       <div className="container relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
         {/* Live Network Status Indicator */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 animate-triage-1">
-          <div className="inline-flex items-center gap-2 rounded-full border border-crimson/25 bg-crimson/5 px-3.5 py-1 text-xs font-semibold text-crimson">
+          <div className="inline-flex items-center gap-2 rounded-full border border-crimson/20 bg-crimson/5 px-3 py-1 text-xs font-semibold text-crimson">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-crimson opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-crimson" />
+              <span className="inline-flex h-2 w-2 rounded-full bg-crimson" />
             </span>
             <span>NATIONAL EMERGENCY BLOOD DISPATCH • BANGLADESH</span>
           </div>
 
           <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-muted-foreground">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal animate-pulse" />
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal" />
             <span>64 DISTRICT COORDINATION ACTIVE</span>
           </div>
         </div>
@@ -93,11 +92,11 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
           {/* Left Column: Direct Hook & Crisis Positioning */}
           <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center space-y-6">
             <div className="space-y-4 animate-triage-2">
-              <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.06]">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight text-foreground leading-[1.08]">
                 Minutes save lives. <br />
                 <span className="text-crimson">Direct blood triage</span> for Bangladesh.
               </h1>
-              <p className="max-w-2xl text-base text-muted-foreground sm:text-lg lg:text-xl leading-relaxed">
+              <p className="max-w-2xl text-base text-muted-foreground sm:text-lg leading-relaxed">
                 Connect patients in critical care with verified, cooldown-eligible volunteer donors across all 64 districts in real time. Zero broker delays, zero phone spam.
               </p>
             </div>
@@ -107,9 +106,9 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               <Link href="/requests/add" className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
-                  className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold shadow-md shadow-crimson/20 gap-2.5 h-12 px-7 text-base transition-all duration-150 active:scale-[0.98]"
+                  className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold shadow-sm gap-2 h-11 px-6 text-sm transition-all duration-150 active:scale-[0.98]"
                 >
-                  <AlertCircle className="h-5 w-5 shrink-0" />
+                  <AlertCircle className="h-4 w-4 shrink-0" />
                   <span>Post Emergency Request</span>
                   <ArrowRight className="h-4 w-4 shrink-0 opacity-80" />
                 </Button>
@@ -118,7 +117,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="w-full sm:w-auto border-border hover:bg-muted font-medium h-12 px-7 text-base gap-2 transition-all duration-150 active:scale-[0.98]"
+                  className="w-full sm:w-auto border-border hover:bg-muted font-medium h-11 px-6 text-sm gap-2 transition-all duration-150 active:scale-[0.98]"
                 >
                   <Activity className="h-4 w-4 text-crimson" />
                   <span>View Live Urgent Feed</span>
@@ -129,7 +128,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
             {/* Real-time Triage Stat Metrics */}
             <div className="pt-6 border-t border-border/70 grid grid-cols-2 sm:grid-cols-4 gap-6 animate-triage-4">
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-crimson tabular-nums transition-transform duration-200 hover:scale-105">
+                <div className="text-2xl sm:text-3xl font-bold text-crimson tabular-nums">
                   {isLoadingStats ? "—" : stats?.activeRequests ?? 0}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -138,7 +137,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               </div>
 
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tabular-nums transition-transform duration-200 hover:scale-105">
+                <div className="text-2xl sm:text-3xl font-bold text-foreground tabular-nums">
                   {isLoadingStats ? "—" : `${stats?.totalDonors ?? 0}+`}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -147,7 +146,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               </div>
 
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-teal tabular-nums transition-transform duration-200 hover:scale-105">
+                <div className="text-2xl sm:text-3xl font-bold text-teal tabular-nums">
                   {isLoadingStats ? "—" : `${stats?.fulfilledRequests ?? 0}+`}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -156,7 +155,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               </div>
 
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tabular-nums transition-transform duration-200 hover:scale-105">
+                <div className="text-2xl sm:text-3xl font-bold text-foreground tabular-nums">
                   64
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -168,11 +167,11 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
 
           {/* Right Column: Interactive Emergency Triage Console */}
           <div className="lg:col-span-5 xl:col-span-5 animate-triage-3">
-            <div className="rounded-2xl border-2 border-border/80 bg-card p-6 sm:p-7 shadow-xl shadow-foreground/5 relative overflow-hidden transition-all duration-200 hover:border-border/90 before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-linear-to-r before:from-crimson before:via-crimson/80 before:to-teal">
+            <div className="rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm relative transition-all duration-200">
               <div className="flex items-center justify-between border-b border-border/80 pb-4 mb-5">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-crimson/10 text-crimson ring-1 ring-crimson/20">
-                    <Droplet className="h-5 w-5 fill-crimson/20" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-crimson/10 text-crimson">
+                    <Droplet className="h-4 w-4 fill-crimson/20" />
                   </div>
                   <div>
                     <h2 className="text-sm font-bold text-foreground">Instant Triage Console</h2>
