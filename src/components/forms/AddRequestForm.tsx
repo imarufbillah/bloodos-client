@@ -563,12 +563,13 @@ export function AddRequestForm() {
               {/* Contact Phone */}
               <div className="space-y-2">
                 <Label htmlFor="contact-phone" className="text-xs font-mono font-semibold uppercase text-foreground">
-                  Emergency Coordinator Phone *
+                  Emergency Attendant Mobile Number *
                 </Label>
                 <Input
                   id="contact-phone"
                   type="tel"
-                  placeholder="01XXXXXXXXX"
+                  placeholder="01712345678"
+                  maxLength={11}
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
                   disabled={isSubmitting}
@@ -579,7 +580,7 @@ export function AddRequestForm() {
                 ) : (
                   <p className="text-[11px] font-mono text-muted-foreground flex items-center gap-1">
                     <ShieldCheck className="h-3 w-3 text-teal" />
-                    <span>Masked as {maskedPhone} until mutual volunteer acceptance.</span>
+                    <span>Protected as {maskedPhone} until a volunteer confirms readiness to donate.</span>
                   </p>
                 )}
               </div>
@@ -587,11 +588,11 @@ export function AddRequestForm() {
               {/* Additional Notes */}
               <div className="space-y-2">
                 <Label htmlFor="additional-notes" className="text-xs font-mono font-semibold uppercase text-foreground">
-                  Medical Context & Special Notes (Optional)
+                  Clinical Context & Transfusion Notes (Optional)
                 </Label>
                 <Textarea
                   id="additional-notes"
-                  placeholder="e.g. Emergency blood transfusion required for urgent C-Section surgery. Family will arrange transport if needed."
+                  placeholder="e.g. Emergency blood transfusion required for urgent surgery. Cross-matching done, patient in ICU Bed 4."
                   value={additionalNotes}
                   onChange={(e) => setAdditionalNotes(e.target.value)}
                   disabled={isSubmitting}

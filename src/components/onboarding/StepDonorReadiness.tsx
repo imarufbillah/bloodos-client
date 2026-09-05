@@ -154,7 +154,7 @@ export function StepDonorReadiness({
               className="text-xs font-semibold uppercase tracking-wider text-foreground font-mono flex items-center gap-1.5"
             >
               <Calendar className="h-3.5 w-3.5 text-crimson" />
-              <span>Last Whole Blood Donation Date</span>
+              <span>Last Whole Blood Donation Date (56-Day Cooldown Rule)</span>
             </Label>
             <span className="text-[10px] font-mono text-muted-foreground">
               Optional

@@ -489,7 +489,7 @@ export function RequestsModerationTable({
             </div>
 
             <p className="text-sm text-muted-foreground">
-              The requester will receive an automated notification with this rejection reason.
+              The requester will receive an automated notification containing this rejection rationale.
             </p>
 
             {/* Quick Reason Chips */}

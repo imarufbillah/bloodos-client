@@ -107,7 +107,7 @@ export function AdminSlideOverInspector({
             </div>
             <div>
               <p className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
-                {item.type === "request" ? "Emergency Incident" : "User Account"}
+                {item.type === "request" ? "Transfusion Dispatch Case" : "User Account"}
               </p>
               <h2 className="font-heading text-base font-bold text-foreground">
                 {item.type === "request" ? item.data.patientName : item.data.name}

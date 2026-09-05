@@ -25,7 +25,10 @@ export const createRequestSchema = z.object({
     })
     .int("Units must be a whole number")
     .min(1, "At least 1 unit is required")
-    .max(10, "Cannot request more than 10 units"),
+    .max(
+      10,
+      "Maximum 10 units per emergency broadcast. For larger volumes, coordinate directly with hospital blood banks.",
+    ),
 
   // Location Information
   hospitalName: z
@@ -36,7 +39,10 @@ export const createRequestSchema = z.object({
 
   hospitalAddress: z
     .string()
-    .min(10, "Hospital address must be at least 10 characters")
+    .min(
+      10,
+      "Please include ward, bed number, and facility address (at least 10 characters)",
+    )
     .max(500, "Hospital address must not exceed 500 characters")
     .trim(),
 

@@ -138,7 +138,9 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-3.5 w-3.5 text-crimson shrink-0" />
-                <span className="font-mono text-foreground">01XXX***XXX</span>
+                <a href="tel:+8801700000000" className="font-mono text-foreground hover:underline">
+                  +880 1700-000000 (24/7 Hotline)
+                </a>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="h-3.5 w-3.5 text-teal shrink-0" />

@@ -396,16 +396,16 @@ export default function RequestDetailsContent({
                     </Button>
                   </a>
                 ) : (
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal/10 border border-teal/20 text-teal text-xs font-mono">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal/10 border border-teal/20 text-teal text-xs font-mono font-semibold">
                     <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-                    <span>Redacted for Privacy</span>
+                    <span>Protected • Unlocked on Commitment</span>
                   </div>
                 )}
               </div>
 
               {!isOwner && !hasResponded && (
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  To protect patient families from unsolicited calls, the attendant&apos;s verified phone number is unlocked upon confirming your willingness to donate.
+                  To protect patient families from spam and unsolicited calls during critical moments, the attendant&apos;s verified direct number is unlocked immediately once you confirm your readiness to donate.
                 </p>
               )}
             </div>
