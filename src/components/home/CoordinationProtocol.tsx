@@ -5,9 +5,7 @@ import {
   BellRing, 
   ShieldCheck, 
   ArrowRight,
-  Droplet,
-  HeartHandshake,
-  Lock
+  Droplet
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -38,14 +36,14 @@ const steps = [
 export function CoordinationProtocol() {
   return (
     <section className="border-b border-border/80 bg-background py-16 sm:py-20" id="protocol">
-      <div className="container mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-crimson/10 px-3 py-1 text-xs font-semibold text-crimson">
             <Droplet className="h-3.5 w-3.5" />
             <span>DIRECT COORDINATION PROTOCOL</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
             How BloodOS Protects & Accelerates Transfusions
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -55,12 +53,12 @@ export function CoordinationProtocol() {
 
         {/* 3 Steps Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-          {steps.map((item, idx) => {
+          {steps.map((item) => {
             const Icon = item.icon;
             return (
               <div
                 key={item.step}
-                className="relative rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm flex flex-col justify-between space-y-6 hover:border-crimson/30 transition-all"
+                className="relative rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm flex flex-col justify-between space-y-6 hover:border-crimson/30 transition-all"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -101,7 +99,7 @@ export function CoordinationProtocol() {
           </div>
           <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto">
             <Link href="/requests/add" className="w-full sm:w-auto">
-              <Button className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold gap-2">
+              <Button className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold gap-2 h-11 px-6">
                 <span>Create SOS Request</span>
                 <ArrowRight className="h-4 w-4" />
               </Button>

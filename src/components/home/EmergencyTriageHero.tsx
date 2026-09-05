@@ -57,7 +57,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-border/80 bg-background pt-8 pb-16 lg:pt-14 lg:pb-20">
+    <section className="relative min-h-dvh flex items-center overflow-hidden border-b border-border/80 bg-background py-12 lg:py-16">
       {/* Subtle coordinate grid & background triage aura */}
       <div 
         className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
@@ -68,11 +68,11 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
         aria-hidden="true"
       />
       <div 
-        className="pointer-events-none absolute top-0 left-1/2 h-[450px] w-[800px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-crimson/8 blur-[120px]" 
+        className="pointer-events-none absolute top-0 left-1/2 h-[500px] w-[900px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-crimson/8 blur-[130px]" 
         aria-hidden="true"
       />
 
-      <div className="container relative mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="container relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
         {/* Live Network Status Indicator */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div className="inline-flex items-center gap-2 rounded-full border border-crimson/25 bg-crimson/5 px-3.5 py-1 text-xs font-semibold text-crimson">
@@ -90,15 +90,15 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
         </div>
 
         {/* Hero Main Grid */}
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start lg:gap-8">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
           {/* Left Column: Direct Hook & Crisis Positioning */}
-          <div className="lg:col-span-6 xl:col-span-7 flex flex-col justify-center space-y-6">
+          <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center space-y-6">
             <div className="space-y-4">
-              <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.08]">
+              <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.06]">
                 Minutes save lives. <br />
                 <span className="text-crimson">Direct blood triage</span> for Bangladesh.
               </h1>
-              <p className="max-w-xl text-base text-muted-foreground sm:text-lg leading-relaxed">
+              <p className="max-w-2xl text-base text-muted-foreground sm:text-lg lg:text-xl leading-relaxed">
                 Connect patients in critical care with verified, cooldown-eligible volunteer donors across all 64 districts in real time. Zero broker delays, zero phone spam.
               </p>
             </div>
@@ -108,7 +108,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               <Link href="/requests/add" className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
-                  className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold shadow-md shadow-crimson/20 gap-2.5 h-12 px-6"
+                  className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold shadow-md shadow-crimson/20 gap-2.5 h-12 px-7 text-base"
                 >
                   <AlertCircle className="h-5 w-5 shrink-0" />
                   <span>Post Emergency Request</span>
@@ -119,7 +119,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="w-full sm:w-auto border-border hover:bg-muted font-medium h-12 px-6 gap-2"
+                  className="w-full sm:w-auto border-border hover:bg-muted font-medium h-12 px-7 text-base gap-2"
                 >
                   <Activity className="h-4 w-4 text-crimson" />
                   <span>View Live Urgent Feed</span>
@@ -128,9 +128,9 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
             </div>
 
             {/* Real-time Triage Stat Metrics */}
-            <div className="pt-4 border-t border-border/70 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="pt-6 border-t border-border/70 grid grid-cols-2 sm:grid-cols-4 gap-6">
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl font-extrabold text-crimson tabular-nums">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-crimson tabular-nums">
                   {isLoadingStats ? "—" : stats?.activeRequests ?? 0}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -139,7 +139,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               </div>
 
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl font-extrabold text-foreground tabular-nums">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tabular-nums">
                   {isLoadingStats ? "—" : `${stats?.totalDonors ?? 0}+`}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -148,7 +148,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               </div>
 
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl font-extrabold text-teal tabular-nums">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-teal tabular-nums">
                   {isLoadingStats ? "—" : `${stats?.fulfilledRequests ?? 0}+`}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -157,7 +157,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               </div>
 
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl font-extrabold text-foreground tabular-nums">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tabular-nums">
                   64
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -168,12 +168,12 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
           </div>
 
           {/* Right Column: Interactive Emergency Triage Console */}
-          <div className="lg:col-span-6 xl:col-span-5">
-            <div className="rounded-2xl border-2 border-border/80 bg-card p-5 sm:p-6 shadow-xl shadow-foreground/5 relative">
+          <div className="lg:col-span-5 xl:col-span-5">
+            <div className="rounded-2xl border-2 border-border/80 bg-card p-6 sm:p-7 shadow-xl shadow-foreground/5 relative">
               <div className="flex items-center justify-between border-b border-border/80 pb-4 mb-5">
-                <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-crimson/10 text-crimson">
-                    <Droplet className="h-4 w-4" />
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-crimson/10 text-crimson">
+                    <Droplet className="h-5 w-5" />
                   </div>
                   <div>
                     <h2 className="text-sm font-bold text-foreground">Instant Triage Console</h2>
@@ -296,7 +296,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                 </div>
 
                 {/* Submit Buttons */}
-                <div className="grid grid-cols-2 gap-2.5 pt-2">
+                <div className="grid grid-cols-2 gap-3 pt-2">
                   <Button
                     type="submit"
                     className="w-full bg-primary hover:bg-primary/90 text-paper font-semibold h-11 text-xs sm:text-sm gap-1.5"

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 export function VolunteerCallToAction() {
   return (
     <section className="bg-background py-16 sm:py-20">
-      <div className="container mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl border-2 border-crimson/20 bg-linear-to-br from-card via-card to-crimson/5 p-8 sm:p-12 lg:p-16 shadow-lg">
           {/* Subtle background glow */}
           <div 
@@ -33,7 +33,7 @@ export function VolunteerCallToAction() {
             </p>
 
             {/* Checklist */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
               <div className="flex items-center gap-2 text-xs sm:text-sm text-foreground/90 font-medium">
                 <CheckCircle2 className="h-4 w-4 text-teal shrink-0" />
                 <span>Automatic 56-day cooldown alerts</span>

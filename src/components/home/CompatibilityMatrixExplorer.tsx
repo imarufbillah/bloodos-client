@@ -3,17 +3,13 @@
 import * as React from "react";
 import { 
   Droplet, 
-  ArrowRight, 
   Calendar, 
   CheckCircle2, 
-  XCircle, 
-  Info,
-  Clock,
+  Clock, 
   Sparkles
 } from "lucide-react";
 import { BloodGroup, BLOOD_GROUPS } from "@/lib/constants/bloodGroups";
-import { BLOOD_COMPATIBILITY, getCompatibleDonors, getCompatibleRecipients } from "@/lib/constants/compatibility";
-import { Button } from "@/components/ui/button";
+import { getCompatibleDonors, getCompatibleRecipients } from "@/lib/constants/compatibility";
 
 export function CompatibilityMatrixExplorer() {
   const [activeGroup, setActiveGroup] = React.useState<BloodGroup>(BloodGroup.O_POSITIVE);
@@ -38,14 +34,14 @@ export function CompatibilityMatrixExplorer() {
 
   return (
     <section className="border-b border-border/80 bg-background py-16 sm:py-20" id="compatibility">
-      <div className="container mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-teal/10 px-3 py-1 text-xs font-semibold text-teal">
             <Droplet className="h-3.5 w-3.5" />
             <span>MEDICAL COMPATIBILITY & COOLDOWN RULES</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
             Blood Compatibility & Eligibility Engine
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -56,7 +52,7 @@ export function CompatibilityMatrixExplorer() {
         {/* 2-Column Grid: Compatibility Matrix + Cooldown Calculator */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Column 1: Interactive ABO/Rh Explorer (7 cols) */}
-          <div className="lg:col-span-7 rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm space-y-6">
+          <div className="lg:col-span-7 rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
             <div>
               <div className="text-sm font-bold text-foreground mb-1">
                 Select a Blood Group to inspect compatibility:
@@ -67,7 +63,7 @@ export function CompatibilityMatrixExplorer() {
             </div>
 
             {/* Blood Group Pill Tabs */}
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2.5">
               {BLOOD_GROUPS.map((bg) => {
                 const isSelected = activeGroup === bg;
                 return (
@@ -75,7 +71,7 @@ export function CompatibilityMatrixExplorer() {
                     key={bg}
                     type="button"
                     onClick={() => setActiveGroup(bg)}
-                    className={`h-11 rounded-lg font-mono font-bold text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson ${
+                    className={`h-12 rounded-lg font-mono font-bold text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson ${
                       isSelected
                         ? "bg-crimson text-paper shadow-md scale-105"
                         : "bg-muted/70 hover:bg-muted text-foreground border border-border/80"
@@ -160,7 +156,7 @@ export function CompatibilityMatrixExplorer() {
           </div>
 
           {/* Column 2: 56-Day Cooldown Calculator (5 cols) */}
-          <div className="lg:col-span-5 rounded-2xl border border-border bg-card p-6 sm:p-7 shadow-sm space-y-6">
+          <div className="lg:col-span-5 rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-teal" />

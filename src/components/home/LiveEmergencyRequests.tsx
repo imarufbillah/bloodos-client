@@ -106,7 +106,7 @@ export function LiveEmergencyRequests() {
 
   return (
     <section className="border-b border-border/80 bg-muted/20 py-16 sm:py-20">
-      <div className="container mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div className="space-y-2">
@@ -116,7 +116,7 @@ export function LiveEmergencyRequests() {
                 Real-Time Hospital Dispatch
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
               Critical Emergency Requests
             </h2>
             <p className="text-sm text-muted-foreground max-w-lg">
