@@ -29,7 +29,7 @@ function SuspendedContent() {
         {/* Suspension Details */}
         <div className="bg-paper border border-slate rounded-lg p-6 mb-6">
           <h2 className="font-semibold text-ink mb-3">Why was I suspended?</h2>
-          <div className="bg-destructive/5 border-l-4 border-destructive px-4 py-3 rounded-r">
+          <div className="bg-destructive/5 border border-destructive/20 px-4 py-3 rounded-lg">
             <p className="text-sm text-ink">
               {banReason ||
                 "Your account has been suspended due to a violation of our community guidelines or terms of service."}

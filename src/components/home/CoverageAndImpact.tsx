@@ -28,17 +28,13 @@ export function CoverageAndImpact() {
     <section className="border-b border-border/80 bg-muted/30 py-16 sm:py-20">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-crimson/10 px-3 py-1 text-xs font-semibold text-crimson">
-              <MapPin className="h-3.5 w-3.5" />
-              <span>NATIONWIDE EMERGENCY COVERAGE</span>
-            </div>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+          <div className="space-y-2">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
               64 Districts. 8 Divisions. 1 Unified Network.
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground max-w-xl leading-relaxed">
-              From tertiary referral medical centers to rural upazila health complexes, BloodOS connects donors wherever an emergency unfolds.
+              From tertiary referral hospitals to upazila health complexes across Bangladesh.
             </p>
           </div>
 
@@ -54,9 +50,6 @@ export function CoverageAndImpact() {
 
         {/* Division Selector & District Pills Grid */}
         <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
-          <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-            Select Administrative Division:
-          </div>
 
           {/* Division Buttons */}
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">

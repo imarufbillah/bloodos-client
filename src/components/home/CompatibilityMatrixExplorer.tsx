@@ -80,16 +80,12 @@ export function CompatibilityMatrixExplorer() {
     <section className="border-b border-border/80 bg-background py-16 sm:py-20" id="compatibility">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-teal/10 px-3 py-1 text-xs font-semibold text-teal">
-            <Droplet className="h-3.5 w-3.5" />
-            <span>MEDICAL COMPATIBILITY & COOLDOWN RULES</span>
-          </div>
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
             Blood Compatibility & Eligibility Engine
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Understanding ABO/Rh compatibility and the standard 56-day cooldown between whole blood donations ensures safe and timely transfusions.
+            ABO/Rh compatibility rules and the clinical 56-day cooldown between whole blood donations.
           </p>
         </div>
 
@@ -97,13 +93,13 @@ export function CompatibilityMatrixExplorer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Column 1: Interactive ABO/Rh Explorer (7 cols) */}
           <div className="lg:col-span-7 rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
-            <div>
-              <div className="text-sm font-bold text-foreground mb-1">
-                Select a Blood Group to inspect compatibility:
-              </div>
-              <p className="text-xs text-muted-foreground">
-                See who can safely donate to this group and who can receive from it.
-              </p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-bold text-foreground">
+                Select Blood Group
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Interactive Donor & Recipient Matrix
+              </span>
             </div>
 
             {/* Blood Group Pill Tabs */}

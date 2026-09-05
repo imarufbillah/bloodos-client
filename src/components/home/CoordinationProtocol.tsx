@@ -50,16 +50,12 @@ export function CoordinationProtocol() {
     <section className="border-b border-border/80 bg-background py-16 sm:py-20" id="protocol">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-crimson/10 px-3 py-1 text-xs font-semibold text-crimson">
-            <Droplet className="h-3.5 w-3.5" />
-            <span>DIRECT COORDINATION PROTOCOL</span>
-          </div>
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
             How BloodOS Protects & Accelerates Transfusions
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Eliminating middleman delays, unverified social media requests, and donor harassment through strict architectural safeguards.
+            Eliminating broker delays, unverified requests, and donor harassment with 3 safeguards.
           </p>
         </div>
 

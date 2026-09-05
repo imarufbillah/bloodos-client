@@ -109,20 +109,12 @@ export function LiveEmergencyRequests() {
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="inline-flex h-2 w-2 rounded-full bg-crimson" />
-              </span>
-              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-crimson">
-                Real-Time Hospital Dispatch
-              </span>
-            </div>
+          <div className="space-y-1.5">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               Critical Emergency Requests
             </h2>
             <p className="text-sm text-muted-foreground max-w-lg">
-              Patients requiring immediate transfusion support right now. Every response makes an immediate difference.
+              Patients requiring immediate transfusion support right now across Bangladesh.
             </p>
           </div>
 

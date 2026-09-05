@@ -18,12 +18,7 @@ export function VolunteerCallToAction() {
             aria-hidden="true" 
           />
 
-          <div className="relative z-10 max-w-2xl space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full bg-crimson/10 px-3.5 py-1 text-xs font-semibold text-crimson">
-              <Heart className="h-3.5 w-3.5 fill-crimson" />
-              <span>BECOME A REGISTERED DONOR</span>
-            </div>
-
+          <div className="relative z-10 max-w-2xl space-y-5">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground leading-[1.14]">
               One donation can save up to <span className="text-crimson">3 lives</span>.
             </h2>
