@@ -19,9 +19,22 @@ import { DistrictChart } from "@/components/admin/DistrictChart";
 import { TrendChart } from "@/components/admin/TrendChart";
 import { RequestsModerationTable } from "@/components/admin/RequestsModerationTable";
 import { UsersManagementTable } from "@/components/admin/UsersManagementTable";
+import {
+  AdminSlideOverInspector,
+  type InspectorItem,
+} from "@/components/admin/AdminSlideOverInspector";
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
-import type { AdminStats, ModerationRequest, AdminUser } from "@/lib/api/admin";
+import {
+  rejectRequest,
+  deleteRequest,
+  toggleUserBan,
+  changeUserRole,
+  type AdminStats,
+  type ModerationRequest,
+  type AdminUser,
+} from "@/lib/api/admin";
+import { toast } from "sonner";
 
 type AdminDashboardContentProps = {
   initialStats: AdminStats;
@@ -37,6 +50,8 @@ export function AdminDashboardContent({
   const router = useRouter();
   const { data: session } = useSession();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [inspectedItem, setInspectedItem] = useState<InspectorItem | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Use server data directly
   const stats = initialStats;
@@ -49,6 +64,74 @@ export function AdminDashboardContent({
     setTimeout(() => {
       setIsRefreshing(false);
     }, 600);
+  };
+
+  const handleInspectorReject = async (req: ModerationRequest) => {
+    try {
+      setIsProcessing(true);
+      await rejectRequest(req._id, "Rejected via admin inspector");
+      toast.success("Request rejected successfully");
+      setInspectedItem(null);
+      handleRefresh();
+    } catch (error) {
+      toast.error("Failed to reject request");
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleInspectorDelete = async (req: ModerationRequest) => {
+    try {
+      setIsProcessing(true);
+      await deleteRequest(req._id);
+      toast.success("Request deleted successfully");
+      setInspectedItem(null);
+      handleRefresh();
+    } catch (error) {
+      toast.error("Failed to delete request");
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleInspectorBan = async (user: AdminUser) => {
+    try {
+      setIsProcessing(true);
+      const willBan = !user.banned;
+      await toggleUserBan(
+        user._id,
+        willBan,
+        willBan ? "Banned via admin inspector" : "Unbanned via admin inspector",
+      );
+      toast.success(
+        willBan ? `${user.name} banned` : `${user.name} unbanned`,
+      );
+      setInspectedItem(null);
+      handleRefresh();
+    } catch (error) {
+      toast.error("Failed to update user ban status");
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleInspectorRole = async (user: AdminUser) => {
+    try {
+      setIsProcessing(true);
+      const newRole = user.role === "admin" ? "user" : "admin";
+      await changeUserRole(user._id, newRole);
+      toast.success(`Role changed to ${newRole}`);
+      setInspectedItem(null);
+      handleRefresh();
+    } catch (error) {
+      toast.error("Failed to change user role");
+      console.error(error);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const pendingRequestsCount = requests.filter(
@@ -192,6 +275,7 @@ export function AdminDashboardContent({
             <RequestsModerationTable
               requests={requests}
               onRefresh={handleRefresh}
+              onInspect={(req) => setInspectedItem({ type: "request", data: req })}
             />
           </TabsContent>
 
@@ -212,10 +296,23 @@ export function AdminDashboardContent({
               users={users}
               currentUserId={session?.user?.id || ""}
               onRefresh={handleRefresh}
+              onInspect={(u) => setInspectedItem({ type: "user", data: u })}
             />
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Slide-Over Inspector Drawer */}
+      <AdminSlideOverInspector
+        item={inspectedItem}
+        onClose={() => setInspectedItem(null)}
+        onRejectRequest={handleInspectorReject}
+        onDeleteRequest={handleInspectorDelete}
+        onBanUser={handleInspectorBan}
+        onRoleUser={handleInspectorRole}
+        currentUserId={session?.user?.id || ""}
+        isProcessing={isProcessing}
+      />
     </div>
   );
 }

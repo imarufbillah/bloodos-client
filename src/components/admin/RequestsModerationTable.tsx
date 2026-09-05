@@ -31,6 +31,7 @@ import { BloodGroup, RequestStatus } from "@/types/shared";
 interface RequestsModerationTableProps {
   requests: ModerationRequest[];
   onRefresh: () => void;
+  onInspect?: (req: ModerationRequest) => void;
 }
 
 const REJECT_PRESET_REASONS = [
@@ -55,6 +56,7 @@ const ALL_BLOOD_GROUPS = [
 export function RequestsModerationTable({
   requests,
   onRefresh,
+  onInspect,
 }: RequestsModerationTableProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -325,17 +327,20 @@ export function RequestsModerationTable({
                       {/* Actions */}
                       <td className="px-4 py-3.5">
                         <div className="flex items-center justify-end gap-1.5">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => router.push(`/requests/${request._id}`)}
-                            disabled={isProcessing}
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground touch-manipulation"
-                            aria-label={`View details for ${request.patientName}'s request`}
-                            title="View Details"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
+                          {onInspect && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => onInspect(request)}
+                              disabled={isProcessing}
+                              className="h-8 px-2 text-xs text-primary hover:bg-primary/10 gap-1 touch-manipulation font-medium"
+                              aria-label={`Inspect ${request.patientName}'s incident in drawer`}
+                              title="Quick Inspect Drawer"
+                            >
+                              <Eye className="h-3.5 w-3.5" />
+                              <span>Inspect</span>
+                            </Button>
+                          )}
 
                           {request.status === "pending" && (
                             <Button
@@ -421,12 +426,14 @@ export function RequestsModerationTable({
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => router.push(`/requests/${request._id}`)}
-                    className="w-full text-xs h-9 min-h-[36px] flex items-center justify-center gap-1.5 touch-manipulation"
-                    aria-label={`View ${request.patientName}'s request`}
+                    onClick={() =>
+                      onInspect ? onInspect(request) : router.push(`/requests/${request._id}`)
+                    }
+                    className="w-full text-xs h-9 min-h-[36px] flex items-center justify-center gap-1.5 touch-manipulation text-primary border-primary/30 hover:bg-primary/10"
+                    aria-label={`Inspect ${request.patientName}'s request`}
                   >
                     <Eye className="h-3.5 w-3.5" />
-                    <span>View</span>
+                    <span>Inspect</span>
                   </Button>
 
                   {request.status === "pending" ? (

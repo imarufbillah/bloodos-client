@@ -28,6 +28,7 @@ interface UsersManagementTableProps {
   users: AdminUser[];
   currentUserId: string;
   onRefresh: () => void;
+  onInspect?: (user: AdminUser) => void;
 }
 
 const BAN_PRESET_REASONS = [
@@ -42,6 +43,7 @@ export function UsersManagementTable({
   users,
   currentUserId,
   onRefresh,
+  onInspect,
 }: UsersManagementTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
@@ -353,6 +355,21 @@ export function UsersManagementTable({
                         {/* Actions */}
                         <td className="px-4 py-3.5">
                           <div className="flex items-center justify-end gap-1.5">
+                            {onInspect && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => onInspect(user)}
+                                disabled={isProcessing}
+                                className="h-8 px-2 text-xs text-primary hover:bg-primary/10 gap-1 touch-manipulation font-medium"
+                                aria-label={`Inspect ${user.name}'s account in drawer`}
+                                title="Quick Inspect Drawer"
+                              >
+                                <User className="h-3.5 w-3.5" />
+                                <span>Inspect</span>
+                              </Button>
+                            )}
+
                             {/* Ban / Unban Button */}
                             <Button
                               size="sm"
@@ -517,7 +534,22 @@ export function UsersManagementTable({
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="grid grid-cols-2 gap-2 pt-1">
+                  <div className="grid grid-cols-3 gap-2 pt-1">
+                    {onInspect ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => onInspect(user)}
+                        className="w-full text-xs h-9 min-h-[36px] touch-manipulation text-primary border-primary/30 hover:bg-primary/10"
+                        aria-label={`Inspect ${user.name}'s profile`}
+                      >
+                        <User className="h-3.5 w-3.5 mr-1" />
+                        Inspect
+                      </Button>
+                    ) : (
+                      <div />
+                    )}
+
                     <Button
                       size="sm"
                       variant="outline"
@@ -539,12 +571,12 @@ export function UsersManagementTable({
                       {user.banned ? (
                         <>
                           <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
-                          Unban User
+                          Unban
                         </>
                       ) : (
                         <>
                           <Ban className="h-3.5 w-3.5 mr-1" />
-                          Ban User
+                          Ban
                         </>
                       )}
                     </Button>
