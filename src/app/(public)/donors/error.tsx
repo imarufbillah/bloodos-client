@@ -1,7 +1,8 @@
 "use client";
 
-import { AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { AlertCircle, RotateCcw, Home } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 
 type ErrorProps = {
   error: Error & { digest?: string };
@@ -10,43 +11,48 @@ type ErrorProps = {
 
 export default function Error({ error, reset }: ErrorProps) {
   return (
-    <div className="min-h-screen bg-background">
-      <section className="border-b border-border bg-card">
-        <div className="container mx-auto max-w-7xl px-4 py-8">
-          <h1 className="font-heading text-3xl font-semibold text-foreground">
-            Find Donors
+    <div className="min-h-screen bg-background pb-24 sm:pb-16">
+      <section className="border-b border-border/70 bg-card/60">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-10">
+          <h1 className="font-heading text-3xl font-bold text-foreground">
+            Verified Blood Donors
           </h1>
         </div>
       </section>
 
-      <section className="container mx-auto max-w-7xl px-4 py-16">
-        <div className="flex flex-col items-center justify-center text-center">
-          <AlertCircle className="h-16 w-16 text-destructive mb-6" />
-          <h2 className="font-heading text-2xl font-semibold text-foreground mb-3">
-            Failed to Load Donors
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-16">
+        <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto p-8 rounded-2xl border border-destructive/30 bg-destructive/[0.03]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-destructive/10 text-destructive mb-6">
+            <AlertCircle className="h-8 w-8" />
+          </div>
+          <h2 className="font-heading text-2xl font-bold text-foreground mb-2">
+            Failed to Load Donor Registry
           </h2>
-          <p className="text-muted-foreground mb-2 max-w-md">
+          <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
             {error.message ||
-              "An unexpected error occurred while loading donor information"}
+              "An unexpected error occurred while loading donor registry records."}
           </p>
           {error.digest && (
-            <p className="text-sm text-muted-foreground mb-6 font-mono">
-              Error ID: {error.digest}
+            <p className="text-xs text-muted-foreground mb-6 font-mono bg-muted/60 px-3 py-1 rounded-md border border-border">
+              Trace ID: {error.digest}
             </p>
           )}
-          <div className="flex gap-3">
-            <Button onClick={() => reset()} variant="default">
-              Try Again
+          <div className="flex flex-wrap gap-3 justify-center w-full">
+            <Button onClick={() => reset()} variant="default" className="gap-2 flex-1">
+              <RotateCcw className="h-4 w-4" />
+              <span>Retry Connection</span>
             </Button>
-            <Button
-              onClick={() => (window.location.href = "/")}
-              variant="outline"
+            <Link
+              href="/"
+              className={buttonVariants({ variant: "outline", className: "gap-2 flex-1" })}
             >
-              Go Home
-            </Button>
+              <Home className="h-4 w-4" />
+              <span>Return Home</span>
+            </Link>
           </div>
         </div>
-      </section>
+      </main>
     </div>
   );
 }
+

@@ -1,22 +1,25 @@
 "use client";
 
+import * as React from "react";
 import { type Donor } from "@/types/shared";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   MapPin,
-  Droplet,
   Calendar,
   CheckCircle2,
   Clock,
   Mail,
   Phone,
+  ShieldCheck,
+  PhoneCall,
+  Loader2,
+  Sparkles,
 } from "lucide-react";
 import {
   evaluateDonorEligibility,
   calculateDaysSinceLastDonation,
   getEligibilityMessage,
 } from "@/lib/eligibility";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
 interface DonorCardProps {
   donor: Donor;
@@ -28,7 +31,7 @@ interface DonorCardProps {
   /**
    * Callback when "Request Contact" button is clicked
    */
-  onRequestContact?: (donorId: string) => void;
+  onRequestContact?: (donor: Donor) => void;
   /**
    * Loading state for contact request
    */
@@ -41,39 +44,41 @@ export function DonorCard({
   onRequestContact,
   isRequestingContact = false,
 }: DonorCardProps) {
-  // Calculate eligibility (client-side, Req 17.9)
+  // Calculate biological eligibility (90-day cooldown standard)
   const eligibility = evaluateDonorEligibility(donor.lastDonationDate);
   const daysSinceDonation = donor.lastDonationDate
     ? calculateDaysSinceLastDonation(donor.lastDonationDate)
     : null;
 
   const handleRequestContact = () => {
+    triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
     if (onRequestContact && !isRequestingContact) {
-      onRequestContact(donor._id);
+      onRequestContact(donor);
     }
   };
 
   return (
     <article
-      className="card-grid-item relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-teal/40 focus-within:border-teal focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
-      style={{ "--stagger-index": staggerIndex } as React.CSSProperties}
+      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs transition-all duration-200 hover:border-teal/40 hover:shadow-md focus-within:border-teal focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+      style={{
+        animationDelay: `${Math.min(staggerIndex * 40, 400)}ms`,
+      }}
     >
-      {/* Card Content */}
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        {/* Header: Kicker + Eligibility Badge */}
-        <div className="flex items-start justify-between gap-3">
-          {/* Kicker: Blood Group + District (same as RequestCard) */}
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Droplet className="h-3.5 w-3.5 text-crimson" aria-hidden="true" />
-            <span className="font-mono font-medium tabular-data">
-              {donor.bloodGroup}
-            </span>
-            <span aria-hidden="true">•</span>
-            <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>{donor.district}</span>
+      {/* Top Status Accent Bar for Active/Eligible Donors */}
+      {eligibility.eligible && (
+        <div className="absolute top-0 left-0 right-0 h-1 bg-teal" />
+      )}
+
+      {/* Main Card Content */}
+      <div className="space-y-3.5">
+        {/* Top Meta Bar: District + Eligibility Pill */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <MapPin className="h-3.5 w-3.5 text-teal shrink-0" aria-hidden="true" />
+            <span className="font-medium text-foreground/90">{donor.district}</span>
           </div>
 
-          {/* Eligibility Badge - top-right (replaces urgency badge) */}
+          {/* Biological Eligibility Status Badge */}
           <EligibilityBadge
             eligible={eligibility.eligible}
             reason={eligibility.reason}
@@ -81,88 +86,101 @@ export function DonorCard({
           />
         </div>
 
-        {/* Donor Name - Fraunces heading (same prominence as patient name) */}
-        <h3 className="font-heading text-base font-semibold leading-tight tracking-tight text-foreground">
-          {donor.name}
-        </h3>
-
-        {/* Last Donation Date */}
-        {donor.lastDonationDate ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" aria-hidden="true" />
-            <span>
-              Last donated{" "}
-              <span className="font-medium tabular-data text-foreground">
-                {daysSinceDonation}
-              </span>{" "}
-              {daysSinceDonation === 1 ? "day" : "days"} ago
-            </span>
+        {/* Hero Identity: Blood Group Badge + Donor Name */}
+        <div className="flex items-center gap-3 pt-0.5">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground font-heading text-lg font-bold shadow-xs transition-transform duration-200 group-hover:scale-105">
+            <span>{donor.bloodGroup}</span>
           </div>
-        ) : (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" aria-hidden="true" />
-            <span>No donation history</span>
-          </div>
-        )}
 
-        {/* Eligibility Message */}
-        <div className="flex items-start gap-2 text-sm">
-          {eligibility.eligible ? (
-            <CheckCircle2
-              className="mt-0.5 h-4 w-4 shrink-0 text-teal"
-              aria-hidden="true"
-            />
-          ) : (
-            <Clock
-              className="mt-0.5 h-4 w-4 shrink-0 text-ochre"
-              aria-hidden="true"
-            />
-          )}
-          <span
-            className={
-              eligibility.eligible ? "text-teal" : "text-muted-foreground"
-            }
-          >
-            {getEligibilityMessage(eligibility)}
-          </span>
+          <div className="min-w-0 flex-1 space-y-0.5">
+            <h3 className="font-heading text-base font-bold text-foreground truncate group-hover:text-primary transition-colors">
+              {donor.name}
+            </h3>
+
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <ShieldCheck className="h-3.5 w-3.5 text-teal shrink-0" aria-hidden="true" />
+              <span>Verified Blood Donor</span>
+            </div>
+          </div>
         </div>
 
-        {/* Contact Info (Masked - Req 17.5) */}
-        <div className="mt-auto space-y-2 pt-2">
-          {/* Phone (masked) */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Phone className="h-4 w-4" aria-hidden="true" />
-            <span className="font-mono tabular-data">{donor.phone}</span>
+        {/* Clinical Donation History Telemetry Block */}
+        <div className="rounded-xl bg-muted/40 p-3 border border-border/50 space-y-2 text-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground flex items-center gap-1.5">
+              <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
+              Last Donated
+            </span>
+            <span className="font-mono font-semibold tabular-nums text-foreground">
+              {donor.lastDonationDate
+                ? `${daysSinceDonation} ${daysSinceDonation === 1 ? "day" : "days"} ago`
+                : "No prior records"}
+            </span>
           </div>
 
-          {/* Email (masked, if present) */}
+          <div className="flex items-center justify-between border-t border-border/40 pt-1.5">
+            <span className="text-muted-foreground flex items-center gap-1.5">
+              {eligibility.eligible ? (
+                <CheckCircle2 className="h-3.5 w-3.5 text-teal" aria-hidden="true" />
+              ) : (
+                <Clock className="h-3.5 w-3.5 text-amber-500" aria-hidden="true" />
+              )}
+              Readiness
+            </span>
+            <span
+              className={`font-medium ${
+                eligibility.eligible
+                  ? "text-teal font-semibold"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {getEligibilityMessage(eligibility)}
+            </span>
+          </div>
+        </div>
+
+        {/* Masked Contact Previews */}
+        <div className="space-y-1.5 pt-1 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <Phone className="h-3.5 w-3.5 text-muted-foreground/70 shrink-0" aria-hidden="true" />
+            <span className="font-mono tabular-nums tracking-wide">{donor.phone}</span>
+          </div>
           {donor.email && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Mail className="h-4 w-4" aria-hidden="true" />
-              <span className="font-mono tabular-data">{donor.email}</span>
+            <div className="flex items-center gap-2">
+              <Mail className="h-3.5 w-3.5 text-muted-foreground/70 shrink-0" aria-hidden="true" />
+              <span className="font-mono tabular-nums truncate">{donor.email}</span>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Footer: Request Contact CTA */}
-        <div className="pt-2 border-t border-border">
-          <Button
-            size="sm"
-            variant="secondary"
-            className="w-full"
-            onClick={handleRequestContact}
-            disabled={isRequestingContact}
-          >
-            {isRequestingContact ? "Requesting..." : "Request Contact"}
-          </Button>
-        </div>
+      {/* Footer Area: Request Contact Action */}
+      <div className="pt-3.5 mt-3.5 border-t border-border/60">
+        <button
+          type="button"
+          onClick={handleRequestContact}
+          disabled={isRequestingContact}
+          className="w-full h-11 sm:h-10 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs disabled:opacity-60 disabled:pointer-events-none cursor-pointer"
+        >
+          {isRequestingContact ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Retrieving Contact...</span>
+            </>
+          ) : (
+            <>
+              <PhoneCall className="h-4 w-4" />
+              <span>Request Verified Contact</span>
+            </>
+          )}
+        </button>
       </div>
     </article>
   );
 }
 
 // ============================================================================
-// Inline Badge Component (will be extracted to 7h)
+// Eligibility Badge Component
 // ============================================================================
 
 function EligibilityBadge({
@@ -174,40 +192,31 @@ function EligibilityBadge({
   reason?: string;
   daysRemaining?: number;
 }) {
-  // Eligible to donate
   if (eligible) {
     return (
-      <Badge
-        variant="outline"
-        className="flex items-center gap-1 bg-teal text-paper border-teal text-xs font-medium"
-      >
-        <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
-        <span>Eligible</span>
-      </Badge>
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-teal/10 text-teal border border-teal/20">
+        <span className="relative flex h-1.5 w-1.5">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal opacity-75" />
+          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-teal" />
+        </span>
+        <span>Eligible Now</span>
+      </div>
     );
   }
 
-  // In cooldown period
   if (reason === "cooldown_requirement" && daysRemaining) {
     return (
-      <Badge
-        variant="outline"
-        className="flex items-center gap-1 border-ochre text-ochre bg-transparent text-xs font-medium"
-      >
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
         <Clock className="h-3 w-3" aria-hidden="true" />
-        <span>{daysRemaining}d</span>
-      </Badge>
+        <span>Cooldown • {daysRemaining}d</span>
+      </div>
     );
   }
 
-  // No donation history or other reasons
   return (
-    <Badge
-      variant="outline"
-      className="flex items-center gap-1 border-slate text-slate bg-transparent text-xs font-medium"
-    >
-      <Calendar className="h-3 w-3" aria-hidden="true" />
-      <span>New</span>
-    </Badge>
+    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-muted text-muted-foreground border border-border/60">
+      <Sparkles className="h-3 w-3" aria-hidden="true" />
+      <span>First-Time</span>
+    </div>
   );
 }
