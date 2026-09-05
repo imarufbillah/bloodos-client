@@ -1,8 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { format } from "date-fns";
-import { Shield, Ban, User } from "lucide-react";
+import {
+  Shield,
+  Ban,
+  User,
+  Search,
+  Filter,
+  AlertTriangle,
+  Mail,
+  MapPin,
+  Calendar,
+  Layers,
+  Sparkles,
+  ShieldAlert,
+  CheckCircle2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { BloodGroupBadge } from "@/components/shared/BloodGroupBadge";
@@ -16,250 +30,692 @@ interface UsersManagementTableProps {
   onRefresh: () => void;
 }
 
+const BAN_PRESET_REASONS = [
+  "Violating community standards",
+  "Repeated fraudulent requests",
+  "Unreachable emergency contact",
+  "Inappropriate conduct reported",
+  "Suspicious account activity",
+];
+
 export function UsersManagementTable({
   users,
   currentUserId,
   onRefresh,
 }: UsersManagementTableProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState<"ban" | "unban" | "role">("ban");
+  const [banReason, setBanReason] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Filtered users
+  const filteredUsers = useMemo(() => {
+    return users.filter((u) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchesQuery =
+        !q ||
+        u.name.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q) ||
+        (u.district && u.district.toLowerCase().includes(q)) ||
+        (u.bloodGroup && u.bloodGroup.toLowerCase().includes(q));
+
+      const matchesRole = roleFilter === "all" || u.role === roleFilter;
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "banned" ? u.banned : !u.banned);
+
+      return matchesQuery && matchesRole && matchesStatus;
+    });
+  }, [users, searchQuery, roleFilter, statusFilter]);
 
   const handleBanToggle = async () => {
     if (!selectedUser) return;
     try {
+      setIsProcessing(true);
       const willBan = !selectedUser.banned;
-      await toggleUserBan(
-        selectedUser._id,
-        willBan,
-        willBan ? "Banned by admin" : "Unbanned by admin",
-      );
+      const reason = willBan
+        ? banReason.trim() || "Banned by administrator"
+        : "Unbanned by administrator";
+
+      await toggleUserBan(selectedUser._id, willBan, reason);
       toast.success(
-        willBan ? "User banned successfully" : "User unbanned successfully",
+        willBan
+          ? `${selectedUser.name} has been banned`
+          : `${selectedUser.name} has been unbanned`,
       );
+      setDialogOpen(false);
+      setBanReason("");
       onRefresh();
     } catch (error) {
       toast.error("Failed to update user ban status");
       console.error(error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleRoleChange = async () => {
     if (!selectedUser) return;
     try {
+      setIsProcessing(true);
       const newRole = selectedUser.role === "admin" ? "user" : "admin";
       await changeUserRole(selectedUser._id, newRole);
-      toast.success(`User role changed to ${newRole}`);
+      toast.success(
+        `Changed ${selectedUser.name}'s role to ${newRole === "admin" ? "Administrator" : "Standard User"}`,
+      );
+      setDialogOpen(false);
       onRefresh();
     } catch (error) {
       toast.error("Failed to change user role");
       console.error(error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const openDialog = (user: AdminUser, type: "ban" | "unban" | "role") => {
+  const openBanDialog = (user: AdminUser) => {
     setSelectedUser(user);
-    setDialogType(type);
+    setDialogType(user.banned ? "unban" : "ban");
+    setBanReason("");
     setDialogOpen(true);
   };
 
-  const handleConfirm = () => {
-    if (dialogType === "role") {
-      return handleRoleChange();
-    } else {
-      return handleBanToggle();
-    }
+  const openRoleDialog = (user: AdminUser) => {
+    setSelectedUser(user);
+    setDialogType("role");
+    setDialogOpen(true);
   };
 
-  if (users.length === 0) {
-    return (
-      <div className="bg-paper border border-slate rounded-lg p-8 text-center">
-        <p className="text-slate">No users found</p>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <div className="bg-paper border border-slate rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 border-b border-slate sticky top-0">
-              <tr>
-                <th className="text-left font-semibold text-ink px-4 py-3">
-                  Name
-                </th>
-                <th className="text-left font-semibold text-ink px-4 py-3">
-                  Email
-                </th>
-                <th className="text-left font-semibold text-ink px-4 py-3">
-                  Role
-                </th>
-                <th className="text-left font-semibold text-ink px-4 py-3">
-                  Blood Group
-                </th>
-                <th className="text-left font-semibold text-ink px-4 py-3">
-                  District
-                </th>
-                <th className="text-left font-semibold text-ink px-4 py-3">
-                  Status
-                </th>
-                <th className="text-left font-semibold text-ink px-4 py-3">
-                  Joined
-                </th>
-                <th className="text-right font-semibold text-ink px-4 py-3">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate">
-              {users.map((user) => {
-                const isCurrentUser = user._id === currentUserId;
-                return (
-                  <tr
-                    key={user._id}
-                    className="hover:bg-muted/30 transition-colors"
-                  >
-                    <td className="px-4 py-3 text-ink font-medium">
-                      {user.name}
-                      {isCurrentUser && (
-                        <span className="ml-2 text-xs text-slate">(You)</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-slate text-xs">
-                      {user.email}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded ${
-                          user.role === "admin"
-                            ? "bg-crimson/10 text-crimson"
-                            : "bg-muted text-slate"
-                        }`}
-                      >
-                        {user.role === "admin" ? (
-                          <Shield className="h-3 w-3" />
-                        ) : (
-                          <User className="h-3 w-3" />
-                        )}
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      {user.bloodGroup ? (
-                        <BloodGroupBadge
-                          bloodGroup={user.bloodGroup as BloodGroup}
-                        />
-                      ) : (
-                        <span className="text-slate text-xs">—</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-slate text-xs">
-                      {user.district || "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                      {user.banned ? (
-                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-destructive">
-                          <Ban className="h-3 w-3" />
-                          Banned
-                        </span>
-                      ) : (
-                        <span className="text-xs text-teal font-medium">
-                          Active
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs text-slate tabular-data">
-                      {format(new Date(user.createdAt), "MMM dd, yyyy")}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() =>
-                            openDialog(user, user.banned ? "unban" : "ban")
-                          }
-                          disabled={isProcessing || isCurrentUser}
-                          title={
-                            isCurrentUser
-                              ? "Cannot ban yourself"
-                              : user.banned
-                                ? "Unban user"
-                                : "Ban user"
-                          }
-                        >
-                          {user.banned ? "Unban" : "Ban"}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => openDialog(user, "role")}
-                          disabled={isProcessing || isCurrentUser}
-                          title={
-                            isCurrentUser
-                              ? "Cannot change your own role"
-                              : user.role === "admin"
-                                ? "Demote to user"
-                                : "Promote to admin"
-                          }
-                        >
-                          {user.role === "admin" ? (
-                            <>
-                              <User className="h-3 w-3 mr-1" />
-                              Demote
-                            </>
-                          ) : (
-                            <>
-                              <Shield className="h-3 w-3 mr-1" />
-                              Promote
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+    <div className="space-y-4">
+      {/* Controls / Filter Bar */}
+      <div className="bg-card border border-border rounded-xl p-4 shadow-xs">
+        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+          {/* Search Field */}
+          <div className="relative flex-1 min-w-[240px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search user name, email, district, blood group..."
+              className="w-full pl-9 pr-4 py-2 text-sm bg-background border border-input rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              aria-label="Search users"
+            />
+          </div>
+
+          {/* Quick Filter Selectors */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Filter className="h-3.5 w-3.5" />
+              <span>Filters:</span>
+            </div>
+
+            {/* Role Filter */}
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="px-3 py-1.5 text-xs font-medium bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              aria-label="Filter by user role"
+            >
+              <option value="all">All Roles</option>
+              <option value="admin">Admins</option>
+              <option value="user">Standard Users</option>
+            </select>
+
+            {/* Status Filter */}
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-1.5 text-xs font-medium bg-background border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              aria-label="Filter by user status"
+            >
+              <option value="all">All Statuses</option>
+              <option value="active">Active Only</option>
+              <option value="banned">Banned Only</option>
+            </select>
+
+            {(searchQuery || roleFilter !== "all" || statusFilter !== "all") && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSearchQuery("");
+                  setRoleFilter("all");
+                  setStatusFilter("all");
+                }}
+                className="text-xs h-8 px-2 text-muted-foreground hover:text-foreground"
+              >
+                Reset
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Results Counter */}
+        <div className="mt-3 pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <Layers className="h-3.5 w-3.5 text-crimson" />
+            <span>
+              Showing <strong className="text-foreground font-mono tabular-nums">{filteredUsers.length}</strong> of{" "}
+              <strong className="text-foreground font-mono tabular-nums">{users.length}</strong> registered users
+            </span>
+          </div>
         </div>
       </div>
 
-      <ConfirmDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        title={
-          dialogType === "ban"
-            ? "Ban User"
-            : dialogType === "unban"
-              ? "Unban User"
-              : selectedUser?.role === "admin"
-                ? "Demote User"
-                : "Promote User"
-        }
-        description={
-          dialogType === "ban"
-            ? `Are you sure you want to ban ${selectedUser?.name}? They will no longer be able to access the platform.`
-            : dialogType === "unban"
-              ? `Are you sure you want to unban ${selectedUser?.name}? They will regain access to the platform.`
-              : selectedUser?.role === "admin"
-                ? `Are you sure you want to demote ${selectedUser?.name} to a regular user? They will lose admin privileges.`
-                : `Are you sure you want to promote ${selectedUser?.name} to admin? They will gain full admin privileges.`
-        }
-        confirmText={
-          dialogType === "ban"
-            ? "Ban User"
-            : dialogType === "unban"
-              ? "Unban User"
-              : selectedUser?.role === "admin"
-                ? "Demote"
-                : "Promote"
-        }
-        variant={dialogType === "ban" ? "destructive" : "default"}
-        onConfirm={handleConfirm}
-      />
-    </>
+      {/* Empty State */}
+      {filteredUsers.length === 0 ? (
+        <div className="bg-card border border-border rounded-xl p-10 text-center space-y-3 shadow-xs">
+          <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mx-auto text-muted-foreground">
+            <AlertTriangle className="h-6 w-6" />
+          </div>
+          <div className="space-y-1">
+            <p className="font-heading text-base font-semibold text-foreground">
+              No matching users found
+            </p>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+              {users.length === 0
+                ? "No user accounts registered yet."
+                : "No users match your active filter criteria. Try resetting your search."}
+            </p>
+          </div>
+          {(searchQuery || roleFilter !== "all" || statusFilter !== "all") && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setSearchQuery("");
+                setRoleFilter("all");
+                setStatusFilter("all");
+              }}
+              className="mt-2 text-xs"
+            >
+              Clear all filters
+            </Button>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Desktop Table View (md and above) */}
+          <div className="hidden md:block bg-card border border-border rounded-xl overflow-hidden shadow-xs">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50 border-b border-border text-xs uppercase tracking-wider font-semibold text-muted-foreground">
+                  <tr>
+                    <th className="text-left px-4 py-3.5">User Identity</th>
+                    <th className="text-left px-4 py-3.5">Role</th>
+                    <th className="text-left px-4 py-3.5">Blood Group</th>
+                    <th className="text-left px-4 py-3.5">District</th>
+                    <th className="text-left px-4 py-3.5">Account Status</th>
+                    <th className="text-left px-4 py-3.5">Joined</th>
+                    <th className="text-right px-4 py-3.5">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filteredUsers.map((user) => {
+                    const isCurrentUser = user._id === currentUserId;
+                    return (
+                      <tr
+                        key={user._id}
+                        className="hover:bg-muted/30 transition-colors group"
+                      >
+                        {/* User Identity */}
+                        <td className="px-4 py-3.5">
+                          <div className="flex items-center gap-3">
+                            <div className="h-9 w-9 rounded-full bg-crimson/10 text-crimson flex items-center justify-center font-bold text-xs uppercase shrink-0 border border-crimson/20">
+                              {user.name ? user.name.charAt(0) : "U"}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium text-foreground truncate">
+                                  {user.name}
+                                </span>
+                                {isCurrentUser && (
+                                  <span className="text-[10px] font-semibold tracking-wide bg-primary/10 text-primary px-1.5 py-0.2 rounded border border-primary/20">
+                                    YOU
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {user.email}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Role */}
+                        <td className="px-4 py-3.5">
+                          <span
+                            className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${
+                              user.role === "admin"
+                                ? "bg-crimson/10 text-crimson border border-crimson/20"
+                                : "bg-muted text-muted-foreground border border-border"
+                            }`}
+                          >
+                            {user.role === "admin" ? (
+                              <Shield className="h-3 w-3" />
+                            ) : (
+                              <User className="h-3 w-3" />
+                            )}
+                            <span className="capitalize">{user.role}</span>
+                          </span>
+                        </td>
+
+                        {/* Blood Group */}
+                        <td className="px-4 py-3.5">
+                          {user.bloodGroup ? (
+                            <BloodGroupBadge
+                              bloodGroup={user.bloodGroup as BloodGroup}
+                            />
+                          ) : (
+                            <span className="text-muted-foreground text-xs font-mono">—</span>
+                          )}
+                        </td>
+
+                        {/* District */}
+                        <td className="px-4 py-3.5 text-xs text-foreground">
+                          {user.district ? (
+                            <span className="inline-flex items-center gap-1">
+                              <MapPin className="h-3 w-3 text-muted-foreground" />
+                              {user.district}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground font-mono">—</span>
+                          )}
+                        </td>
+
+                        {/* Account Status */}
+                        <td className="px-4 py-3.5">
+                          {user.banned ? (
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-destructive/10 text-destructive border border-destructive/20">
+                              <Ban className="h-3 w-3" />
+                              Banned
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 border border-teal-500/20">
+                              <span className="h-1.5 w-1.5 rounded-full bg-teal-500 animate-pulse" />
+                              Active
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Joined Date */}
+                        <td className="px-4 py-3.5 font-mono text-xs text-muted-foreground tabular-nums">
+                          {format(new Date(user.createdAt), "MMM dd, yyyy")}
+                        </td>
+
+                        {/* Actions */}
+                        <td className="px-4 py-3.5">
+                          <div className="flex items-center justify-end gap-1.5">
+                            {/* Ban / Unban Button */}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openBanDialog(user)}
+                              disabled={isProcessing || isCurrentUser}
+                              className={`h-8 text-xs px-2.5 touch-manipulation ${
+                                user.banned
+                                  ? "text-teal-600 border-teal-500/30 hover:bg-teal-500/10"
+                                  : "text-destructive border-destructive/30 hover:bg-destructive/10"
+                              }`}
+                              aria-label={
+                                isCurrentUser
+                                  ? "Cannot ban yourself"
+                                  : user.banned
+                                    ? `Unban user ${user.name}`
+                                    : `Ban user ${user.name}`
+                              }
+                              title={
+                                isCurrentUser
+                                  ? "Cannot ban your own account"
+                                  : user.banned
+                                    ? "Unban user"
+                                    : "Ban user"
+                              }
+                            >
+                              {user.banned ? (
+                                <>
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                  Unban
+                                </>
+                              ) : (
+                                <>
+                                  <Ban className="h-3 w-3 mr-1" />
+                                  Ban
+                                </>
+                              )}
+                            </Button>
+
+                            {/* Promote / Demote Role Button */}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openRoleDialog(user)}
+                              disabled={isProcessing || isCurrentUser}
+                              className="h-8 text-xs px-2.5 touch-manipulation"
+                              aria-label={
+                                isCurrentUser
+                                  ? "Cannot change your own role"
+                                  : user.role === "admin"
+                                    ? `Demote ${user.name} to standard user`
+                                    : `Promote ${user.name} to administrator`
+                              }
+                              title={
+                                isCurrentUser
+                                  ? "Cannot change your own role"
+                                  : user.role === "admin"
+                                    ? "Demote to user"
+                                    : "Promote to admin"
+                              }
+                            >
+                              {user.role === "admin" ? (
+                                <>
+                                  <User className="h-3 w-3 mr-1" />
+                                  Demote
+                                </>
+                              ) : (
+                                <>
+                                  <Shield className="h-3 w-3 mr-1 text-crimson" />
+                                  Promote
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Mobile Card View (under md) */}
+          <div className="md:hidden space-y-3">
+            {filteredUsers.map((user) => {
+              const isCurrentUser = user._id === currentUserId;
+              return (
+                <div
+                  key={user._id}
+                  className="bg-card border border-border rounded-xl p-4 shadow-xs space-y-3"
+                >
+                  {/* Header Row with Avatar */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-crimson/10 text-crimson flex items-center justify-center font-bold text-sm uppercase shrink-0 border border-crimson/20">
+                        {user.name ? user.name.charAt(0) : "U"}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="font-heading font-semibold text-foreground text-sm">
+                            {user.name}
+                          </h3>
+                          {isCurrentUser && (
+                            <span className="text-[10px] font-semibold bg-primary/10 text-primary px-1.5 py-0.2 rounded border border-primary/20">
+                              YOU
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
+
+                    {user.bloodGroup && (
+                      <BloodGroupBadge
+                        bloodGroup={user.bloodGroup as BloodGroup}
+                      />
+                    )}
+                  </div>
+
+                  {/* Metadata Chips */}
+                  <div className="grid grid-cols-2 gap-2 text-xs bg-muted/40 p-2.5 rounded-lg border border-border/50">
+                    <div className="space-y-1">
+                      <span className="text-[10px] uppercase font-semibold text-muted-foreground">
+                        Role & Status
+                      </span>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span
+                          className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                            user.role === "admin"
+                              ? "bg-crimson/10 text-crimson border border-crimson/20"
+                              : "bg-muted text-muted-foreground border border-border"
+                          }`}
+                        >
+                          {user.role}
+                        </span>
+                        {user.banned ? (
+                          <span className="text-[11px] font-semibold text-destructive inline-flex items-center gap-0.5">
+                            <Ban className="h-2.5 w-2.5" /> Banned
+                          </span>
+                        ) : (
+                          <span className="text-[11px] font-semibold text-teal-600 inline-flex items-center gap-0.5">
+                            <span className="h-1.5 w-1.5 rounded-full bg-teal-500 animate-pulse" /> Active
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <span className="text-[10px] uppercase font-semibold text-muted-foreground">
+                        District / Joined
+                      </span>
+                      <p className="text-foreground font-medium truncate">
+                        {user.district || "—"}
+                      </p>
+                      <p className="font-mono text-[11px] text-muted-foreground tabular-nums">
+                        {format(new Date(user.createdAt), "MMM dd, yyyy")}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => openBanDialog(user)}
+                      disabled={isProcessing || isCurrentUser}
+                      className={`w-full text-xs h-9 min-h-[36px] touch-manipulation ${
+                        user.banned
+                          ? "text-teal-600 border-teal-500/30 hover:bg-teal-500/10"
+                          : "text-destructive border-destructive/30 hover:bg-destructive/10"
+                      }`}
+                      aria-label={
+                        isCurrentUser
+                          ? "Cannot ban yourself"
+                          : user.banned
+                            ? `Unban ${user.name}`
+                            : `Ban ${user.name}`
+                      }
+                    >
+                      {user.banned ? (
+                        <>
+                          <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
+                          Unban User
+                        </>
+                      ) : (
+                        <>
+                          <Ban className="h-3.5 w-3.5 mr-1" />
+                          Ban User
+                        </>
+                      )}
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => openRoleDialog(user)}
+                      disabled={isProcessing || isCurrentUser}
+                      className="w-full text-xs h-9 min-h-[36px] touch-manipulation"
+                      aria-label={
+                        isCurrentUser
+                          ? "Cannot change your own role"
+                          : user.role === "admin"
+                            ? `Demote ${user.name}`
+                            : `Promote ${user.name}`
+                      }
+                    >
+                      {user.role === "admin" ? (
+                        <>
+                          <User className="h-3.5 w-3.5 mr-1" />
+                          Demote
+                        </>
+                      ) : (
+                        <>
+                          <Shield className="h-3.5 w-3.5 mr-1 text-crimson" />
+                          Promote
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* Ban Reason Dialog */}
+      {dialogType === "ban" && dialogOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="ban-dialog-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-200"
+        >
+          <div className="bg-card border border-border rounded-xl max-w-lg w-full p-6 space-y-4 shadow-xl text-foreground">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center text-destructive shrink-0">
+                <ShieldAlert className="h-5 w-5" />
+              </div>
+              <div>
+                <h3
+                  id="ban-dialog-title"
+                  className="font-heading font-semibold text-lg"
+                >
+                  Ban User Account
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  User: {selectedUser?.name} ({selectedUser?.email})
+                </p>
+              </div>
+            </div>
+
+            <p className="text-sm text-muted-foreground">
+              Banning this user will immediately revoke their access to create requests, respond to emergencies, or manage account resources.
+            </p>
+
+            {/* Quick Reason Chips */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-foreground flex items-center gap-1">
+                <Sparkles className="h-3 w-3 text-crimson" />
+                Select Ban Reason Preset:
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {BAN_PRESET_REASONS.map((reason) => (
+                  <button
+                    key={reason}
+                    type="button"
+                    onClick={() => setBanReason(reason)}
+                    className={`text-xs px-2.5 py-1 rounded-md border transition-colors ${
+                      banReason === reason
+                        ? "bg-destructive text-destructive-foreground border-destructive"
+                        : "bg-muted/60 text-muted-foreground border-border hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    {reason}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Custom Reason Textarea */}
+            <div className="space-y-1.5">
+              <label
+                htmlFor="ban-reason-input"
+                className="text-xs font-semibold text-foreground"
+              >
+                Custom Reason / Audit Log:
+              </label>
+              <textarea
+                id="ban-reason-input"
+                rows={3}
+                value={banReason}
+                onChange={(e) => setBanReason(e.target.value)}
+                placeholder="Type reason for suspension..."
+                className="w-full text-sm p-3 bg-background border border-input rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+            </div>
+
+            {/* Dialog Footer Actions */}
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDialogOpen(false)}
+                disabled={isProcessing}
+              >
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleBanToggle}
+                disabled={isProcessing}
+                variant="destructive"
+              >
+                {isProcessing ? "Suspending..." : "Confirm Account Ban"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Unban Confirmation Dialog */}
+      {dialogType === "unban" && (
+        <ConfirmDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          title="Unban User Account"
+          description={`Are you sure you want to restore full platform access for ${selectedUser?.name}?`}
+          confirmText="Unban User"
+          variant="default"
+          onConfirm={handleBanToggle}
+        />
+      )}
+
+      {/* Role Change Confirmation Dialog */}
+      {dialogType === "role" && (
+        <ConfirmDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          title={
+            selectedUser?.role === "admin"
+              ? "Demote to Standard User"
+              : "Promote to Administrator"
+          }
+          description={
+            selectedUser?.role === "admin"
+              ? `Are you sure you want to remove administrator privileges from ${selectedUser?.name}? They will lose access to the moderation panel and statistics.`
+              : `Are you sure you want to elevate ${selectedUser?.name} to administrator? They will have full access to moderate requests, manage users, and inspect platform data.`
+          }
+          confirmText={
+            selectedUser?.role === "admin"
+              ? "Demote to User"
+              : "Elevate to Admin"
+          }
+          variant={selectedUser?.role === "admin" ? "destructive" : "default"}
+          onConfirm={handleRoleChange}
+        />
+      )}
+    </div>
   );
 }
+

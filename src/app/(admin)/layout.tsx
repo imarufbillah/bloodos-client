@@ -22,7 +22,7 @@ export default function AdminLayout({
 
     // Redirect to login if not authenticated
     if (!session) {
-      router.push("/login");
+      router.push("/signin?callbackUrl=/admin");
       return;
     }
 
@@ -37,10 +37,12 @@ export default function AdminLayout({
   const adminUser = session?.user as ExtendedUser | undefined;
   if (isPending || !session || adminUser?.role !== "admin") {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4"></div>
-          <p className="text-sm text-muted-foreground">Verifying access...</p>
+      <div className="flex min-h-[calc(100dvh-4rem)] items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-7 w-7 animate-spin rounded-full border-2 border-crimson border-t-transparent" />
+          <p className="font-mono text-xs text-muted-foreground">
+            Verifying administrative privileges...
+          </p>
         </div>
       </div>
     );
@@ -49,7 +51,7 @@ export default function AdminLayout({
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground antialiased selection:bg-crimson/20 selection:text-crimson">
       <Navbar />
-      <main className="flex-1 pt-14 pb-16 sm:pt-16 md:pb-0">{children}</main>
+      <main className="flex-1 pt-14 pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pt-16 md:pb-0">{children}</main>
       <Footer />
       <MobileBottomNav />
     </div>

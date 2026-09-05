@@ -20,6 +20,10 @@ export interface ModerationRequest {
   _id: string;
   patientName: string;
   bloodGroup: string;
+  hospitalName?: string;
+  district?: string;
+  urgency?: string;
+  neededByDate?: string;
   status: string;
   createdAt: string;
   userId: string;

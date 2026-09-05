@@ -8,23 +8,24 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { MapPin } from "lucide-react";
 
 interface DistrictChartProps {
   data: Array<{ district: string; count: number }>;
 }
 
-// Color palette using BloodOS tokens for visual distinction
+// Calibrated OKLCH color palette matching BloodOS system tokens
 const COLORS = [
-  "oklch(0.55 0.22 20)", // crimson
-  "oklch(0.52 0.14 195)", // teal
-  "oklch(0.58 0.12 75)", // ochre
-  "oklch(0.65 0.02 270)", // slate-light
-  "oklch(0.45 0.2 20)", // crimson-dark
-  "oklch(0.42 0.12 195)", // teal-dark
-  "oklch(0.48 0.1 75)", // ochre-dark
-  "oklch(0.55 0.02 270)", // slate-medium
-  "oklch(0.35 0.15 20)", // crimson-darker
-  "oklch(0.32 0.1 195)", // teal-darker
+  "oklch(0.55 0.22 25)", // crimson
+  "oklch(0.52 0.14 175)", // teal
+  "oklch(0.65 0.15 75)", // ochre
+  "oklch(0.45 0.18 25)", // crimson dark
+  "oklch(0.42 0.12 175)", // teal dark
+  "oklch(0.55 0.12 75)", // ochre dark
+  "oklch(0.60 0.08 260)", // slate
+  "oklch(0.35 0.14 25)", // crimson deep
+  "oklch(0.32 0.10 175)", // teal deep
+  "oklch(0.50 0.05 260)", // muted slate
 ];
 
 export function DistrictChart({ data }: DistrictChartProps) {
@@ -35,58 +36,59 @@ export function DistrictChart({ data }: DistrictChartProps) {
   const total = topDistricts.reduce((sum, item) => sum + item.count, 0);
 
   return (
-    <div className="bg-paper border border-slate rounded-lg p-6">
-      <h3 className="font-heading text-lg font-semibold text-ink mb-4">
-        Requests by District (Top 10)
-      </h3>
-      <ResponsiveContainer width="100%" height={300}>
-        <PieChart>
-          <Pie
-            data={topDistricts}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={(props) => {
-              const { district, count } = props as unknown as {
-                district: string;
-                count: number;
-              };
-              return `${district}: ${((count / total) * 100).toFixed(1)}%`;
-            }}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="count"
-          >
-            {topDistricts.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "oklch(0.98 0.01 270)",
-              border: "1px solid oklch(0.88 0.01 270)",
-              borderRadius: "6px",
-              fontSize: "13px",
-            }}
-            formatter={(value) => [
-              `${value} requests (${(((value as number) / total) * 100).toFixed(1)}%)`,
-              "Count",
-            ]}
-          />
-          <Legend
-            wrapperStyle={{
-              fontSize: "12px",
-              color: "oklch(0.3 0.02 270)",
-            }}
-            layout="vertical"
-            align="right"
-            verticalAlign="middle"
-          />
-        </PieChart>
-      </ResponsiveContainer>
+    <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
+      <div className="flex items-center justify-between pb-1">
+        <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground flex items-center gap-2">
+          <MapPin className="h-4 w-4 text-ochre" />
+          <span>Regional Distribution (Top 10 Districts)</span>
+        </h3>
+        <span className="font-mono text-[11px] text-muted-foreground">
+          {total} BROADCASTS
+        </span>
+      </div>
+
+      <div className="h-[280px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={topDistricts}
+              cx="50%"
+              cy="50%"
+              innerRadius={50}
+              outerRadius={80}
+              paddingAngle={2}
+              dataKey="count"
+              nameKey="district"
+            >
+              {topDistricts.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "var(--color-card, #ffffff)",
+                borderColor: "var(--color-border, #e5e7eb)",
+                borderRadius: "12px",
+                fontSize: "12px",
+                color: "var(--color-foreground, #000000)",
+              }}
+              formatter={(value) => [
+                `${value} requests (${(((value as number) / (total || 1)) * 100).toFixed(1)}%)`,
+                "Broadcast Volume",
+              ]}
+            />
+            <Legend
+              wrapperStyle={{
+                fontSize: "11px",
+                paddingTop: "6px",
+              }}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
