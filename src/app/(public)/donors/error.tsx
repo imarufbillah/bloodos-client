@@ -26,11 +26,11 @@ export default function Error({ error, reset }: ErrorProps) {
             <AlertCircle className="h-8 w-8" />
           </div>
           <h2 className="font-heading text-2xl font-bold text-foreground mb-2">
-            Failed to Load Donor Registry
+            Unable to Load Donor Directory
           </h2>
           <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
             {error.message ||
-              "An unexpected error occurred while loading donor registry records."}
+              "We couldn't connect to the verified donor registry. Please check your network connection and try again."}
           </p>
           {error.digest && (
             <p className="text-xs text-muted-foreground mb-6 font-mono bg-muted/60 px-3 py-1 rounded-md border border-border">
@@ -47,7 +47,7 @@ export default function Error({ error, reset }: ErrorProps) {
               className={buttonVariants({ variant: "outline", className: "gap-2 flex-1" })}
             >
               <Home className="h-4 w-4" />
-              <span>Return Home</span>
+              <span>Return to Homepage</span>
             </Link>
           </div>
         </div>

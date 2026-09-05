@@ -249,7 +249,7 @@ export default function DonorDirectoryContent({
               className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-all active:scale-[0.98] self-start sm:self-auto"
             >
               <UserPlus className="h-4 w-4" />
-              <span>Join as Donor</span>
+              <span>Register as a Donor</span>
             </Link>
           </div>
         </div>
@@ -259,7 +259,11 @@ export default function DonorDirectoryContent({
       <section className="sticky top-14 z-20 border-b border-border/80 bg-background/95 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-3.5 space-y-3">
           {/* Blood Group Selection Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
+          <div
+            className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar"
+            role="group"
+            aria-label="Filter by blood group"
+          >
             <button
               type="button"
               onClick={() => {
@@ -268,13 +272,14 @@ export default function DonorDirectoryContent({
                 setRecipientGroup("");
                 applyFilters({ bloodGroups: [], page: 1 });
               }}
+              aria-pressed={selectedBloodGroups.length === 0 && !recipientGroup}
               className={`h-8 px-3 rounded-lg text-xs font-mono font-bold shrink-0 transition-colors cursor-pointer ${
                 selectedBloodGroups.length === 0 && !recipientGroup
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
               }`}
             >
-              ALL
+              ALL GROUPS
             </button>
 
             {BLOOD_GROUPS.map((bg) => {
@@ -284,6 +289,8 @@ export default function DonorDirectoryContent({
                   key={bg}
                   type="button"
                   onClick={() => handleBloodGroupToggle(bg)}
+                  aria-pressed={isSelected}
+                  aria-label={`Blood group ${bg}`}
                   className={`h-8 px-3 rounded-lg text-xs font-mono font-bold shrink-0 transition-colors cursor-pointer ${
                     isSelected
                       ? "bg-primary text-primary-foreground"
@@ -302,12 +309,13 @@ export default function DonorDirectoryContent({
               <select
                 value={recipientGroup}
                 onChange={(e) => handleRecipientGroupSelect(e.target.value)}
+                aria-label="Filter by recipient blood compatibility"
                 className="w-full h-9 rounded-lg border border-border bg-card px-2.5 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
               >
-                <option value="">🎯 Match for recipient blood type...</option>
+                <option value="">Find compatible donors for recipient...</option>
                 {BLOOD_GROUPS.map((bg) => (
                   <option key={bg} value={bg}>
-                    Compatible with Recipient: {bg}
+                    Compatible Donors for Recipient ({bg})
                   </option>
                 ))}
               </select>
@@ -317,9 +325,10 @@ export default function DonorDirectoryContent({
               <select
                 value={selectedDistrict}
                 onChange={(e) => handleDistrictChange(e.target.value)}
+                aria-label="Filter by district"
                 className="w-full h-9 rounded-lg border border-border bg-card px-2.5 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
               >
-                <option value="">📍 All 64 Districts</option>
+                <option value="">All 64 Districts</option>
                 {DISTRICTS.map((district) => (
                   <option key={district} value={district}>
                     {district}
@@ -334,7 +343,8 @@ export default function DonorDirectoryContent({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search donor by name..."
+                placeholder="Search donors by name..."
+                aria-label="Search donors by name"
                 className="w-full h-9 rounded-lg border border-border bg-card pl-8 pr-7 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
               {searchQuery && (
@@ -344,6 +354,7 @@ export default function DonorDirectoryContent({
                     setSearchQuery("");
                     applyFilters({ search: "", page: 1 });
                   }}
+                  aria-label="Clear search input"
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   <X className="h-3.5 w-3.5" />
@@ -356,11 +367,12 @@ export default function DonorDirectoryContent({
                 <button
                   type="button"
                   onClick={handleResetFilters}
+                  aria-label="Reset all active filters"
                   className="h-9 w-full lg:w-9 rounded-lg border border-border bg-muted/60 hover:bg-muted flex items-center justify-center text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                   title="Reset all filters"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
-                  <span className="lg:hidden ml-1.5">Reset</span>
+                  <span className="lg:hidden ml-1.5">Reset Filters</span>
                 </button>
               )}
             </div>
@@ -374,7 +386,7 @@ export default function DonorDirectoryContent({
         {hasActiveFilters && (
           <div className="flex flex-wrap items-center gap-1.5 mb-6 text-xs text-muted-foreground">
             <span className="flex items-center gap-1 font-mono">
-              <Filter className="h-3 w-3" /> Filters:
+              <Filter className="h-3 w-3" /> Active Filters:
             </span>
 
             {recipientGroup && (
@@ -383,6 +395,7 @@ export default function DonorDirectoryContent({
                 <button
                   type="button"
                   onClick={() => handleRecipientGroupSelect("")}
+                  aria-label={`Remove recipient ${recipientGroup} filter`}
                   className="hover:opacity-75"
                 >
                   <X className="h-3 w-3" />
@@ -392,13 +405,14 @@ export default function DonorDirectoryContent({
 
             {selectedBloodGroups.length > 0 && !recipientGroup && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted text-foreground border border-border font-mono">
-                {selectedBloodGroups.join(", ")}
+                Groups: {selectedBloodGroups.join(", ")}
                 <button
                   type="button"
                   onClick={() => {
                     setSelectedBloodGroups([]);
                     applyFilters({ bloodGroups: [], page: 1 });
                   }}
+                  aria-label="Remove blood group filter"
                   className="hover:opacity-75"
                 >
                   <X className="h-3 w-3" />
@@ -408,10 +422,11 @@ export default function DonorDirectoryContent({
 
             {selectedDistrict && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-muted text-foreground border border-border">
-                {selectedDistrict}
+                District: {selectedDistrict}
                 <button
                   type="button"
                   onClick={() => handleDistrictChange("")}
+                  aria-label={`Remove ${selectedDistrict} district filter`}
                   className="hover:opacity-75"
                 >
                   <X className="h-3 w-3" />
@@ -428,6 +443,7 @@ export default function DonorDirectoryContent({
                     setSearchQuery("");
                     applyFilters({ search: "", page: 1 });
                   }}
+                  aria-label="Remove search filter"
                   className="hover:opacity-75"
                 >
                   <X className="h-3 w-3" />
@@ -450,18 +466,18 @@ export default function DonorDirectoryContent({
           <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-border bg-card/40 my-4">
             <Users className="h-10 w-10 text-muted-foreground/60 mb-3" />
             <h2 className="font-heading text-lg font-bold text-foreground mb-1">
-              No Donors Found
+              {hasActiveFilters ? "No Matching Donors Found" : "No Donors Registered Yet"}
             </h2>
-            <p className="text-xs text-muted-foreground max-w-sm mb-4">
+            <p className="text-xs text-muted-foreground max-w-sm mb-4 leading-relaxed">
               {hasActiveFilters
-                ? "No verified donors matched your filter criteria. Try expanding your search."
+                ? "No verified donors matched your current filter criteria. Try expanding your search to neighboring districts or clearing some filters."
                 : "There are currently no active registered blood donors in the directory."}
             </p>
 
             {hasActiveFilters ? (
               <Button onClick={handleResetFilters} variant="outline" size="sm" className="gap-1.5">
                 <RotateCcw className="h-3.5 w-3.5" />
-                <span>Reset Filters</span>
+                <span>Clear All Filters</span>
               </Button>
             ) : (
               <Link
@@ -549,12 +565,12 @@ export default function DonorDirectoryContent({
                     <span>{activeModalDonor.district}</span>
                   </div>
                 </div>
-                <span className="text-[11px] text-teal font-medium">Verified Active</span>
+                <span className="text-[11px] text-teal font-medium">Verified Donor</span>
               </div>
 
               <div className="rounded-xl border border-border bg-card p-4 text-center space-y-1">
                 <div className="text-[11px] text-muted-foreground font-mono uppercase tracking-wider">
-                  Mobile Number
+                  Direct Phone Number
                 </div>
                 <div className="font-mono text-2xl font-bold tracking-wider text-foreground">
                   {unmaskedContact.phone}
@@ -570,6 +586,7 @@ export default function DonorDirectoryContent({
                 <a
                   href={`tel:${unmaskedContact.phone}`}
                   onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.SUCCESS)}
+                  aria-label={`Call donor directly at ${unmaskedContact.phone}`}
                   className="h-10 rounded-lg bg-teal text-paper font-semibold text-xs flex items-center justify-center gap-2 hover:bg-teal/90 transition-transform active:scale-[0.98]"
                 >
                   <PhoneCall className="h-4 w-4" />
@@ -579,6 +596,7 @@ export default function DonorDirectoryContent({
                 <button
                   type="button"
                   onClick={() => handleCopyPhone(unmaskedContact.phone)}
+                  aria-label="Copy phone number to clipboard"
                   className="h-10 rounded-lg border border-border bg-card font-semibold text-xs text-foreground flex items-center justify-center gap-2 hover:bg-muted/60 transition-transform active:scale-[0.98] cursor-pointer"
                 >
                   {copiedPhone ? (
@@ -598,7 +616,7 @@ export default function DonorDirectoryContent({
               <div className="rounded-lg bg-muted/50 border border-border p-2.5 flex items-start gap-2 text-[11px] text-muted-foreground">
                 <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-amber-500" />
                 <p className="leading-relaxed">
-                  All disclosures are logged. Contact donors strictly for urgent medical donation coordination.
+                  <strong>Privacy & Safety Notice:</strong> All disclosures are logged. Contact donors strictly for urgent medical blood donation coordination.
                 </p>
               </div>
             </div>
@@ -614,7 +632,7 @@ export default function DonorDirectoryContent({
               }}
               className="w-full text-xs"
             >
-              Close
+              Done
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -63,10 +63,11 @@ export function DonorCard({
       style={{
         animationDelay: `${Math.min(staggerIndex * 30, 300)}ms`,
       }}
+      aria-label={`Donor profile for ${donor.name}, blood group ${donor.bloodGroup}`}
     >
       {/* Main Content Area */}
       <div className="space-y-4">
-        {/* Header: District + Eligibility Status */}
+        {/* Header: District Location + Biological Eligibility Status */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <MapPin className="h-3.5 w-3.5 text-teal shrink-0" aria-hidden="true" />
@@ -80,9 +81,12 @@ export function DonorCard({
           />
         </div>
 
-        {/* Donor Identity: Hero Blood Badge + Name */}
+        {/* Donor Identity: Blood Group + Name + Masked Phone */}
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground font-heading text-lg font-bold shadow-xs">
+          <div
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground font-heading text-lg font-bold shadow-xs"
+            aria-label={`Blood type ${donor.bloodGroup}`}
+          >
             <span>{donor.bloodGroup}</span>
           </div>
 
@@ -96,7 +100,7 @@ export function DonorCard({
           </div>
         </div>
 
-        {/* Clinical History & Readiness Telemetry */}
+        {/* Clinical History & Eligibility Telemetry */}
         <div className="space-y-2 pt-2 border-t border-border/60 text-xs">
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground flex items-center gap-1.5">
@@ -106,7 +110,7 @@ export function DonorCard({
             <span className="font-mono font-semibold tabular-nums text-foreground">
               {donor.lastDonationDate
                 ? `${daysSinceDonation} ${daysSinceDonation === 1 ? "day" : "days"} ago`
-                : "No prior records"}
+                : "No previous records"}
             </span>
           </div>
 
@@ -117,7 +121,7 @@ export function DonorCard({
               ) : (
                 <Clock className="h-3.5 w-3.5 text-amber-500" aria-hidden="true" />
               )}
-              Status
+              Eligibility
             </span>
             <span
               className={`font-medium ${
@@ -126,7 +130,9 @@ export function DonorCard({
                   : "text-muted-foreground"
               }`}
             >
-              {getEligibilityMessage(eligibility)}
+              {eligibility.eligible
+                ? "Eligible to donate today"
+                : `Cooldown (${eligibility.daysRemaining}d remaining)`}
             </span>
           </div>
         </div>
@@ -138,17 +144,18 @@ export function DonorCard({
           type="button"
           onClick={handleRequestContact}
           disabled={isRequestingContact}
+          aria-label={`Request contact details for donor ${donor.name}`}
           className="w-full h-10 px-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-60 disabled:pointer-events-none cursor-pointer"
         >
           {isRequestingContact ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Retrieving...</span>
+              <span>Retrieving Contact...</span>
             </>
           ) : (
             <>
               <PhoneCall className="h-4 w-4" />
-              <span>Request Contact</span>
+              <span>Request Contact Details</span>
             </>
           )}
         </button>
@@ -194,7 +201,7 @@ function EligibilityBadge({
   return (
     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-muted text-muted-foreground border border-border/60">
       <Sparkles className="h-3 w-3" aria-hidden="true" />
-      <span>First-Time</span>
+      <span>First-Time Donor</span>
     </div>
   );
 }
