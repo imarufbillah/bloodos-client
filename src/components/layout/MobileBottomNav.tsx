@@ -17,7 +17,7 @@ export function MobileBottomNav() {
         {/* Home */}
         <Link
           href="/"
-          className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-colors ${
+          className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-150 active:scale-90 ${
             pathname === "/"
               ? "text-crimson"
               : "text-muted-foreground hover:text-foreground"
@@ -30,7 +30,7 @@ export function MobileBottomNav() {
         {/* Requests */}
         <Link
           href="/requests"
-          className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-colors ${
+          className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-150 active:scale-90 ${
             pathname.startsWith("/requests") && pathname !== "/requests/add"
               ? "text-crimson"
               : "text-muted-foreground hover:text-foreground"
@@ -43,9 +43,9 @@ export function MobileBottomNav() {
         {/* Central SOS Action */}
         <Link
           href="/requests/add"
-          className="flex -translate-y-3 flex-col items-center justify-center"
+          className="flex -translate-y-3 flex-col items-center justify-center group"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-crimson text-paper shadow-lg shadow-crimson/30 ring-4 ring-background transition-transform active:scale-95">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-crimson text-paper shadow-lg shadow-crimson/30 ring-4 ring-background transition-transform duration-150 active:scale-90 group-hover:scale-105">
             <PlusCircle className="h-6 w-6" />
           </div>
           <span className="text-[10px] font-extrabold uppercase tracking-tight text-crimson mt-0.5">
@@ -56,7 +56,7 @@ export function MobileBottomNav() {
         {/* Donors */}
         <Link
           href="/donors"
-          className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-colors ${
+          className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-150 active:scale-90 ${
             pathname.startsWith("/donors")
               ? "text-crimson"
               : "text-muted-foreground hover:text-foreground"
@@ -69,7 +69,7 @@ export function MobileBottomNav() {
         {/* Profile / Sign In */}
         <Link
           href={user ? "/profile" : "/signin"}
-          className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-colors ${
+          className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-150 active:scale-90 ${
             pathname.startsWith("/profile") || pathname.startsWith("/signin")
               ? "text-crimson"
               : "text-muted-foreground hover:text-foreground"

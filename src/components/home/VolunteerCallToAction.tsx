@@ -55,13 +55,13 @@ export function VolunteerCallToAction() {
             {/* Actions */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-4">
               <Link href="/signup">
-                <Button size="lg" className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold gap-2 h-12 px-7">
+                <Button size="lg" className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold gap-2 h-12 px-7 transition-all duration-150 active:scale-[0.98] group">
                   <span>Register as a Donor</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </Button>
               </Link>
               <Link href="/about">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto border-border hover:bg-muted font-medium h-12 px-6">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto border-border hover:bg-muted font-medium h-12 px-6 transition-all duration-150 active:scale-[0.98]">
                   <span>Learn About Donor Safety</span>
                 </Button>
               </Link>

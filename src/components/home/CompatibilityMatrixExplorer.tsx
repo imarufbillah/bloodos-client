@@ -71,10 +71,10 @@ export function CompatibilityMatrixExplorer() {
                     key={bg}
                     type="button"
                     onClick={() => setActiveGroup(bg)}
-                    className={`h-12 rounded-lg font-mono font-bold text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson ${
+                    className={`h-12 rounded-lg font-mono font-bold text-sm transition-all duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson ${
                       isSelected
-                        ? "bg-crimson text-paper shadow-md scale-105"
-                        : "bg-muted/70 hover:bg-muted text-foreground border border-border/80"
+                        ? "bg-crimson text-paper shadow-md scale-105 animate-chip-pop ring-2 ring-crimson ring-offset-1"
+                        : "bg-muted/70 hover:bg-muted text-foreground border border-border/80 hover:border-border"
                     }`}
                   >
                     {bg}
@@ -85,7 +85,7 @@ export function CompatibilityMatrixExplorer() {
 
             {/* Special Designation Banner */}
             {isUniversalDonor && (
-              <div className="rounded-xl border border-crimson/30 bg-crimson/10 p-3.5 flex items-center gap-3 text-xs text-crimson font-medium">
+              <div className="rounded-xl border border-crimson/30 bg-crimson/10 p-3.5 flex items-center gap-3 text-xs text-crimson font-medium animate-in fade-in-0 slide-in-from-top-1 duration-200">
                 <Sparkles className="h-5 w-5 shrink-0" />
                 <span>
                   <strong>O- is the Universal Red Blood Cell Donor:</strong> Can be transfused to patients of ANY blood group in dire emergencies.
@@ -93,7 +93,7 @@ export function CompatibilityMatrixExplorer() {
               </div>
             )}
             {isUniversalReceiver && (
-              <div className="rounded-xl border border-teal/30 bg-teal/10 p-3.5 flex items-center gap-3 text-xs text-teal font-medium">
+              <div className="rounded-xl border border-teal/30 bg-teal/10 p-3.5 flex items-center gap-3 text-xs text-teal font-medium animate-in fade-in-0 slide-in-from-top-1 duration-200">
                 <Sparkles className="h-5 w-5 shrink-0" />
                 <span>
                   <strong>AB+ is the Universal Recipient:</strong> Can safely receive red blood cells from ANY blood group.
@@ -106,7 +106,7 @@ export function CompatibilityMatrixExplorer() {
               {/* Compatible Donors (Can receive from) */}
               <div className="rounded-xl border border-border/80 bg-muted/40 p-4 space-y-3">
                 <div className="text-xs font-bold uppercase tracking-wider text-foreground/80 flex items-center gap-1.5">
-                  <span className="flex h-2 w-2 rounded-full bg-teal" />
+                  <span className="flex h-2 w-2 rounded-full bg-teal animate-pulse" />
                   <span>Can Receive Blood From:</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -115,10 +115,10 @@ export function CompatibilityMatrixExplorer() {
                     return (
                       <span
                         key={bg}
-                        className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-mono font-bold ${
+                        className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-mono font-bold transition-all duration-200 ${
                           isAllowed
-                            ? "bg-teal/15 text-teal border border-teal/30"
-                            : "bg-muted text-muted-foreground/40 border border-transparent line-through"
+                            ? "bg-teal/15 text-teal border border-teal/30 scale-100 opacity-100 shadow-xs"
+                            : "bg-muted text-muted-foreground/30 border border-transparent scale-95 opacity-50 line-through"
                         }`}
                       >
                         {bg}
@@ -131,7 +131,7 @@ export function CompatibilityMatrixExplorer() {
               {/* Compatible Recipients (Can give to) */}
               <div className="rounded-xl border border-border/80 bg-muted/40 p-4 space-y-3">
                 <div className="text-xs font-bold uppercase tracking-wider text-foreground/80 flex items-center gap-1.5">
-                  <span className="flex h-2 w-2 rounded-full bg-crimson" />
+                  <span className="flex h-2 w-2 rounded-full bg-crimson animate-pulse" />
                   <span>Can Donate Blood To:</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -140,10 +140,10 @@ export function CompatibilityMatrixExplorer() {
                     return (
                       <span
                         key={bg}
-                        className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-mono font-bold ${
+                        className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-mono font-bold transition-all duration-200 ${
                           isAllowed
-                            ? "bg-crimson/15 text-crimson border border-crimson/30"
-                            : "bg-muted text-muted-foreground/40 border border-transparent line-through"
+                            ? "bg-crimson/15 text-crimson border border-crimson/30 scale-100 opacity-100 shadow-xs"
+                            : "bg-muted text-muted-foreground/30 border border-transparent scale-95 opacity-50 line-through"
                         }`}
                       >
                         {bg}
@@ -191,20 +191,20 @@ export function CompatibilityMatrixExplorer() {
             </div>
 
             {/* Eligibility Result Box */}
-            <div className={`rounded-xl border p-4 space-y-2.5 ${
+            <div className={`rounded-xl border p-4 space-y-2.5 transition-all duration-300 ${
               isEligibleToDonate
-                ? "border-teal/30 bg-teal/5 text-teal"
-                : "border-ochre/30 bg-ochre/5 text-foreground"
+                ? "border-teal/30 bg-teal/5 text-teal shadow-xs scale-[1.01]"
+                : "border-ochre/30 bg-ochre/5 text-foreground scale-100"
             }`}>
               <div className="flex items-center gap-2">
                 {isEligibleToDonate ? (
                   <>
-                    <CheckCircle2 className="h-5 w-5 text-teal shrink-0" />
+                    <CheckCircle2 className="h-5 w-5 text-teal shrink-0 animate-in zoom-in-75 duration-200" />
                     <span className="font-bold text-sm text-teal">Eligible to Donate Blood</span>
                   </>
                 ) : (
                   <>
-                    <Clock className="h-5 w-5 text-ochre shrink-0" />
+                    <Clock className="h-5 w-5 text-ochre shrink-0 animate-in zoom-in-75 duration-200" />
                     <span className="font-bold text-sm text-foreground">Cooldown in Progress ({daysUntilEligible} days left)</span>
                   </>
                 )}

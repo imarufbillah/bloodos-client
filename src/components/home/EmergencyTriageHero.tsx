@@ -74,7 +74,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
 
       <div className="container relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
         {/* Live Network Status Indicator */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 animate-triage-1">
           <div className="inline-flex items-center gap-2 rounded-full border border-crimson/25 bg-crimson/5 px-3.5 py-1 text-xs font-semibold text-crimson">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-crimson opacity-75" />
@@ -84,7 +84,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
           </div>
 
           <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-muted-foreground">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal" />
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal animate-pulse" />
             <span>64 DISTRICT COORDINATION ACTIVE</span>
           </div>
         </div>
@@ -93,7 +93,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
           {/* Left Column: Direct Hook & Crisis Positioning */}
           <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center space-y-6">
-            <div className="space-y-4">
+            <div className="space-y-4 animate-triage-2">
               <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.06]">
                 Minutes save lives. <br />
                 <span className="text-crimson">Direct blood triage</span> for Bangladesh.
@@ -104,11 +104,11 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
             </div>
 
             {/* Instant Emergency Actions */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1 animate-triage-3">
               <Link href="/requests/add" className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
-                  className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold shadow-md shadow-crimson/20 gap-2.5 h-12 px-7 text-base"
+                  className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold shadow-md shadow-crimson/20 gap-2.5 h-12 px-7 text-base transition-all duration-150 active:scale-[0.98]"
                 >
                   <AlertCircle className="h-5 w-5 shrink-0" />
                   <span>Post Emergency Request</span>
@@ -119,7 +119,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="w-full sm:w-auto border-border hover:bg-muted font-medium h-12 px-7 text-base gap-2"
+                  className="w-full sm:w-auto border-border hover:bg-muted font-medium h-12 px-7 text-base gap-2 transition-all duration-150 active:scale-[0.98]"
                 >
                   <Activity className="h-4 w-4 text-crimson" />
                   <span>View Live Urgent Feed</span>
@@ -128,9 +128,9 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
             </div>
 
             {/* Real-time Triage Stat Metrics */}
-            <div className="pt-6 border-t border-border/70 grid grid-cols-2 sm:grid-cols-4 gap-6">
+            <div className="pt-6 border-t border-border/70 grid grid-cols-2 sm:grid-cols-4 gap-6 animate-triage-4">
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-crimson tabular-nums">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-crimson tabular-nums transition-transform duration-200 hover:scale-105">
                   {isLoadingStats ? "—" : stats?.activeRequests ?? 0}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -139,7 +139,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               </div>
 
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tabular-nums">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tabular-nums transition-transform duration-200 hover:scale-105">
                   {isLoadingStats ? "—" : `${stats?.totalDonors ?? 0}+`}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -148,7 +148,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               </div>
 
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-teal tabular-nums">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-teal tabular-nums transition-transform duration-200 hover:scale-105">
                   {isLoadingStats ? "—" : `${stats?.fulfilledRequests ?? 0}+`}
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -157,7 +157,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
               </div>
 
               <div className="space-y-1">
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tabular-nums">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tabular-nums transition-transform duration-200 hover:scale-105">
                   64
                 </div>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -168,8 +168,8 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
           </div>
 
           {/* Right Column: Interactive Emergency Triage Console */}
-          <div className="lg:col-span-5 xl:col-span-5">
-            <div className="rounded-2xl border-2 border-border/80 bg-card p-6 sm:p-7 shadow-xl shadow-foreground/5 relative">
+          <div className="lg:col-span-5 xl:col-span-5 animate-triage-3">
+            <div className="rounded-2xl border-2 border-border/80 bg-card p-6 sm:p-7 shadow-xl shadow-foreground/5 relative transition-all duration-200 hover:border-border">
               <div className="flex items-center justify-between border-b border-border/80 pb-4 mb-5">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-crimson/10 text-crimson">
@@ -210,10 +210,10 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                           key={bg}
                           type="button"
                           onClick={() => setSelectedBloodGroup(isSelected ? "" : bg)}
-                          className={`h-11 rounded-lg font-mono font-bold text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson ${
+                          className={`h-11 rounded-lg font-mono font-bold text-sm transition-all duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson ${
                             isSelected
-                              ? "bg-crimson text-paper shadow-md scale-[1.02] ring-2 ring-crimson ring-offset-1"
-                              : "bg-muted/70 hover:bg-muted text-foreground border border-border/80"
+                              ? "bg-crimson text-paper shadow-md scale-[1.02] ring-2 ring-crimson ring-offset-1 animate-chip-pop"
+                              : "bg-muted/70 hover:bg-muted text-foreground border border-border/80 hover:border-border"
                           }`}
                         >
                           {bg}
@@ -264,7 +264,7 @@ export function EmergencyTriageHero({ stats, isLoadingStats }: EmergencyTriageHe
                         className="fixed inset-0 z-20" 
                         onClick={() => setIsDistrictDropdownOpen(false)}
                       />
-                      <div className="absolute top-full left-0 right-0 z-30 mt-1 max-h-52 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-lg">
+                      <div className="absolute top-full left-0 right-0 z-30 mt-1 max-h-52 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-lg animate-in fade-in-0 zoom-in-95 duration-150">
                         {filteredDistricts.length === 0 ? (
                           <div className="p-3 text-center text-xs text-muted-foreground">
                             No district found

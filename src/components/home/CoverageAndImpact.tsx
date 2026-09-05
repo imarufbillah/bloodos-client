@@ -67,10 +67,10 @@ export function CoverageAndImpact() {
                   key={div.name}
                   type="button"
                   onClick={() => setSelectedDivision(div.name)}
-                  className={`flex flex-col items-center justify-center p-3.5 rounded-xl border text-center transition-all ${
+                  className={`flex flex-col items-center justify-center p-3.5 rounded-xl border text-center transition-all duration-150 active:scale-95 ${
                     isSelected
-                      ? "border-crimson bg-crimson/10 text-crimson font-bold shadow-sm scale-102"
-                      : "border-border/80 bg-muted/40 hover:bg-muted text-foreground text-xs font-medium"
+                      ? "border-crimson bg-crimson/10 text-crimson font-bold shadow-sm scale-102 ring-1 ring-crimson/30"
+                      : "border-border/80 bg-muted/40 hover:bg-muted text-foreground text-xs font-medium hover:border-border"
                   }`}
                 >
                   <span className="text-sm font-semibold">{div.name}</span>
@@ -81,7 +81,7 @@ export function CoverageAndImpact() {
           </div>
 
           {/* District Badges of Selected Division */}
-          <div className="rounded-xl border border-border/70 bg-muted/20 p-6 space-y-3">
+          <div className="rounded-xl border border-border/70 bg-muted/20 p-6 space-y-3 transition-all duration-200">
             <div className="flex items-center justify-between text-xs font-semibold text-foreground">
               <span>Districts in {selectedDivision} Division ({activeDistricts.length})</span>
               <span className="text-muted-foreground font-normal text-[11px]">Click a district to find active donors</span>
@@ -91,7 +91,7 @@ export function CoverageAndImpact() {
                 <Link
                   key={district}
                   href={`/donors?district=${encodeURIComponent(district)}`}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-background px-3.5 py-2 text-xs font-medium text-foreground hover:border-crimson hover:text-crimson hover:bg-crimson/5 transition-all shadow-xs"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-background px-3.5 py-2 text-xs font-medium text-foreground hover:border-crimson hover:text-crimson hover:bg-crimson/5 hover:-translate-y-0.5 transition-all duration-150 shadow-xs"
                 >
                   <MapPin className="h-3 w-3 text-muted-foreground" />
                   <span>{district}</span>

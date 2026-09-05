@@ -111,7 +111,10 @@ export function LiveEmergencyRequests() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="flex h-2 w-2 rounded-full bg-crimson" />
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-crimson opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-crimson" />
+              </span>
               <span className="font-mono text-xs font-semibold uppercase tracking-wider text-crimson">
                 Real-Time Hospital Dispatch
               </span>
@@ -125,7 +128,7 @@ export function LiveEmergencyRequests() {
           </div>
 
           <Link href="/requests" className="shrink-0">
-            <Button variant="outline" size="sm" className="gap-2 font-medium border-border">
+            <Button variant="outline" size="sm" className="gap-2 font-medium border-border transition-all duration-150 active:scale-[0.98]">
               <span>View All Requests</span>
               <ArrowRight className="h-4 w-4" />
             </Button>
@@ -137,7 +140,7 @@ export function LiveEmergencyRequests() {
           {requests.map((req) => (
             <div
               key={req.id}
-              className="relative flex flex-col justify-between rounded-xl border border-border bg-card p-4 transition-all hover:border-crimson/40 hover:shadow-md"
+              className="relative flex flex-col justify-between rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-1 hover:border-crimson/40 hover:shadow-lg"
             >
               {/* Top Row: Blood Group & Urgency Badge */}
               <div>
@@ -177,10 +180,10 @@ export function LiveEmergencyRequests() {
                   <Button 
                     size="sm" 
                     variant="secondary"
-                    className="w-full text-xs font-semibold justify-between group h-9"
+                    className="w-full text-xs font-semibold justify-between group h-9 transition-all duration-150 active:scale-[0.98]"
                   >
                     <span>Respond / Details</span>
-                    <HeartHandshake className="h-3.5 w-3.5 text-crimson group-hover:scale-110 transition-transform" />
+                    <HeartHandshake className="h-3.5 w-3.5 text-crimson transition-transform duration-200 group-hover:scale-125" />
                   </Button>
                 </Link>
               </div>

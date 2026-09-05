@@ -58,11 +58,11 @@ export function CoordinationProtocol() {
             return (
               <div
                 key={item.step}
-                className="relative rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm flex flex-col justify-between space-y-6 hover:border-crimson/30 transition-all"
+                className="group relative rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm flex flex-col justify-between space-y-6 hover:border-crimson/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-200"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-crimson/10 text-crimson">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-crimson/10 text-crimson transition-transform duration-200 group-hover:scale-110">
                       <Icon className="h-6 w-6" />
                     </div>
                     <span className="font-mono text-xs font-bold text-muted-foreground bg-muted px-2.5 py-1 rounded-md">
@@ -92,14 +92,14 @@ export function CoordinationProtocol() {
         </div>
 
         {/* Bottom Fast Action Callout */}
-        <div className="mt-12 rounded-2xl border border-border bg-muted/40 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="mt-12 rounded-2xl border border-border bg-muted/40 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 transition-all duration-200 hover:border-border">
           <div className="space-y-1 text-center sm:text-left">
             <h4 className="text-base font-bold text-foreground">Need urgent blood at a hospital right now?</h4>
             <p className="text-xs sm:text-sm text-muted-foreground">Post your requirement in under a minute without account delays.</p>
           </div>
           <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto">
             <Link href="/requests/add" className="w-full sm:w-auto">
-              <Button className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold gap-2 h-11 px-6">
+              <Button className="w-full sm:w-auto bg-crimson hover:bg-crimson/90 text-paper font-semibold gap-2 h-11 px-6 transition-all duration-150 active:scale-[0.98]">
                 <span>Create SOS Request</span>
                 <ArrowRight className="h-4 w-4" />
               </Button>
