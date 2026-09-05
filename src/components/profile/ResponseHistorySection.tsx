@@ -227,6 +227,7 @@ export function ResponseHistorySection({
                       <Button
                         variant="outline"
                         size="sm"
+                        aria-label={`View request details for ${req?.patientName ? `patient ${req.patientName}` : "emergency request"}`}
                         className="h-8 px-2.5 rounded-lg border-border/80 text-xs font-semibold gap-1.5"
                       >
                         <span>View Request</span>

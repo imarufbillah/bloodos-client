@@ -48,10 +48,17 @@ export function ProfileContent({
 
         {/* 2. Tactical Segmented Command Tabs */}
         <div className="sticky top-14 z-20 -mx-4 sm:mx-0 px-4 sm:px-0 bg-background/95 backdrop-blur-md pt-2 pb-2">
-          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-muted/50 border border-border overflow-x-auto no-scrollbar touch-manipulation">
-            
+          <div
+            role="tablist"
+            aria-label="Profile navigation sections"
+            className="flex items-center gap-1.5 p-1 rounded-2xl bg-muted/50 border border-border overflow-x-auto no-scrollbar touch-manipulation"
+          >
             <button
               type="button"
+              role="tab"
+              id="tab-overview"
+              aria-selected={activeTab === "overview"}
+              aria-controls="panel-overview"
               onClick={() => handleTabSelect("overview")}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all touch-manipulation ${
                 activeTab === "overview"
@@ -65,6 +72,10 @@ export function ProfileContent({
 
             <button
               type="button"
+              role="tab"
+              id="tab-requests"
+              aria-selected={activeTab === "requests"}
+              aria-controls="panel-requests"
               onClick={() => handleTabSelect("requests")}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all touch-manipulation ${
                 activeTab === "requests"
@@ -75,7 +86,7 @@ export function ProfileContent({
               <Heart className="h-3.5 w-3.5 text-crimson shrink-0" />
               <span>My Requests</span>
               {initialAnalytics?.totalRequests > 0 && (
-                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-muted text-muted-foreground">
+                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-muted text-muted-foreground tabular-nums">
                   {initialAnalytics.totalRequests}
                 </span>
               )}
@@ -83,6 +94,10 @@ export function ProfileContent({
 
             <button
               type="button"
+              role="tab"
+              id="tab-responses"
+              aria-selected={activeTab === "responses"}
+              aria-controls="panel-responses"
               onClick={() => handleTabSelect("responses")}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all touch-manipulation ${
                 activeTab === "responses"
@@ -93,7 +108,7 @@ export function ProfileContent({
               <Users className="h-3.5 w-3.5 text-teal shrink-0" />
               <span>Volunteer Responses</span>
               {initialAnalytics?.totalResponses > 0 && (
-                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-muted text-muted-foreground">
+                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-muted text-muted-foreground tabular-nums">
                   {initialAnalytics.totalResponses}
                 </span>
               )}
@@ -101,6 +116,10 @@ export function ProfileContent({
 
             <button
               type="button"
+              role="tab"
+              id="tab-donations"
+              aria-selected={activeTab === "donations"}
+              aria-controls="panel-donations"
               onClick={() => handleTabSelect("donations")}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all touch-manipulation ${
                 activeTab === "donations"
@@ -111,7 +130,7 @@ export function ProfileContent({
               <Droplet className="h-3.5 w-3.5 text-ochre shrink-0" />
               <span>Donation Log</span>
               {initialAnalytics?.totalDonations > 0 && (
-                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-muted text-muted-foreground">
+                <span className="font-mono text-[10px] px-1.5 py-0.2 rounded-full bg-muted text-muted-foreground tabular-nums">
                   {initialAnalytics.totalDonations}
                 </span>
               )}
@@ -119,6 +138,10 @@ export function ProfileContent({
 
             <button
               type="button"
+              role="tab"
+              id="tab-settings"
+              aria-selected={activeTab === "settings"}
+              aria-controls="panel-settings"
               onClick={() => handleTabSelect("settings")}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all touch-manipulation ${
                 activeTab === "settings"
@@ -129,12 +152,16 @@ export function ProfileContent({
               <Settings className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
               <span>Settings</span>
             </button>
-
           </div>
         </div>
 
         {/* 3. Tab Content Viewport */}
-        <div className="rounded-2xl border border-border bg-card p-5 sm:p-7 md:p-8 shadow-xs">
+        <div
+          role="tabpanel"
+          id={`panel-${activeTab}`}
+          aria-labelledby={`tab-${activeTab}`}
+          className="rounded-2xl border border-border bg-card p-5 sm:p-7 md:p-8 shadow-xs"
+        >
           {activeTab === "overview" && (
             <UserAnalyticsDashboard analytics={initialAnalytics} />
           )}

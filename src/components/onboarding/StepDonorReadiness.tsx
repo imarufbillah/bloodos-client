@@ -74,6 +74,8 @@ export function StepDonorReadiness({
       <div
         role="button"
         tabIndex={0}
+        aria-pressed={isDonor}
+        aria-label="Volunteer as an active whole blood donor"
         onClick={handleToggleDonor}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -202,6 +204,7 @@ export function StepDonorReadiness({
         <Button
           type="button"
           variant="outline"
+          aria-label="Go back to step 1"
           onClick={() => {
             triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
             onBack();
@@ -223,11 +226,11 @@ export function StepDonorReadiness({
           className="flex-1 h-11 rounded-xl bg-primary text-primary-foreground font-semibold text-xs uppercase tracking-wider gap-2 shadow-2xs transition-transform active:scale-[0.99]"
         >
           {isSubmitting ? (
-            <span>Activating...</span>
+            <span>Activating Profile...</span>
           ) : (
             <>
               <Sparkles className="h-4 w-4" />
-              <span>Complete Setup</span>
+              <span>Complete Profile & Activate</span>
             </>
           )}
         </Button>

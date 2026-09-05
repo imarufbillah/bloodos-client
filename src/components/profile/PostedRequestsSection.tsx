@@ -194,6 +194,7 @@ export function PostedRequestsSection({ userId }: PostedRequestsSectionProps) {
                       <Button
                         variant="outline"
                         size="sm"
+                        aria-label={`View details for ${request.patientName}'s blood request`}
                         className="h-8 px-2.5 rounded-lg border-border/80 text-xs font-semibold gap-1.5"
                       >
                         <span>View Details</span>

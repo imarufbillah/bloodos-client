@@ -79,6 +79,7 @@ export function StepEmergencyProfile({
               <button
                 key={group}
                 type="button"
+                aria-label={`Select blood group ${group}`}
                 onClick={() => handleSelectBloodGroup(group)}
                 className={`relative flex flex-col items-center justify-center p-3 rounded-xl border font-mono font-bold transition-all touch-manipulation active:scale-[0.98] ${
                   isSelected
@@ -100,7 +101,7 @@ export function StepEmergencyProfile({
                 </span>
 
                 {isSelected && (
-                  <span className="absolute top-1 right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-paper text-crimson">
+                  <span className="absolute top-1 right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-paper text-crimson" aria-hidden="true">
                     <Check className="h-2.5 w-2.5 stroke-[3]" />
                   </span>
                 )}
@@ -127,7 +128,7 @@ export function StepEmergencyProfile({
           onValueChange={handleDistrictSelect}
         >
           <SelectTrigger id="onboarding-district" className="h-11 rounded-xl bg-card border-border/80">
-            <SelectValue placeholder="Select district (e.g. Dhaka, Chittagong)" />
+            <SelectValue placeholder="Select district in Bangladesh" />
           </SelectTrigger>
           <SelectContent className="max-h-72">
             {Object.entries(DISTRICTS_BY_DIVISION).map(
@@ -159,7 +160,7 @@ export function StepEmergencyProfile({
           disabled={!isComplete}
           className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold text-xs uppercase tracking-wider gap-2 shadow-2xs transition-transform active:scale-[0.99]"
         >
-          <span>Continue to Readiness</span>
+          <span>Continue to Donor Readiness</span>
           <ArrowRight className="h-4 w-4" />
         </Button>
       </div>

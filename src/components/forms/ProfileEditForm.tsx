@@ -376,6 +376,8 @@ export function ProfileEditForm({ user, onUpdate }: ProfileEditFormProps) {
                 <button
                   key={group}
                   type="button"
+                  aria-label={`Select blood group ${group}`}
+                  aria-pressed={isSelected}
                   onClick={() => handleBloodGroupSelect(group)}
                   className={`p-3 rounded-xl border font-mono font-bold transition-all text-sm sm:text-base ${
                     isSelected

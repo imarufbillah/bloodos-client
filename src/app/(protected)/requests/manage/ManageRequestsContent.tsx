@@ -331,7 +331,11 @@ export function ManageRequestsContent({
         {/* Filter & Control Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 bg-card border border-border/80 p-3.5 rounded-2xl shadow-xs">
           {/* Segmented Status Tabs */}
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div
+            role="tablist"
+            aria-label="Filter requests by status"
+            className="flex flex-wrap items-center gap-1.5"
+          >
             {(
               [
                 { id: "ALL", label: "All Requests" },
@@ -345,6 +349,8 @@ export function ManageRequestsContent({
                 <button
                   key={tab.id}
                   type="button"
+                  role="tab"
+                  aria-selected={isSelected}
                   onClick={() => {
                     triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
                     setStatusFilter(tab.id);
@@ -366,6 +372,7 @@ export function ManageRequestsContent({
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
             <Input
               placeholder="Search patient, hospital, district..."
+              aria-label="Search blood requests by patient name, hospital, district, or blood group"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8 h-9 rounded-xl bg-background text-xs border-border/70 font-mono"
@@ -480,6 +487,7 @@ export function ManageRequestsContent({
                       <Button
                         variant="outline"
                         size="sm"
+                        aria-label={`View dispatch details for ${request.patientName}`}
                         onClick={() => {
                           triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
                           router.push(`/requests/${request._id}`);
@@ -496,6 +504,7 @@ export function ManageRequestsContent({
                         <Button
                           variant="outline"
                           size="sm"
+                          aria-label={`Mark blood request for ${request.patientName} as fulfilled`}
                           onClick={() => handleStatusChange(request._id, "fulfilled")}
                           disabled={isActionLoading}
                           className="rounded-xl text-xs font-mono h-9 gap-1.5 text-teal border-teal/30 hover:bg-teal/10 hover:text-teal"
@@ -510,6 +519,7 @@ export function ManageRequestsContent({
                         <Button
                           variant="outline"
                           size="sm"
+                          aria-label={`Cancel emergency broadcast for ${request.patientName}`}
                           onClick={() => handleStatusChange(request._id, "cancelled")}
                           disabled={isActionLoading}
                           className="rounded-xl text-xs font-mono h-9 gap-1.5 text-ochre border-ochre/30 hover:bg-ochre/10 hover:text-ochre"
@@ -523,6 +533,7 @@ export function ManageRequestsContent({
                       <Button
                         variant="ghost"
                         size="sm"
+                        aria-label={`Delete emergency request for ${request.patientName}`}
                         onClick={() => openDeleteDialog(request._id, request.patientName)}
                         disabled={isActionLoading}
                         className="rounded-xl text-xs font-mono h-9 text-destructive hover:bg-destructive/10 hover:text-destructive px-2.5"

@@ -188,6 +188,8 @@ export function ProfilePassportHeader({
           {/* 1-Tap Donor Availability Switch Button */}
           <button
             type="button"
+            aria-label={user.isDonor ? "Pause volunteer donor status" : "Activate volunteer donor status"}
+            aria-pressed={user.isDonor}
             onClick={handleToggleDonor}
             disabled={isTogglingDonor}
             className={`flex items-center justify-between sm:justify-center gap-3 px-3.5 py-2 rounded-xl border font-mono text-xs font-semibold transition-all touch-manipulation active:scale-[0.98] ${

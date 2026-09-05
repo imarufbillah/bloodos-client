@@ -304,6 +304,8 @@ export function AddRequestForm() {
                       <button
                         key={group}
                         type="button"
+                        aria-label={`Select blood group ${group}`}
+                        aria-pressed={isSelected}
                         onClick={() => handleBloodGroupSelect(group)}
                         className={`p-3 rounded-xl border font-mono font-bold transition-all text-sm sm:text-base ${
                           isSelected
@@ -329,17 +331,19 @@ export function AddRequestForm() {
                   <div className="flex items-center rounded-xl border border-border/80 bg-card p-1">
                     <button
                       type="button"
+                      aria-label="Decrease units needed"
                       onClick={handleDecrementUnits}
                       disabled={unitsNeeded <= 1 || isSubmitting}
                       className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-muted text-foreground disabled:opacity-40 transition-colors"
                     >
                       <Minus className="h-4 w-4" />
                     </button>
-                    <span className="w-12 text-center font-mono text-lg font-bold text-foreground">
+                    <span className="w-12 text-center font-mono text-lg font-bold text-foreground tabular-nums">
                       {unitsNeeded}
                     </span>
                     <button
                       type="button"
+                      aria-label="Increase units needed"
                       onClick={handleIncrementUnits}
                       disabled={unitsNeeded >= 10 || isSubmitting}
                       className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-muted text-foreground disabled:opacity-40 transition-colors"
@@ -348,7 +352,7 @@ export function AddRequestForm() {
                     </button>
                   </div>
 
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground font-mono">
                     {unitsNeeded === 1 ? "1 Bag (450ml)" : `${unitsNeeded} Bags (${unitsNeeded * 450}ml total)`}
                   </span>
                 </div>
@@ -366,10 +370,13 @@ export function AddRequestForm() {
               </div>
 
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div role="radiogroup" aria-label="Clinical urgency triage level" className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 {/* Critical */}
                 <button
                   type="button"
+                  role="radio"
+                  aria-checked={urgency === "critical"}
+                  aria-label="Critical emergency: immediate transfusion under 6 hours"
                   onClick={() => handleUrgencySelect("critical")}
                   className={`flex flex-col p-3.5 rounded-2xl border text-left transition-all ${
                     urgency === "critical"
@@ -391,6 +398,9 @@ export function AddRequestForm() {
                 {/* Urgent */}
                 <button
                   type="button"
+                  role="radio"
+                  aria-checked={urgency === "urgent"}
+                  aria-label="Urgent: needed within 24 to 48 hours"
                   onClick={() => handleUrgencySelect("urgent")}
                   className={`flex flex-col p-3.5 rounded-2xl border text-left transition-all ${
                     urgency === "urgent"
@@ -412,6 +422,9 @@ export function AddRequestForm() {
                 {/* Moderate */}
                 <button
                   type="button"
+                  role="radio"
+                  aria-checked={urgency === "moderate"}
+                  aria-label="Standard moderate urgency: scheduled procedure over 48 hours"
                   onClick={() => handleUrgencySelect("moderate")}
                   className={`flex flex-col p-3.5 rounded-2xl border text-left transition-all ${
                     urgency === "moderate"
@@ -442,6 +455,7 @@ export function AddRequestForm() {
                   <div className="flex items-center gap-1.5 font-mono text-[10px]">
                     <button
                       type="button"
+                      aria-label="Set needed by date to today"
                       onClick={() => setQuickDate(6)}
                       className="px-2 py-0.5 rounded bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground"
                     >
@@ -449,6 +463,7 @@ export function AddRequestForm() {
                     </button>
                     <button
                       type="button"
+                      aria-label="Set needed by date to tomorrow"
                       onClick={() => setQuickDate(24)}
                       className="px-2 py-0.5 rounded bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground"
                     >

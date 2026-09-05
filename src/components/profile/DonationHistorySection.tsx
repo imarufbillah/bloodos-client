@@ -307,6 +307,7 @@ export function DonationHistorySection({
                 {donation.verified && (
                   <button
                     type="button"
+                    aria-label={`View official lifesaver certificate for whole blood donation on ${format(new Date(donation.donationDate), "MMM dd, yyyy")}`}
                     onClick={() => setSelectedDonation(donation)}
                     className="inline-flex items-center gap-1 text-xs font-semibold text-teal hover:underline self-start sm:self-auto font-mono"
                   >
@@ -378,7 +379,7 @@ export function DonationHistorySection({
             onClick={() => setSelectedDonation(null)}
             className="w-full rounded-xl bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider"
           >
-            Close Receipt
+            Close Certificate
           </Button>
         </DialogContent>
       </Dialog>
