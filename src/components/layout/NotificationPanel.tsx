@@ -33,10 +33,13 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
 interface NotificationPanelProps {
   className?: string;
 }
+
+type NotificationFilter = "all" | "unread" | "requests";
 
 export function NotificationPanel({ className }: NotificationPanelProps) {
   const { data: session } = useSession();
@@ -45,17 +48,16 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
   );
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [filter, setFilter] = React.useState<NotificationFilter>("all");
   const [page, setPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(false);
-  const limit = 10;
+  const limit = 15;
 
-  // Use useMemo to ensure unreadCount is always fresh and triggers re-render
   const unreadCount = React.useMemo(
     () => notifications.filter((n) => !n.isRead).length,
     [notifications],
   );
 
-  // Define fetchNotifications before useEffect
   const fetchNotifications = React.useCallback(
     async (pageNum: number, silent: boolean = false) => {
       if (!session?.user) return;
@@ -67,16 +69,13 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
         );
 
         if (!response.ok) {
-          // Check if it's a ban/suspension error (redirect will happen in apiFetch)
           const errorData = await response.json().catch(() => ({}));
           const message = errorData.message || "";
 
-          // Don't throw error if it's a suspension (redirect is handling it)
           if (
             response.status === 401 &&
             (message.includes("suspended") || message.includes("banned"))
           ) {
-            // apiFetch will handle redirect to /suspended
             return;
           }
 
@@ -96,7 +95,6 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
       } catch (error) {
         console.error("Error fetching notifications:", error);
         if (!silent && isOpen) {
-          // Only show error toast if panel is open and not silent
           toast.error("Failed to load notifications");
         }
       } finally {
@@ -106,36 +104,31 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
     [session?.user, limit, isOpen],
   );
 
-  // Fetch notifications immediately on mount and when user logs in
   React.useEffect(() => {
     if (session?.user) {
-      fetchNotifications(1, true); // Silent fetch on mount
+      fetchNotifications(1, true);
     }
   }, [session?.user, fetchNotifications]);
 
-  // Poll for new notifications every 30 seconds (when user is logged in)
   React.useEffect(() => {
     if (!session?.user) return;
 
     const intervalId = setInterval(() => {
-      // Only fetch first page to check for new notifications (silent)
       fetchNotifications(1, true);
-    }, 30000); // 30 seconds
+    }, 30000);
 
     return () => clearInterval(intervalId);
   }, [session?.user, fetchNotifications]);
 
-  // Refresh notifications when panel opens (to get latest)
   React.useEffect(() => {
     if (isOpen && session?.user) {
-      fetchNotifications(1, false); // Non-silent fetch when opening
+      fetchNotifications(1, false);
     }
   }, [isOpen, session?.user, fetchNotifications]);
 
   const markAsRead = async (notificationId: string) => {
     if (!session?.user) return;
 
-    // Optimistic update: immediately update UI before API call
     setNotifications((prev) =>
       prev.map((n) => (n._id === notificationId ? { ...n, isRead: true } : n)),
     );
@@ -149,7 +142,6 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
       );
 
       if (!response.ok) {
-        // Revert optimistic update on failure
         setNotifications((prev) =>
           prev.map((n) =>
             n._id === notificationId ? { ...n, isRead: false } : n,
@@ -166,7 +158,7 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
   const markAllAsRead = async () => {
     if (!session?.user) return;
 
-    // Optimistic update: immediately update UI before API call
+    triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
 
     try {
@@ -175,7 +167,6 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
       });
 
       if (!response.ok) {
-        // Revert would be complex here, so just refetch on error
         await fetchNotifications(1);
         throw new Error("Failed to mark all notifications as read");
       }
@@ -193,7 +184,22 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
     }
   };
 
-  // Don't render if not authenticated
+  const filteredNotifications = React.useMemo(() => {
+    if (filter === "unread") {
+      return notifications.filter((n) => !n.isRead);
+    }
+    if (filter === "requests") {
+      return notifications.filter(
+        (n) =>
+          n.type === NotificationType.NEW_MATCHING_REQUEST ||
+          n.type === NotificationType.REQUEST_STATUS_CHANGE ||
+          n.type === NotificationType.REQUEST_EXPIRING_SOON ||
+          n.type === NotificationType.NEW_RESPONSE,
+      );
+    }
+    return notifications;
+  }, [notifications, filter]);
+
   if (!session?.user) {
     return null;
   }
@@ -201,63 +207,108 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger
-        className={`relative h-9 w-9 inline-flex items-center justify-center rounded-md transition-all hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${className}`}
+        className={`relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-foreground/80 transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${className}`}
         aria-label={`Notifications${
           unreadCount > 0 ? ` (${unreadCount} unread)` : ""
         }`}
+        onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
       >
         {unreadCount > 0 ? (
-          <BellDot className="h-4 w-4 animate-in fade-in-0 zoom-in-95 duration-150" />
+          <BellDot className="h-4.5 w-4.5 text-crimson animate-in fade-in-0 zoom-in-95 duration-150" />
         ) : (
-          <Bell className="h-4 w-4 animate-in fade-in-0 zoom-in-95 duration-150" />
+          <Bell className="h-4.5 w-4.5 animate-in fade-in-0 zoom-in-95 duration-150" />
         )}
         {unreadCount > 0 && (
-          <Badge
-            variant="destructive"
-            className="absolute -right-1 -top-1 h-5 min-w-5 items-center justify-center rounded-full p-0 text-[10px] font-medium animate-in fade-in-0 zoom-in-95 duration-200"
-          >
+          <span className="absolute -top-0.5 -right-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-crimson px-1 font-mono text-[10px] font-bold text-paper shadow-2xs">
             {unreadCount > 99 ? "99+" : unreadCount}
-          </Badge>
+          </span>
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-90 sm:w-105" sideOffset={8}>
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="flex items-center justify-between pb-2">
-            <span className="font-semibold">Notifications</span>
+      
+      <DropdownMenuContent 
+        align="end" 
+        className="w-[calc(100vw-2rem)] sm:w-[380px] p-0 rounded-2xl border border-border bg-card shadow-lg overflow-hidden" 
+        sideOffset={8}
+      >
+        {/* Header Capsule */}
+        <div className="border-b border-border/80 bg-muted/20 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="font-heading text-sm font-bold text-foreground tracking-tight">
+                Notifications
+              </span>
+              {unreadCount > 0 && (
+                <span className="rounded-full bg-crimson/10 px-2 py-0.5 font-mono text-[10px] font-bold text-crimson">
+                  {unreadCount} NEW
+                </span>
+              )}
+            </div>
+
             {unreadCount > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={markAllAsRead}
-                className="h-7 text-xs text-muted-foreground hover:text-foreground"
+                className="h-7 px-2 text-[11px] font-medium text-muted-foreground hover:text-crimson hover:bg-crimson/5 rounded-lg"
               >
                 Mark all read
               </Button>
             )}
-          </DropdownMenuLabel>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+          </div>
 
-        <ScrollArea className="h-100">
+          {/* Tactical Filter Segment */}
+          <div className="mt-2.5 flex items-center gap-1 rounded-xl bg-muted/60 p-0.5 border border-border/60">
+            {(
+              [
+                { key: "all", label: "All" },
+                { key: "unread", label: "Unread" },
+                { key: "requests", label: "Dispatches" },
+              ] as const
+            ).map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => {
+                  triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+                  setFilter(tab.key);
+                }}
+                className={`flex-1 rounded-lg py-1 text-[11px] font-semibold transition-all ${
+                  filter === tab.key
+                    ? "bg-card text-foreground shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Scrollable Feed */}
+        <ScrollArea className="max-h-[380px] overflow-y-auto">
           {isLoading && page === 1 ? (
-            <div className="space-y-3 p-2">
+            <div className="space-y-1 p-2">
               {Array.from({ length: 3 }).map((_, i) => (
                 <NotificationSkeleton key={i} />
               ))}
             </div>
-          ) : notifications.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Bell className="mb-3 h-12 w-12 text-muted-foreground/40" />
-              <p className="text-sm font-medium text-muted-foreground">
-                No notifications yet
+          ) : filteredNotifications.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted text-muted-foreground/60 mb-2.5">
+                <Bell className="h-5 w-5" />
+              </div>
+              <p className="text-xs font-semibold text-foreground">
+                {filter === "unread" ? "No unread notifications" : "All caught up"}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                You&apos;ll see updates about your requests and responses here
+              <p className="mt-1 text-[11px] text-muted-foreground max-w-[220px] leading-relaxed">
+                {filter === "unread"
+                  ? "You have reviewed all urgent updates and dispatches."
+                  : "You will receive real-time alerts for matching blood requests and coordinator responses here."}
               </p>
             </div>
           ) : (
-            <div className="space-y-1 p-1">
-              {notifications.map((notification) => (
+            <div className="divide-y divide-border/50 p-1">
+              {filteredNotifications.map((notification) => (
                 <NotificationItem
                   key={notification._id}
                   notification={notification}
@@ -267,15 +318,15 @@ export function NotificationPanel({ className }: NotificationPanelProps) {
               ))}
 
               {hasMore && (
-                <div className="pt-2 text-center">
+                <div className="p-2 text-center">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={loadMore}
                     disabled={isLoading}
-                    className="w-full text-xs"
+                    className="w-full text-xs font-mono text-muted-foreground hover:text-foreground rounded-lg h-8"
                   >
-                    {isLoading ? "Loading..." : "Load more"}
+                    {isLoading ? "Loading..." : "Load older notifications"}
                   </Button>
                 </div>
               )}
@@ -305,13 +356,11 @@ function NotificationItem({
   const [isOptimisticallyRead, setIsOptimisticallyRead] = React.useState(false);
   const icon = getNotificationIcon(notification.type);
   const link = getNotificationLink(notification);
-
-  // Merge actual state with optimistic state
   const isRead = notification.isRead || isOptimisticallyRead;
 
   const handleClick = () => {
     if (!isRead) {
-      setIsOptimisticallyRead(true); // Immediate visual feedback
+      setIsOptimisticallyRead(true);
       onMarkRead(notification._id);
     }
     if (link) {
@@ -322,63 +371,57 @@ function NotificationItem({
   const handleMarkReadClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsOptimisticallyRead(true); // Immediate visual feedback
+    triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+    setIsOptimisticallyRead(true);
     onMarkRead(notification._id);
   };
 
   const content = (
     <div
-      className={`group relative flex gap-3 rounded-md p-3 transition-colors hover:bg-accent ${
-        !isRead ? "bg-accent/50" : ""
+      className={`group relative flex items-start gap-3 rounded-xl p-2.5 transition-colors hover:bg-muted/50 cursor-pointer ${
+        !isRead ? "bg-crimson/5 hover:bg-crimson/8" : ""
       }`}
     >
-      {/* Unread indicator dot */}
+      {/* Visual Unread Bar */}
       {!isRead && (
-        <div className="absolute left-1 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-crimson animate-in fade-in-0 zoom-in-50 duration-200" />
+        <div className="absolute left-1 top-3.5 bottom-3.5 w-1 rounded-full bg-crimson" />
       )}
 
-      {/* Icon */}
-      <div
-        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
-          !isRead ? "bg-crimson/10" : "bg-muted"
-        }`}
-      >
-        {icon}
-      </div>
+      {/* Semantic Icon Capsule */}
+      <div className="shrink-0 pl-1">{icon}</div>
 
-      {/* Content */}
-      <div className="flex-1 space-y-1 overflow-hidden">
-        <p className="text-sm font-medium leading-tight">
+      {/* Text Hierarchy */}
+      <div className="flex-1 space-y-0.5 min-w-0 pr-1">
+        <p className={`text-xs leading-snug truncate ${!isRead ? "font-bold text-foreground" : "font-medium text-foreground/90"}`}>
           {notification.title}
         </p>
-        <p className="line-clamp-2 text-xs text-muted-foreground">
+        <p className="line-clamp-2 text-[11px] text-muted-foreground leading-relaxed">
           {notification.message}
         </p>
-        <p className="text-[10px] text-muted-foreground">
+        <p className="font-mono text-[10px] text-muted-foreground/80 tabular-nums pt-0.5">
           {formatDistanceToNow(new Date(notification.createdAt), {
             addSuffix: true,
           })}
         </p>
       </div>
 
-      {/* Mark read button */}
+      {/* Dismiss / Mark Read Hover Action */}
       {!isRead && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6 shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+        <button
+          type="button"
           onClick={handleMarkReadClick}
+          className="shrink-0 opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-foreground rounded-md transition-opacity"
           aria-label="Mark as read"
         >
-          <X className="h-3 w-3" />
-        </Button>
+          <X className="h-3.5 w-3.5" />
+        </button>
       )}
     </div>
   );
 
   if (link) {
     return (
-      <Link href={link} onClick={handleClick}>
+      <Link href={link} onClick={handleClick} className="block">
         {content}
       </Link>
     );
@@ -393,12 +436,12 @@ function NotificationItem({
 
 function NotificationSkeleton() {
   return (
-    <div className="flex gap-3 rounded-md p-3">
-      <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
-      <div className="flex-1 space-y-2">
-        <Skeleton className="h-4 w-3/4" />
-        <Skeleton className="h-3 w-full" />
-        <Skeleton className="h-3 w-1/2" />
+    <div className="flex items-start gap-3 rounded-xl p-2.5 bg-card">
+      <Skeleton className="h-8 w-8 shrink-0 rounded-lg" />
+      <div className="flex-1 space-y-1.5">
+        <Skeleton className="h-3.5 w-3/4 rounded" />
+        <Skeleton className="h-3 w-full rounded" />
+        <Skeleton className="h-2.5 w-1/3 rounded" />
       </div>
     </div>
   );
@@ -409,27 +452,58 @@ function NotificationSkeleton() {
 // ============================================================================
 
 function getNotificationIcon(type: NotificationType) {
-  const iconClass = "h-5 w-5";
+  const iconBase = "h-4 w-4";
 
   switch (type) {
-    case NotificationType.NEW_RESPONSE:
-      return <MessageSquare className={iconClass} />;
-    case NotificationType.RESPONSE_STATUS_CHANGE:
-      return <CheckCircle2 className={iconClass} />;
-    case NotificationType.REQUEST_STATUS_CHANGE:
-      return <AlertCircle className={iconClass} />;
     case NotificationType.NEW_MATCHING_REQUEST:
-      return <Droplet className={`${iconClass} text-crimson`} />;
+      return (
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-crimson/10 text-crimson">
+          <Droplet className={`${iconBase} fill-crimson`} />
+        </div>
+      );
+    case NotificationType.REQUEST_STATUS_CHANGE:
+      return (
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-crimson/10 text-crimson">
+          <AlertCircle className={iconBase} />
+        </div>
+      );
     case NotificationType.DONATION_VERIFIED:
-      return <CheckCircle2 className={`${iconClass} text-teal`} />;
+      return (
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal/10 text-teal">
+          <CheckCircle2 className={iconBase} />
+        </div>
+      );
+    case NotificationType.RESPONSE_STATUS_CHANGE:
+    case NotificationType.NEW_RESPONSE:
+      return (
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal/10 text-teal">
+          <MessageSquare className={iconBase} />
+        </div>
+      );
     case NotificationType.REQUEST_EXPIRING_SOON:
-      return <Clock className={`${iconClass} text-ochre`} />;
+      return (
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ochre/10 text-ochre">
+          <Clock className={iconBase} />
+        </div>
+      );
     case NotificationType.SYSTEM_ANNOUNCEMENT:
-      return <Shield className={iconClass} />;
+      return (
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-foreground">
+          <Shield className={iconBase} />
+        </div>
+      );
     case NotificationType.CONTACT_INFO_REQUESTED:
-      return <Mail className={iconClass} />;
+      return (
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-foreground">
+          <Mail className={iconBase} />
+        </div>
+      );
     default:
-      return <Bell className={iconClass} />;
+      return (
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+          <Bell className={iconBase} />
+        </div>
+      );
   }
 }
 
@@ -443,7 +517,7 @@ function getNotificationLink(notification: NotificationDto): string | null {
         : null;
 
     case NotificationType.RESPONSE_STATUS_CHANGE:
-      return "/profile"; // Go to user's response history
+      return "/profile";
 
     case NotificationType.NEW_MATCHING_REQUEST:
       return notification.relatedRequestId
@@ -451,7 +525,7 @@ function getNotificationLink(notification: NotificationDto): string | null {
         : "/requests";
 
     case NotificationType.DONATION_VERIFIED:
-      return "/profile"; // Go to user's donation history
+      return "/profile";
 
     case NotificationType.CONTACT_INFO_REQUESTED:
       return notification.relatedRequestId
@@ -459,7 +533,7 @@ function getNotificationLink(notification: NotificationDto): string | null {
         : null;
 
     case NotificationType.SYSTEM_ANNOUNCEMENT:
-      return null; // System announcements don't have links
+      return null;
 
     default:
       return null;

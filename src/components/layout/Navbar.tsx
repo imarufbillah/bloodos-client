@@ -39,6 +39,7 @@ import {
   Heart,
   AlertCircle,
 } from "lucide-react";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
 interface NavLink {
   href: string;
@@ -174,125 +175,151 @@ export function Navbar() {
                 <NotificationPanel />
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className="ml-1 rounded-full inline-flex items-center justify-center transition-all hover:ring-2 hover:ring-crimson/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="ml-1 inline-flex items-center justify-center rounded-full transition-all hover:ring-2 hover:ring-crimson/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     aria-label="User menu"
+                    onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
                   >
-                    <Avatar className="rounded-full h-8 w-8">
+                    <Avatar className="h-8.5 w-8.5 rounded-full border border-border/80 shadow-2xs">
                       {userImage && (
                         <AvatarImage
                           src={userImage}
                           alt={user?.name || "User"}
                         />
                       )}
-                      <AvatarFallback className="bg-crimson text-paper text-xs font-bold">
+                      <AvatarFallback className="bg-crimson text-paper font-mono text-xs font-bold">
                         {getInitials(user?.name, user?.email)}
                       </AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-64 p-0">
-                    {/* User info card */}
-                    <div className="relative flex items-start gap-3 px-3 pt-3 pb-2.5">
-                      <Avatar className="h-10 w-10">
-                        {userImage && (
-                          <AvatarImage
-                            src={userImage}
-                            alt={user?.name || "User"}
-                          />
-                        )}
-                        <AvatarFallback className="bg-crimson text-paper text-xs font-bold">
-                          {getInitials(user?.name, user?.email)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-1 flex-col gap-0.5 min-w-0">
-                        <p className="text-sm font-semibold leading-tight truncate">
-                          {user.name || "User"}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {user.email}
-                        </p>
-                        <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                          {isAdmin && (
-                            <Badge
-                              variant="secondary"
-                              className="text-[10px] px-1.5 py-0 gap-1"
-                            >
-                              <Shield className="size-2.5" />
-                              Admin
-                            </Badge>
+                  <DropdownMenuContent 
+                    align="end" 
+                    className="w-72 p-0 rounded-2xl border border-border bg-card shadow-lg overflow-hidden"
+                    sideOffset={8}
+                  >
+                    {/* Tactical Identity Capsule Header */}
+                    <div className="border-b border-border/80 bg-muted/25 px-4 py-3.5 space-y-2">
+                      <div className="flex items-start gap-3">
+                        <Avatar className="h-10 w-10 shrink-0 border border-border/70">
+                          {userImage && (
+                            <AvatarImage
+                              src={userImage}
+                              alt={user?.name || "User"}
+                            />
                           )}
-                          {user.bloodGroup && (
-                            <Badge
-                              variant="outline"
-                              className="text-[10px] px-1.5 py-0 border-crimson/30 text-crimson font-mono font-bold"
-                            >
-                              <Droplet className="size-2.5 fill-crimson" />
-                              {user.bloodGroup}
-                            </Badge>
-                          )}
-                          {user.district && (
-                            <span className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground">
-                              <MapPin className="size-2.5" />
-                              {user.district}
-                            </span>
-                          )}
+                          <AvatarFallback className="bg-crimson text-paper font-mono text-xs font-bold">
+                            {getInitials(user?.name, user?.email)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-heading text-sm font-bold text-foreground leading-tight truncate">
+                            {user.name || "Lifesaver"}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground truncate">
+                            {user.email}
+                          </p>
                         </div>
+                      </div>
+
+                      {/* Donor Badges Strip */}
+                      <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                        {user.bloodGroup ? (
+                          <Badge
+                            variant="outline"
+                            className="bg-crimson/10 border-crimson/30 text-crimson font-mono text-[10px] font-bold px-2 py-0.5 gap-1"
+                          >
+                            <Droplet className="size-2.5 fill-crimson" />
+                            <span>{user.bloodGroup}</span>
+                          </Badge>
+                        ) : (
+                          <Badge
+                            variant="outline"
+                            className="bg-muted text-muted-foreground font-mono text-[10px] px-1.5 py-0"
+                          >
+                            Blood Group Unset
+                          </Badge>
+                        )}
+
+                        {user.district && (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground bg-card border border-border/60 rounded-md px-1.5 py-0.5">
+                            <MapPin className="size-2.5 text-ochre" />
+                            <span>{user.district}</span>
+                          </span>
+                        )}
+
+                        {isAdmin && (
+                          <Badge
+                            variant="secondary"
+                            className="bg-teal/10 text-teal border border-teal/20 text-[10px] font-mono px-1.5 py-0 gap-1 ml-auto"
+                          >
+                            <Shield className="size-2.5" />
+                            ADMIN
+                          </Badge>
+                        )}
                       </div>
                     </div>
 
-                    <DropdownMenuSeparator className="mt-0" />
-
-                    {/* Quick actions */}
-                    <DropdownMenuGroup className="px-1">
-                      <DropdownMenuItem className="px-2.5 py-2">
+                    {/* Lifesaver Coordination Links */}
+                    <div className="p-1.5 space-y-0.5">
+                      <div className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground/80">
+                        Lifesaver Services
+                      </div>
+                      <DropdownMenuItem className="p-0 rounded-xl">
                         <Link
                           href="/profile"
-                          className="flex w-full items-center gap-2 text-xs font-medium"
+                          className="flex w-full items-center gap-2.5 px-2.5 py-2 text-xs font-semibold text-foreground hover:text-crimson transition-colors"
                         >
-                          <User className="size-4 text-muted-foreground" />
-                          <span className="flex-1">My Donor Profile</span>
+                          <User className="size-4 text-teal shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="truncate">Donor Profile & Cooldown</p>
+                          </div>
                           <ChevronRight className="size-3.5 text-muted-foreground/50" />
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="px-2.5 py-2">
+                      <DropdownMenuItem className="p-0 rounded-xl">
                         <Link
                           href="/requests/manage"
-                          className="flex w-full items-center gap-2 text-xs font-medium"
+                          className="flex w-full items-center gap-2.5 px-2.5 py-2 text-xs font-semibold text-foreground hover:text-crimson transition-colors"
                         >
-                          <Heart className="size-4 text-muted-foreground" />
-                          <span className="flex-1">My Blood Requests</span>
+                          <Heart className="size-4 text-crimson shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="truncate">My Blood Requests</p>
+                          </div>
                           <ChevronRight className="size-3.5 text-muted-foreground/50" />
                         </Link>
                       </DropdownMenuItem>
-                    </DropdownMenuGroup>
+                    </div>
 
+                    {/* Admin Section */}
                     {isAdmin && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup className="px-1">
-                          <DropdownMenuItem className="px-2.5 py-2">
-                            <Link
-                              href="/admin"
-                              className="flex w-full items-center gap-2 text-xs font-medium"
-                            >
-                              <Shield className="size-4 text-crimson" />
-                              <span className="flex-1 font-semibold text-crimson">Admin Dashboard</span>
-                              <ChevronRight className="size-3.5 text-muted-foreground/50" />
-                            </Link>
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                      </>
+                      <div className="border-t border-border/60 p-1.5 space-y-0.5 bg-muted/10">
+                        <div className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground/80">
+                          Governance
+                        </div>
+                        <DropdownMenuItem className="p-0 rounded-xl">
+                          <Link
+                            href="/admin"
+                            className="flex w-full items-center gap-2.5 px-2.5 py-2 text-xs font-semibold text-foreground hover:text-crimson transition-colors"
+                          >
+                            <Shield className="size-4 text-crimson shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="truncate">Operations Console</p>
+                            </div>
+                            <ChevronRight className="size-3.5 text-muted-foreground/50" />
+                          </Link>
+                        </DropdownMenuItem>
+                      </div>
                     )}
 
-                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator className="m-0" />
 
-                    {/* Sign out */}
-                    <div className="px-1 pb-1">
+                    {/* Session Sign Out */}
+                    <div className="p-1.5">
                       <DropdownMenuItem
                         variant="destructive"
                         onClick={handleSignOut}
-                        className="gap-2.5 px-2.5 py-2 cursor-pointer text-xs"
+                        className="flex w-full items-center gap-2.5 px-2.5 py-2 text-xs font-semibold text-destructive cursor-pointer rounded-xl"
                       >
-                        <LogOut className="size-4" />
+                        <LogOut className="size-4 shrink-0" />
                         <span>Sign Out</span>
                       </DropdownMenuItem>
                     </div>
