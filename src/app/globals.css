@@ -370,4 +370,10 @@
         transparent 55%
       );
   }
+
+  /* Hardware-Accelerated Rendering & Containment for Long Lists/Feeds */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 240px;
+  }
 }

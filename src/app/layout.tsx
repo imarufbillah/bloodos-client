@@ -8,18 +8,21 @@ import { Toaster } from "@/components/ui/sonner";
 const publicSans = Public_Sans({
   variable: "--font-public-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
   weight: ["600", "700"],
+  display: "swap",
 });
 
 const plexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
   subsets: ["latin"],
   weight: ["400", "500"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {

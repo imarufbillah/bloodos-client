@@ -22,7 +22,10 @@ interface RequestCardProps {
   staggerIndex?: number;
 }
 
-export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
+export const RequestCard = React.memo(function RequestCard({
+  request,
+  staggerIndex = 0,
+}: RequestCardProps) {
   const { data: session } = useSession();
   const user = session?.user as ExtendedUser | undefined;
 
@@ -55,7 +58,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
 
   return (
     <article
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-200 bg-card p-4 sm:p-5 shadow-xs hover:shadow-md ${
+      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border transition-all duration-200 bg-card p-4 sm:p-5 shadow-xs hover:shadow-md cv-auto ${
         isCritical
           ? "border-destructive/40 hover:border-destructive bg-destructive/[0.02]"
           : isUrgent
@@ -204,4 +207,4 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
       </div>
     </article>
   );
-}
+});

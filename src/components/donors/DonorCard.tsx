@@ -38,7 +38,7 @@ interface DonorCardProps {
   isRequestingContact?: boolean;
 }
 
-export function DonorCard({
+export const DonorCard = React.memo(function DonorCard({
   donor,
   staggerIndex = 0,
   onRequestContact,
@@ -59,7 +59,7 @@ export function DonorCard({
 
   return (
     <article
-      className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-4 sm:p-5 transition-all duration-200 hover:border-foreground/20 hover:shadow-sm"
+      className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-4 sm:p-5 transition-all duration-200 hover:border-foreground/20 hover:shadow-sm cv-auto"
       style={{
         animationDelay: `${Math.min(staggerIndex * 30, 300)}ms`,
       }}
@@ -162,7 +162,7 @@ export function DonorCard({
       </div>
     </article>
   );
-}
+});
 
 // ============================================================================
 // Eligibility Badge Component

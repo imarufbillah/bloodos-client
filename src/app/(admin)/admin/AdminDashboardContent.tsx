@@ -12,17 +12,48 @@ import {
   Sparkles,
   CheckCircle2,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatsCards } from "@/components/admin/StatsCards";
-import { BloodGroupChart } from "@/components/admin/BloodGroupChart";
-import { DistrictChart } from "@/components/admin/DistrictChart";
-import { TrendChart } from "@/components/admin/TrendChart";
 import { RequestsModerationTable } from "@/components/admin/RequestsModerationTable";
 import { UsersManagementTable } from "@/components/admin/UsersManagementTable";
-import {
-  AdminSlideOverInspector,
-  type InspectorItem,
-} from "@/components/admin/AdminSlideOverInspector";
+import type { InspectorItem } from "@/components/admin/AdminSlideOverInspector";
+
+const BloodGroupChart = dynamic(
+  () =>
+    import("@/components/admin/BloodGroupChart").then((m) => m.BloodGroupChart),
+  {
+    loading: () => (
+      <div className="h-[280px] w-full rounded-2xl bg-muted/40 animate-pulse border border-border/60" />
+    ),
+  }
+);
+
+const DistrictChart = dynamic(
+  () => import("@/components/admin/DistrictChart").then((m) => m.DistrictChart),
+  {
+    loading: () => (
+      <div className="h-[280px] w-full rounded-2xl bg-muted/40 animate-pulse border border-border/60" />
+    ),
+  }
+);
+
+const TrendChart = dynamic(
+  () => import("@/components/admin/TrendChart").then((m) => m.TrendChart),
+  {
+    loading: () => (
+      <div className="h-[280px] w-full rounded-2xl bg-muted/40 animate-pulse border border-border/60" />
+    ),
+  }
+);
+
+const AdminSlideOverInspector = dynamic(
+  () =>
+    import("@/components/admin/AdminSlideOverInspector").then(
+      (m) => m.AdminSlideOverInspector
+    ),
+  { ssr: false }
+);
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";

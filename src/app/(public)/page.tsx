@@ -1,14 +1,48 @@
 "use client";
 
 import * as React from "react";
-import { 
+import dynamic from "next/dynamic";
+import {
   EmergencyTriageHero,
   LiveEmergencyRequests,
-  CompatibilityMatrixExplorer,
-  CoverageAndImpact,
-  CoordinationProtocol,
-  VolunteerCallToAction
 } from "@/components/home";
+
+const CompatibilityMatrixExplorer = dynamic(
+  () =>
+    import("@/components/home").then((m) => m.CompatibilityMatrixExplorer),
+  {
+    loading: () => (
+      <div className="h-96 w-full animate-pulse bg-muted/20 border-b border-border" />
+    ),
+  }
+);
+
+const CoverageAndImpact = dynamic(
+  () => import("@/components/home").then((m) => m.CoverageAndImpact),
+  {
+    loading: () => (
+      <div className="h-96 w-full animate-pulse bg-muted/20 border-b border-border" />
+    ),
+  }
+);
+
+const CoordinationProtocol = dynamic(
+  () => import("@/components/home").then((m) => m.CoordinationProtocol),
+  {
+    loading: () => (
+      <div className="h-96 w-full animate-pulse bg-muted/20 border-b border-border" />
+    ),
+  }
+);
+
+const VolunteerCallToAction = dynamic(
+  () => import("@/components/home").then((m) => m.VolunteerCallToAction),
+  {
+    loading: () => (
+      <div className="h-64 w-full animate-pulse bg-muted/20" />
+    ),
+  }
+);
 
 interface PublicStats {
   activeRequests: number;
