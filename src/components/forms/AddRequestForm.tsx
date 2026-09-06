@@ -510,7 +510,7 @@ export function AddRequestForm() {
                   <SelectTrigger id="district-select" className="h-11 rounded-xl bg-card border-border/80">
                     <SelectValue placeholder="Select district" />
                   </SelectTrigger>
-                  <SelectContent className="max-h-72">
+                  <SelectContent>
                     {Object.entries(DISTRICTS_BY_DIVISION).map(([division, districts]) => (
                       <SelectGroup key={division}>
                         <SelectLabel className="font-mono text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-1">

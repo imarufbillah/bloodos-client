@@ -90,7 +90,7 @@ function SelectContent({
         <SelectPrimitive.Popup
           data-slot="select-content"
           className={cn(
-            "z-50 w-(--anchor-width) min-w-32 origin-(--transform-origin) rounded-lg border border-border bg-popover text-popover-foreground shadow-lg duration-100 outline-none",
+            "z-50 w-(--anchor-width) min-w-36 origin-(--transform-origin) rounded-xl border border-border bg-popover text-popover-foreground shadow-xl duration-100 outline-none",
             "data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
             "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95",
             "data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
@@ -98,7 +98,7 @@ function SelectContent({
           )}
           {...props}
         >
-          <div className="max-h-(--available-height,300px) overflow-y-auto overflow-x-hidden overscroll-contain p-1">
+          <div className="max-h-[min(var(--available-height,300px),calc(100dvh-120px))] sm:max-h-[min(var(--available-height,380px),70dvh)] overflow-y-auto overflow-x-hidden overscroll-contain p-1.5 scrollbar-thin">
             {children}
           </div>
         </SelectPrimitive.Popup>

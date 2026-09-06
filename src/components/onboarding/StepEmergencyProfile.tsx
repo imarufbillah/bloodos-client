@@ -130,7 +130,7 @@ export function StepEmergencyProfile({
           <SelectTrigger id="onboarding-district" className="h-11 rounded-xl bg-card border-border/80">
             <SelectValue placeholder="Select district in Bangladesh" />
           </SelectTrigger>
-          <SelectContent className="max-h-72">
+          <SelectContent>
             {Object.entries(DISTRICTS_BY_DIVISION).map(
               ([division, districts]) => (
                 <SelectGroup key={division}>
