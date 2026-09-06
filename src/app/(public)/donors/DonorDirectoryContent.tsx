@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   type Donor,
   type PaginatedResponse,
   BloodGroup,
@@ -258,95 +265,107 @@ export default function DonorDirectoryContent({
 
       {/* Filter Toolbar */}
       <section className="sticky top-14 z-20 border-b border-border/80 bg-background/95 backdrop-blur-md">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-3.5 space-y-3">
-          {/* Blood Group Selection Chips */}
-          <div
-            className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar"
-            role="group"
-            aria-label="Filter by blood group"
-          >
-            <button
-              type="button"
-              onClick={() => {
-                triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
-                setSelectedBloodGroups([]);
-                setRecipientGroup("");
-                applyFilters({ bloodGroups: [], page: 1 });
-              }}
-              aria-pressed={selectedBloodGroups.length === 0 && !recipientGroup}
-              className={`h-8 px-3 rounded-lg text-xs font-mono font-bold shrink-0 transition-colors cursor-pointer ${
-                selectedBloodGroups.length === 0 && !recipientGroup
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
-              }`}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-3">
+          {/* Unified Single-Row Filter on Large Devices; Responsive on Mobile */}
+          <div className="flex flex-col lg:flex-row lg:items-center gap-2.5">
+            {/* Blood Group Selection Chips (horizontal scroll on mobile) */}
+            <div
+              className="flex items-center gap-1 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-1 lg:pb-0 scrollbar-none shrink-0"
+              role="group"
+              aria-label="Filter by blood group"
             >
-              ALL GROUPS
-            </button>
+              <button
+                type="button"
+                onClick={() => {
+                  triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+                  setSelectedBloodGroups([]);
+                  setRecipientGroup("");
+                  applyFilters({ bloodGroups: [], page: 1 });
+                }}
+                aria-pressed={selectedBloodGroups.length === 0 && !recipientGroup}
+                className={`h-9 px-2.5 rounded-xl text-xs font-mono font-bold shrink-0 transition-colors cursor-pointer ${
+                  selectedBloodGroups.length === 0 && !recipientGroup
+                    ? "bg-primary text-primary-foreground shadow-xs"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground border border-border/40"
+                }`}
+              >
+                ALL
+              </button>
 
-            {BLOOD_GROUPS.map((bg) => {
-              const isSelected = selectedBloodGroups.includes(bg);
-              return (
-                <button
-                  key={bg}
-                  type="button"
-                  onClick={() => handleBloodGroupToggle(bg)}
-                  aria-pressed={isSelected}
-                  aria-label={`Blood group ${bg}`}
-                  className={`h-8 px-3 rounded-lg text-xs font-mono font-bold shrink-0 transition-colors cursor-pointer ${
-                    isSelected
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
-                  }`}
+              {BLOOD_GROUPS.map((bg) => {
+                const isSelected = selectedBloodGroups.includes(bg);
+                return (
+                  <button
+                    key={bg}
+                    type="button"
+                    onClick={() => handleBloodGroupToggle(bg)}
+                    aria-pressed={isSelected}
+                    aria-label={`Blood group ${bg}`}
+                    className={`h-9 px-2.5 rounded-xl text-xs font-mono font-bold shrink-0 transition-colors cursor-pointer ${
+                      isSelected
+                        ? "bg-primary text-primary-foreground shadow-xs"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground border border-border/60"
+                    }`}
+                  >
+                    {bg}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Select Dropdowns Group */}
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
+              {/* Recipient Compatibility Select */}
+              <div className="flex-1 sm:w-56">
+                <Select
+                  value={recipientGroup || "all"}
+                  onValueChange={(val) => handleRecipientGroupSelect(val === "all" ? "" : (val || ""))}
                 >
-                  {bg}
-                </button>
-              );
-            })}
-          </div>
+                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-card">
+                    <SelectValue placeholder="Compatibility for Recipient..." />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    <SelectItem value="all">Any Recipient (Direct Match)</SelectItem>
+                    {BLOOD_GROUPS.map((bg) => (
+                      <SelectItem key={bg} value={bg}>
+                        Recipient: {bg} (Compatible Donors)
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          {/* Secondary Controls: Recipient Mode, District, Search */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5 items-center">
-            <div className="lg:col-span-4">
-              <select
-                value={recipientGroup}
-                onChange={(e) => handleRecipientGroupSelect(e.target.value)}
-                aria-label="Filter by recipient blood compatibility"
-                className="w-full h-9 rounded-lg border border-border bg-card px-2.5 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
-              >
-                <option value="">Find compatible donors for recipient...</option>
-                {BLOOD_GROUPS.map((bg) => (
-                  <option key={bg} value={bg}>
-                    Compatible Donors for Recipient ({bg})
-                  </option>
-                ))}
-              </select>
+              {/* District Select */}
+              <div className="flex-1 sm:w-44">
+                <Select
+                  value={selectedDistrict || "all"}
+                  onValueChange={(val) => handleDistrictChange(val === "all" ? "" : (val || ""))}
+                >
+                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-card">
+                    <SelectValue placeholder="All 64 Districts" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    <SelectItem value="all">All 64 Districts</SelectItem>
+                    {DISTRICTS.map((dist) => (
+                      <SelectItem key={dist} value={dist}>
+                        {dist}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            <div className="lg:col-span-3">
-              <select
-                value={selectedDistrict}
-                onChange={(e) => handleDistrictChange(e.target.value)}
-                aria-label="Filter by district"
-                className="w-full h-9 rounded-lg border border-border bg-card px-2.5 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
-              >
-                <option value="">All 64 Districts</option>
-                {DISTRICTS.map((district) => (
-                  <option key={district} value={district}>
-                    {district}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <form onSubmit={handleSearchSubmit} className="lg:col-span-4 relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            {/* Keyword Search Input */}
+            <form onSubmit={handleSearchSubmit} className="relative flex-1 min-w-[200px]" role="search">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search donors by name..."
                 aria-label="Search donors by name"
-                className="w-full h-9 rounded-lg border border-border bg-card pl-8 pr-7 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full h-9 pl-9 pr-9 rounded-xl border border-border bg-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
               />
               {searchQuery && (
                 <button
@@ -356,25 +375,31 @@ export default function DonorDirectoryContent({
                     applyFilters({ search: "", page: 1 });
                   }}
                   aria-label="Clear search input"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
               )}
             </form>
 
-            <div className="lg:col-span-1 flex justify-end">
-              {hasActiveFilters && (
-                <button
+            {/* Reset Action Button */}
+            <div className="flex items-center justify-between lg:justify-end gap-2 shrink-0">
+              {hasActiveFilters ? (
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   onClick={handleResetFilters}
-                  aria-label="Reset all active filters"
-                  className="h-9 w-full lg:w-9 rounded-lg border border-border bg-muted/60 hover:bg-muted flex items-center justify-center text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                  title="Reset all filters"
+                  className="h-9 px-2.5 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 gap-1.5 rounded-xl cursor-pointer"
+                  aria-label="Reset all applied filters"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
-                  <span className="lg:hidden ml-1.5">Reset Filters</span>
-                </button>
+                  <span>Reset</span>
+                </Button>
+              ) : (
+                <span className="text-muted-foreground text-[11px] font-mono whitespace-nowrap hidden xl:inline">
+                  <strong className="text-foreground">{initialData.totalCount}</strong> donors
+                </span>
               )}
             </div>
           </div>

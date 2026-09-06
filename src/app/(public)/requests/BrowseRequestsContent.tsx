@@ -25,6 +25,13 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 
 type BrowseRequestsContentProps = {
@@ -102,9 +109,10 @@ export default function BrowseRequestsContent({
   };
 
   // Toggle urgency tier
-  const handleUrgencyChange = (urgencyValue: string) => {
+  const handleUrgencyChange = (urgencyValue: string | null) => {
     triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
-    const updatedUrgencies = urgencyValue === "all" ? [] : [urgencyValue as Urgency];
+    const val = urgencyValue || "all";
+    const updatedUrgencies = val === "all" ? [] : [val as Urgency];
     applyFilters({
       ...filters,
       urgencies: updatedUrgencies,
@@ -112,9 +120,10 @@ export default function BrowseRequestsContent({
   };
 
   // District filter change
-  const handleDistrictChange = (districtValue: string) => {
+  const handleDistrictChange = (districtValue: string | null) => {
     triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
-    const updatedDistricts = districtValue === "all" ? [] : [districtValue as District];
+    const val = districtValue || "all";
+    const updatedDistricts = val === "all" ? [] : [val as District];
     applyFilters({
       ...filters,
       districts: updatedDistricts,
@@ -122,11 +131,11 @@ export default function BrowseRequestsContent({
   };
 
   // Sort order change
-  const handleSortChange = (sortValue: string) => {
+  const handleSortChange = (sortValue: string | null) => {
     triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
     applyFilters({
       ...filters,
-      sort: sortValue as SortOption,
+      sort: (sortValue || SortOption.NEWEST) as SortOption,
     });
   };
 
@@ -199,25 +208,22 @@ export default function BrowseRequestsContent({
 
       {/* 2. Quick-Select Filtering Ribbon */}
       <section className="border-b border-border bg-card sticky top-14 sm:top-16 z-30 shadow-xs">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-3.5 sm:py-4 space-y-3.5">
-          {/* Top Filter Row: Blood Group Quick-Pills & Search */}
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4">
-            {/* Blood Group Pills (Edge-to-edge scrollable on mobile) */}
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-3">
+          {/* Unified Filter Row on Large Devices; Responsive on Mobile */}
+          <div className="flex flex-col lg:flex-row lg:items-center gap-2.5">
+            {/* Blood Group Pills (Edge-to-edge scrollable on mobile, compact on desktop) */}
             <div
-              className="flex items-center gap-1.5 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-1.5 lg:pb-0 scrollbar-none"
+              className="flex items-center gap-1 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-1 lg:pb-0 scrollbar-none shrink-0"
               role="group"
               aria-label="Filter by blood group"
             >
-              <span className="text-xs font-mono font-semibold text-muted-foreground mr-1 hidden sm:inline shrink-0">
-                Blood Group:
-              </span>
               <button
                 type="button"
                 onClick={() => {
                   triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
                   applyFilters({ ...filters, bloodGroups: [] });
                 }}
-                className={`min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer shrink-0 ${
+                className={`h-9 px-2.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer shrink-0 ${
                   filters.bloodGroups.length === 0
                     ? "bg-primary text-primary-foreground shadow-xs"
                     : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground border border-border/40"
@@ -233,7 +239,7 @@ export default function BrowseRequestsContent({
                     key={bg}
                     type="button"
                     onClick={() => toggleBloodGroup(bg)}
-                    className={`min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer shrink-0 ${
+                    className={`h-9 px-2.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer shrink-0 ${
                       isSelected
                         ? "bg-primary text-primary-foreground shadow-xs"
                         : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground border border-border/60"
@@ -246,16 +252,75 @@ export default function BrowseRequestsContent({
               })}
             </div>
 
+            {/* Dropdown Selectors Group */}
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
+              {/* Urgency Selector */}
+              <div className="flex-1 sm:w-36">
+                <Select
+                  value={filters.urgencies[0] || "all"}
+                  onValueChange={handleUrgencyChange}
+                >
+                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-background">
+                    <SelectValue placeholder="All Urgencies" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    <SelectItem value="all">All Urgencies</SelectItem>
+                    <SelectItem value={Urgency.CRITICAL}>Critical / STAT</SelectItem>
+                    <SelectItem value={Urgency.URGENT}>Urgent</SelectItem>
+                    <SelectItem value={Urgency.MODERATE}>Moderate</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* District Selector */}
+              <div className="flex-1 sm:w-40">
+                <Select
+                  value={filters.districts[0] || "all"}
+                  onValueChange={handleDistrictChange}
+                >
+                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-background">
+                    <SelectValue placeholder="All 64 Districts" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    <SelectItem value="all">All 64 Districts</SelectItem>
+                    {DISTRICTS.map((district) => (
+                      <SelectItem key={district} value={district}>
+                        {district}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Sort Order */}
+              <div className="flex-1 sm:w-36">
+                <Select
+                  value={filters.sort || SortOption.NEWEST}
+                  onValueChange={handleSortChange}
+                >
+                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-background">
+                    <SelectValue placeholder="Sort Order" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    <SelectItem value={SortOption.NEWEST}>Newest First</SelectItem>
+                    <SelectItem value={SortOption.CRITICAL_FIRST}>Critical First</SelectItem>
+                    <SelectItem value={SortOption.MOST_URGENT}>Most Urgent</SelectItem>
+                    <SelectItem value={SortOption.OLDEST}>Oldest First</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             {/* Keyword Search Input */}
-            <form onSubmit={handleSearchSubmit} className="relative w-full lg:max-w-md" role="search">
+            <form onSubmit={handleSearchSubmit} className="relative flex-1 min-w-[200px]" role="search">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <input
                 type="text"
-                placeholder="Search by patient, hospital, or city..."
+                placeholder="Search patient, hospital, city..."
                 aria-label="Search blood requests by patient name, hospital, or city"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full h-11 sm:h-10 pl-9 pr-9 rounded-xl bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+                className="w-full h-9 pl-9 pr-9 rounded-xl bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
               />
               {searchInput && (
                 <button
@@ -264,92 +329,33 @@ export default function BrowseRequestsContent({
                     setSearchInput("");
                     applyFilters({ ...filters, search: "" });
                   }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-muted-foreground hover:text-foreground cursor-pointer"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground cursor-pointer"
                   aria-label="Clear search text"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
               )}
             </form>
-          </div>
 
-          {/* Secondary Controls Row: District, Urgency Tier, Sort & Clear */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-border/50 text-xs">
-            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-              {/* Urgency Selector */}
-              <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
-                <label htmlFor="urgency-filter" className="text-muted-foreground font-medium text-[11px] shrink-0">
-                  Urgency:
-                </label>
-                <select
-                  id="urgency-filter"
-                  value={filters.urgencies[0] || "all"}
-                  onChange={(e) => handleUrgencyChange(e.target.value)}
-                  className="w-full sm:w-auto h-9 sm:h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
-                >
-                  <option value="all">All Urgencies</option>
-                  <option value={Urgency.CRITICAL}>Critical / STAT</option>
-                  <option value={Urgency.URGENT}>Urgent</option>
-                  <option value={Urgency.MODERATE}>Moderate</option>
-                </select>
-              </div>
-
-              {/* District Selector */}
-              <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
-                <label htmlFor="district-filter" className="text-muted-foreground font-medium text-[11px] shrink-0">
-                  District:
-                </label>
-                <select
-                  id="district-filter"
-                  value={filters.districts[0] || "all"}
-                  onChange={(e) => handleDistrictChange(e.target.value)}
-                  className="w-full sm:w-auto h-9 sm:h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer max-w-[160px] truncate"
-                >
-                  <option value="all">All 64 Districts</option>
-                  {DISTRICTS.map((district) => (
-                    <option key={district} value={district}>
-                      {district}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Sort Order */}
-              <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
-                <label htmlFor="sort-order" className="text-muted-foreground font-medium text-[11px] shrink-0">
-                  Sort:
-                </label>
-                <select
-                  id="sort-order"
-                  value={filters.sort || SortOption.NEWEST}
-                  onChange={(e) => handleSortChange(e.target.value)}
-                  className="w-full sm:w-auto h-9 sm:h-8 rounded-lg bg-background border border-border px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
-                >
-                  <option value={SortOption.NEWEST}>Newest First</option>
-                  <option value={SortOption.CRITICAL_FIRST}>Critical First</option>
-                  <option value={SortOption.MOST_URGENT}>Most Urgent</option>
-                  <option value={SortOption.OLDEST}>Oldest First</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Active Count & Clear Action */}
-            <div className="flex items-center justify-between sm:justify-end gap-3 pt-1 sm:pt-0">
-              <span className="text-muted-foreground text-[11px] font-mono">
-                <strong className="text-foreground">{data.totalCount}</strong>{" "}
-                {data.totalCount === 1 ? "request" : "requests"} found
-              </span>
-
-              {activeFilterCount > 0 && (
-                <button
+            {/* Clear Action & Count Badge */}
+            <div className="flex items-center justify-between lg:justify-end gap-2 shrink-0">
+              {activeFilterCount > 0 ? (
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   onClick={handleClearAll}
-                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-destructive hover:underline cursor-pointer"
+                  className="h-9 px-2.5 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 gap-1.5 rounded-xl cursor-pointer"
                   aria-label="Reset all applied filters"
                 >
-                  <RotateCcw className="h-3 w-3" />
-                  <span>Reset Filters ({activeFilterCount})</span>
-                </button>
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  <span>Reset ({activeFilterCount})</span>
+                </Button>
+              ) : (
+                <span className="text-muted-foreground text-[11px] font-mono whitespace-nowrap hidden xl:inline">
+                  <strong className="text-foreground">{data.totalCount}</strong>{" "}
+                  {data.totalCount === 1 ? "request" : "requests"}
+                </span>
               )}
             </div>
           </div>

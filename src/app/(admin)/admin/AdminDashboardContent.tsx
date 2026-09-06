@@ -25,6 +25,7 @@ import {
 } from "@/components/admin/AdminSlideOverInspector";
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
+import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 import {
   rejectRequest,
   deleteRequest,
@@ -193,11 +194,12 @@ export function AdminDashboardContent({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <Tabs defaultValue="overview" className="space-y-6">
           {/* Segmented Command Tabs */}
-          <div className="flex items-center justify-between overflow-x-auto pb-1">
-            <TabsList className="p-1 bg-muted/70 rounded-xl border border-border inline-flex h-auto">
+          <div className="flex items-center justify-between overflow-x-auto pb-1 no-scrollbar">
+            <TabsList className="p-1.5 bg-muted/60 dark:bg-muted/40 rounded-2xl border border-border/80 inline-flex h-auto gap-1 shadow-xs">
               <TabsTrigger
                 value="overview"
-                className="gap-2 px-3.5 py-2 text-xs sm:text-sm rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
+                onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
+                className="gap-2 px-4 py-2.5 text-xs sm:text-sm rounded-xl font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs hover:text-foreground touch-manipulation"
               >
                 <BarChart3 className="h-4 w-4 text-crimson" />
                 <span>Telemetry</span>
@@ -205,16 +207,17 @@ export function AdminDashboardContent({
 
               <TabsTrigger
                 value="moderation"
-                className="gap-2 px-3.5 py-2 text-xs sm:text-sm rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
+                onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
+                className="gap-2 px-4 py-2.5 text-xs sm:text-sm rounded-xl font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs hover:text-foreground touch-manipulation"
               >
                 <Shield className="h-4 w-4 text-amber-500" />
                 <span>Moderation Queue</span>
                 {pendingRequestsCount > 0 ? (
-                  <span className="ml-1 flex h-4.5 min-w-4.5 px-1 items-center justify-center rounded-full bg-crimson text-[10px] font-bold text-white tabular-nums">
+                  <span className="ml-1 flex h-4.5 min-w-4.5 px-1.5 items-center justify-center rounded-full bg-crimson text-[10px] font-bold text-white tabular-nums animate-pulse">
                     {pendingRequestsCount}
                   </span>
                 ) : (
-                  <span className="ml-1 flex h-4.5 min-w-4.5 px-1 items-center justify-center rounded-full bg-muted-foreground/20 text-[10px] font-mono tabular-nums text-muted-foreground">
+                  <span className="ml-1 flex h-4.5 min-w-4.5 px-1.5 items-center justify-center rounded-full bg-muted-foreground/15 text-[10px] font-mono tabular-nums text-muted-foreground">
                     {requests.length}
                   </span>
                 )}
@@ -222,11 +225,12 @@ export function AdminDashboardContent({
 
               <TabsTrigger
                 value="users"
-                className="gap-2 px-3.5 py-2 text-xs sm:text-sm rounded-lg font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
+                onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
+                className="gap-2 px-4 py-2.5 text-xs sm:text-sm rounded-xl font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs hover:text-foreground touch-manipulation"
               >
                 <Users className="h-4 w-4 text-primary" />
                 <span>User Accounts</span>
-                <span className="ml-1 flex h-4.5 min-w-4.5 px-1 items-center justify-center rounded-full bg-muted-foreground/20 text-[10px] font-mono tabular-nums text-muted-foreground">
+                <span className="ml-1 flex h-4.5 min-w-4.5 px-1.5 items-center justify-center rounded-full bg-muted-foreground/15 text-[10px] font-mono tabular-nums text-muted-foreground">
                   {users.length}
                 </span>
               </TabsTrigger>

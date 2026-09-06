@@ -40,8 +40,8 @@ export function ProfileContent({
   };
 
   return (
-    <div className="min-h-[calc(100dvh-4rem)] py-6 sm:py-10 px-4 sm:px-6 bg-background">
-      <div className="mx-auto max-w-6xl w-full space-y-6 sm:space-y-8">
+    <div className="min-h-[calc(100dvh-4rem)] py-6 sm:py-10 bg-background">
+      <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
         
         {/* 1. Unified Emergency Passport Header */}
         <ProfilePassportHeader user={user} onUpdateUser={setUser} />
