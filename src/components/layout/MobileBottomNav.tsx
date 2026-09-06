@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
@@ -10,7 +11,14 @@ import { triggerTactileFeedback, HAPTIC_PATTERNS } from "@/lib/haptics";
 export function MobileBottomNav() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const user = session?.user as ExtendedUser | undefined;
+  const isLoggedIn = mounted && Boolean(user);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/80 bg-background/95 backdrop-blur-md supports-backdrop-filter:bg-background/80 md:hidden">
@@ -73,7 +81,7 @@ export function MobileBottomNav() {
 
         {/* Profile / Sign In */}
         <Link
-          href={user ? "/profile" : "/signin"}
+          href={isLoggedIn ? "/profile" : "/signin"}
           onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
           className={`flex min-w-12 flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-150 active:scale-90 ${
             pathname.startsWith("/profile") || pathname.startsWith("/signin")
@@ -82,7 +90,7 @@ export function MobileBottomNav() {
           }`}
         >
           <User className="h-5 w-5" strokeWidth={pathname.startsWith("/profile") || pathname.startsWith("/signin") ? 2.5 : 2} />
-          <span>{user ? "Profile" : "Sign In"}</span>
+          <span>{isLoggedIn ? "Profile" : "Sign In"}</span>
         </Link>
       </div>
     </nav>
