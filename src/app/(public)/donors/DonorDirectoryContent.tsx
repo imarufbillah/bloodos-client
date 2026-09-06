@@ -306,7 +306,7 @@ export default function DonorDirectoryContent({
             <div className="flex items-center gap-2 shrink-0">
               <Button
                 type="button"
-                variant={isFiltersOpen ? "secondary" : "outline"}
+                variant={isFiltersOpen ? "default" : "outline"}
                 size="default"
                 onClick={() => {
                   triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
@@ -314,20 +314,42 @@ export default function DonorDirectoryContent({
                 }}
                 aria-expanded={isFiltersOpen}
                 aria-controls="donors-filter-panel"
-                className={`h-10 px-3.5 rounded-xl text-xs font-semibold gap-2 border-border shadow-xs transition-all cursor-pointer ${
-                  hasActiveFilters ? "border-primary/50 text-foreground bg-primary/5" : ""
+                className={`h-10 px-3.5 rounded-xl text-xs font-semibold gap-2 shadow-xs transition-all cursor-pointer ${
+                  isFiltersOpen
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent shadow-xs font-bold"
+                    : hasActiveFilters
+                      ? "border-primary text-primary bg-primary/10 hover:bg-primary/15 font-bold"
+                      : "border-border text-foreground hover:bg-muted/80 bg-background"
                 }`}
               >
-                <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
+                <SlidersHorizontal
+                  className={`h-3.5 w-3.5 ${
+                    isFiltersOpen
+                      ? "text-primary-foreground"
+                      : hasActiveFilters
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                  }`}
+                />
                 <span>Filters</span>
                 {activeFilterCount > 0 && (
-                  <span className="flex items-center justify-center h-4.5 px-1.5 rounded-full bg-crimson text-white text-[10px] font-mono font-bold leading-none">
+                  <span
+                    className={`flex items-center justify-center h-4.5 px-1.5 rounded-full text-[10px] font-mono font-bold leading-none ${
+                      isFiltersOpen
+                        ? "bg-white/20 text-white"
+                        : "bg-primary text-primary-foreground"
+                    }`}
+                  >
                     {activeFilterCount}
                   </span>
                 )}
                 <ChevronDown
-                  className={`h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ${
-                    isFiltersOpen ? "rotate-180" : ""
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    isFiltersOpen
+                      ? "rotate-180 text-primary-foreground"
+                      : hasActiveFilters
+                        ? "text-primary"
+                        : "text-muted-foreground"
                   }`}
                 />
               </Button>
@@ -378,7 +400,7 @@ export default function DonorDirectoryContent({
           {isFiltersOpen && (
             <div
               id="donors-filter-panel"
-              className="pt-3 border-t border-border/60 space-y-3 animate-in fade-in-0 slide-in-from-top-2 duration-150"
+              className="pt-3 border-t border-border/60 space-y-3.5 animate-in fade-in-0 slide-in-from-top-2 duration-150"
             >
               {/* Blood Group Selection Chips */}
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
@@ -430,11 +452,14 @@ export default function DonorDirectoryContent({
                 </div>
               </div>
 
-              {/* Secondary Controls: Cross-Match Compatibility + District + Reset */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2 border-t border-border/40">
-                <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2">
+              {/* Secondary Controls Bar: Dropdowns with UX Labels + Reset */}
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-3.5 pt-2 border-t border-border/40">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1 max-w-2xl">
                   {/* Recipient Cross-Match Selector */}
-                  <div className="w-full sm:w-60">
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground block">
+                      Recipient Compatibility (Cross-Match)
+                    </label>
                     <Select
                       value={recipientGroup || "all"}
                       onValueChange={(val) => handleRecipientGroupSelect(val === "all" ? "" : (val || ""))}
@@ -454,7 +479,10 @@ export default function DonorDirectoryContent({
                   </div>
 
                   {/* District Select */}
-                  <div className="w-full sm:w-48">
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground block">
+                      District / Location
+                    </label>
                     <Select
                       value={selectedDistrict || "all"}
                       onValueChange={(val) => handleDistrictChange(val === "all" ? "" : (val || ""))}
@@ -475,8 +503,8 @@ export default function DonorDirectoryContent({
                 </div>
 
                 {/* Result count & Reset */}
-                <div className="flex items-center justify-between sm:justify-end gap-3 pt-1 sm:pt-0">
-                  <span className="text-[11px] font-mono text-muted-foreground sm:hidden">
+                <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 pt-1 md:pt-0">
+                  <span className="text-[11px] font-mono text-muted-foreground md:hidden">
                     Showing <strong className="text-foreground font-bold">{initialData.totalCount}</strong> active donors
                   </span>
 
@@ -486,10 +514,10 @@ export default function DonorDirectoryContent({
                       variant="ghost"
                       size="sm"
                       onClick={handleResetFilters}
-                      className="h-8 px-2.5 text-xs font-semibold text-destructive hover:text-destructive hover:bg-destructive/10 gap-1.5 rounded-lg cursor-pointer"
+                      className="h-9 px-3 text-xs font-semibold text-destructive hover:text-destructive hover:bg-destructive/10 gap-1.5 rounded-xl cursor-pointer"
                       aria-label="Reset all applied filters"
                     >
-                      <RotateCcw className="h-3 w-3" />
+                      <RotateCcw className="h-3.5 w-3.5" />
                       <span>Reset Filters</span>
                     </Button>
                   )}
