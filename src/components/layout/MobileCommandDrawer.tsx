@@ -66,8 +66,13 @@ export function MobileCommandDrawer({
   trigger,
 }: MobileCommandDrawerProps) {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
   const isAdmin = user?.role === "admin";
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   const userImage = (user as Record<string, unknown> | undefined)?.image as
     | string
     | null
@@ -398,9 +403,11 @@ export function MobileCommandDrawer({
                 type="button"
                 onClick={() => setTheme("light")}
                 className={`flex h-7 w-7 items-center justify-center rounded-md text-xs transition-colors ${
-                  theme === "light" ? "bg-crimson text-paper font-bold" : "text-muted-foreground hover:text-foreground"
+                  mounted && resolvedTheme === "light"
+                    ? "bg-crimson text-paper font-bold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
-                aria-label="Light mode"
+                aria-label="Switch to light mode"
               >
                 <Sun className="h-3.5 w-3.5" />
               </button>
@@ -408,9 +415,11 @@ export function MobileCommandDrawer({
                 type="button"
                 onClick={() => setTheme("dark")}
                 className={`flex h-7 w-7 items-center justify-center rounded-md text-xs transition-colors ${
-                  theme === "dark" ? "bg-crimson text-paper font-bold" : "text-muted-foreground hover:text-foreground"
+                  mounted && resolvedTheme === "dark"
+                    ? "bg-crimson text-paper font-bold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
-                aria-label="Dark mode"
+                aria-label="Switch to dark mode"
               >
                 <Moon className="h-3.5 w-3.5" />
               </button>

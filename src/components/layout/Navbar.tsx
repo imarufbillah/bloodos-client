@@ -69,7 +69,7 @@ function getInitials(name?: string | null, email?: string | null) {
 export function Navbar() {
   const pathname = usePathname();
   const { data: session, isPending } = useSession();
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const user = session?.user as ExtendedUser | undefined;
@@ -148,9 +148,11 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              onClick={() =>
+                setTheme(resolvedTheme === "dark" ? "light" : "dark")
+              }
               className="h-9 w-9 text-foreground/80 hover:text-foreground"
-              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+              aria-label="Toggle color theme"
             >
               <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
@@ -347,9 +349,11 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={() =>
+              setTheme(resolvedTheme === "dark" ? "light" : "dark")
+            }
             className="h-9 w-9 text-foreground/80"
-            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            aria-label="Toggle color theme"
           >
             <Sun className="h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
