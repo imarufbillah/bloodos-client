@@ -206,66 +206,100 @@ export default function BrowseRequestsContent({
         </div>
       </section>
 
-      {/* 2. Quick-Select Filtering Ribbon */}
-      <section className="border-b border-border bg-card sticky top-14 sm:top-16 z-30 shadow-xs">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-3">
-          {/* Unified Filter Row on Large Devices; Responsive on Mobile */}
-          <div className="flex flex-col lg:flex-row lg:items-center gap-2.5">
-            {/* Blood Group Pills (Edge-to-edge scrollable on mobile, compact on desktop) */}
-            <div
-              className="flex items-center gap-1 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 pb-1 lg:pb-0 scrollbar-none shrink-0"
-              role="group"
-              aria-label="Filter by blood group"
-            >
-              <button
-                type="button"
-                onClick={() => {
-                  triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
-                  applyFilters({ ...filters, bloodGroups: [] });
-                }}
-                className={`h-9 px-2.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer shrink-0 ${
-                  filters.bloodGroups.length === 0
-                    ? "bg-primary text-primary-foreground shadow-xs"
-                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground border border-border/40"
-                }`}
-                aria-pressed={filters.bloodGroups.length === 0}
+      {/* 2. Tactical Filtering & Search Ribbon */}
+      <section className="border-b border-border bg-card/95 backdrop-blur-md sticky top-14 sm:top-16 z-20 shadow-xs">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-3.5 space-y-3">
+          {/* Main Filter Row: Blood Group Selector + Search */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            {/* Blood Group Chips */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground hidden sm:inline shrink-0">
+                Blood Group:
+              </span>
+              <div
+                role="group"
+                aria-label="Filter by blood group"
+                className="flex items-center gap-1 p-1 rounded-xl bg-muted/50 border border-border/60 shrink-0"
               >
-                ALL
-              </button>
-              {BLOOD_GROUPS.map((bg) => {
-                const isSelected = filters.bloodGroups.includes(bg);
-                return (
-                  <button
-                    key={bg}
-                    type="button"
-                    onClick={() => toggleBloodGroup(bg)}
-                    className={`h-9 px-2.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer shrink-0 ${
-                      isSelected
-                        ? "bg-primary text-primary-foreground shadow-xs"
-                        : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground border border-border/60"
-                    }`}
-                    aria-pressed={isSelected}
-                  >
-                    {bg}
-                  </button>
-                );
-              })}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+                    applyFilters({ ...filters, bloodGroups: [] });
+                  }}
+                  className={`h-8 px-3 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer select-none shrink-0 ${
+                    filters.bloodGroups.length === 0
+                      ? "bg-primary text-primary-foreground shadow-xs font-black"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                  }`}
+                  aria-pressed={filters.bloodGroups.length === 0}
+                >
+                  ALL
+                </button>
+                {BLOOD_GROUPS.map((bg) => {
+                  const isSelected = filters.bloodGroups.includes(bg);
+                  return (
+                    <button
+                      key={bg}
+                      type="button"
+                      onClick={() => toggleBloodGroup(bg)}
+                      className={`h-8 px-2.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer select-none shrink-0 ${
+                        isSelected
+                          ? "bg-crimson text-white shadow-xs font-black"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                      }`}
+                      aria-pressed={isSelected}
+                    >
+                      {bg}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* Dropdown Selectors Group */}
-            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
+            {/* Keyword Search Input */}
+            <form onSubmit={handleSearchSubmit} className="relative flex-1 lg:max-w-md w-full" role="search">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" aria-hidden="true" />
+              <input
+                type="text"
+                placeholder="Search patient name, hospital, or city..."
+                aria-label="Search blood requests by patient name, hospital, or city"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="w-full h-10 pl-9 pr-9 rounded-xl bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all shadow-xs"
+              />
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchInput("");
+                    applyFilters({ ...filters, search: "" });
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground cursor-pointer rounded-lg hover:bg-muted/60"
+                  aria-label="Clear search text"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </form>
+          </div>
+
+          {/* Secondary Controls Bar: Dropdowns + Live Count + Reset */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2 border-t border-border/50">
+            {/* Filter Dropdowns */}
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
               {/* Urgency Selector */}
-              <div className="flex-1 sm:w-36">
+              <div className="w-full sm:w-38">
                 <Select
                   value={filters.urgencies[0] || "all"}
                   onValueChange={handleUrgencyChange}
                 >
-                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-background">
+                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-background border-border/80 shadow-xs">
                     <SelectValue placeholder="All Urgencies" />
                   </SelectTrigger>
                   <SelectContent className="max-h-64">
                     <SelectItem value="all">All Urgencies</SelectItem>
-                    <SelectItem value={Urgency.CRITICAL}>Critical / STAT</SelectItem>
+                    <SelectItem value={Urgency.CRITICAL}>Critical (STAT)</SelectItem>
                     <SelectItem value={Urgency.URGENT}>Urgent</SelectItem>
                     <SelectItem value={Urgency.MODERATE}>Moderate</SelectItem>
                   </SelectContent>
@@ -273,12 +307,12 @@ export default function BrowseRequestsContent({
               </div>
 
               {/* District Selector */}
-              <div className="flex-1 sm:w-40">
+              <div className="w-full sm:w-44">
                 <Select
                   value={filters.districts[0] || "all"}
                   onValueChange={handleDistrictChange}
                 >
-                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-background">
+                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-background border-border/80 shadow-xs">
                     <SelectValue placeholder="All 64 Districts" />
                   </SelectTrigger>
                   <SelectContent className="max-h-64">
@@ -293,13 +327,13 @@ export default function BrowseRequestsContent({
               </div>
 
               {/* Sort Order */}
-              <div className="flex-1 sm:w-36">
+              <div className="w-full sm:w-40 col-span-2 sm:col-span-1">
                 <Select
                   value={filters.sort || SortOption.NEWEST}
                   onValueChange={handleSortChange}
                 >
-                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-background">
-                    <SelectValue placeholder="Sort Order" />
+                  <SelectTrigger className="h-9 w-full rounded-xl text-xs bg-background border-border/80 shadow-xs">
+                    <SelectValue placeholder="Sort: Newest" />
                   </SelectTrigger>
                   <SelectContent className="max-h-64">
                     <SelectItem value={SortOption.NEWEST}>Newest First</SelectItem>
@@ -311,51 +345,25 @@ export default function BrowseRequestsContent({
               </div>
             </div>
 
-            {/* Keyword Search Input */}
-            <form onSubmit={handleSearchSubmit} className="relative flex-1 min-w-[200px]" role="search">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              <input
-                type="text"
-                placeholder="Search patient, hospital, city..."
-                aria-label="Search blood requests by patient name, hospital, or city"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full h-9 pl-9 pr-9 rounded-xl bg-background border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
-              />
-              {searchInput && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchInput("");
-                    applyFilters({ ...filters, search: "" });
-                  }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-foreground cursor-pointer"
-                  aria-label="Clear search text"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              )}
-            </form>
+            {/* Active Count & Clear Button */}
+            <div className="flex items-center justify-between sm:justify-end gap-3 pt-1 sm:pt-0">
+              <span className="text-[11px] font-mono text-muted-foreground">
+                Showing <strong className="text-foreground font-bold">{data.totalCount}</strong>{" "}
+                {data.totalCount === 1 ? "request" : "requests"}
+              </span>
 
-            {/* Clear Action & Count Badge */}
-            <div className="flex items-center justify-between lg:justify-end gap-2 shrink-0">
-              {activeFilterCount > 0 ? (
+              {activeFilterCount > 0 && (
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
                   onClick={handleClearAll}
-                  className="h-9 px-2.5 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 gap-1.5 rounded-xl cursor-pointer"
+                  className="h-8 px-2.5 text-xs font-semibold text-destructive hover:text-destructive hover:bg-destructive/10 gap-1.5 rounded-lg cursor-pointer"
                   aria-label="Reset all applied filters"
                 >
-                  <RotateCcw className="h-3.5 w-3.5" />
+                  <RotateCcw className="h-3 w-3" />
                   <span>Reset ({activeFilterCount})</span>
                 </Button>
-              ) : (
-                <span className="text-muted-foreground text-[11px] font-mono whitespace-nowrap hidden xl:inline">
-                  <strong className="text-foreground">{data.totalCount}</strong>{" "}
-                  {data.totalCount === 1 ? "request" : "requests"}
-                </span>
               )}
             </div>
           </div>
