@@ -235,19 +235,19 @@ export function AdminDashboardContent({
               }}
               className={`group relative flex items-center gap-2 py-3 px-0.5 text-xs sm:text-sm font-semibold transition-colors cursor-pointer select-none border-b-2 shrink-0 ${
                 activeTab === "moderation"
-                  ? "border-amber-500 text-foreground font-bold"
+                  ? "border-ochre text-foreground font-bold"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
               <Shield
                 className={`h-4 w-4 transition-colors ${
-                  activeTab === "moderation" ? "text-amber-500" : "text-muted-foreground group-hover:text-foreground"
+                  activeTab === "moderation" ? "text-ochre" : "text-muted-foreground group-hover:text-foreground"
                 }`}
               />
               <span>Moderation Queue</span>
               {pendingRequestsCount > 0 ? (
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-crimson text-[10px] font-bold text-white tabular-nums shadow-xs">
-                  <span className="h-1.5 w-1.5 rounded-full bg-white animate-ping" />
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-crimson text-[10px] font-bold text-primary-foreground tabular-nums shadow-xs">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary-foreground animate-ping" />
                   {pendingRequestsCount} Pending
                 </span>
               ) : (

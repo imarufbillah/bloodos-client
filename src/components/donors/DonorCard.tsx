@@ -119,7 +119,7 @@ export function DonorCard({
               {eligibility.eligible ? (
                 <CheckCircle2 className="h-3.5 w-3.5 text-teal" aria-hidden="true" />
               ) : (
-                <Clock className="h-3.5 w-3.5 text-amber-500" aria-hidden="true" />
+                <Clock className="h-3.5 w-3.5 text-ochre" aria-hidden="true" />
               )}
               Eligibility
             </span>
@@ -191,7 +191,7 @@ function EligibilityBadge({
 
   if (reason === "cooldown_requirement" && daysRemaining) {
     return (
-      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-ochre/10 text-ochre border border-ochre/20">
         <Clock className="h-3 w-3" aria-hidden="true" />
         <span>Cooldown • {daysRemaining}d</span>
       </div>

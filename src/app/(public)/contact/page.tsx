@@ -121,7 +121,7 @@ export default function ContactPage() {
 
                 {/* Headquarters */}
                 <div className="flex items-start gap-3.5">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 mt-0.5">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-ochre/10 text-ochre mt-0.5">
                     <MapPin className="h-4 w-4" />
                   </div>
                   <div className="space-y-1">

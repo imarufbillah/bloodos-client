@@ -379,7 +379,7 @@ export default function BrowseRequestsContent({
                         onClick={() => toggleBloodGroup(bg)}
                         className={`h-8 px-2.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer select-none shrink-0 ${
                           isSelected
-                            ? "bg-crimson text-white shadow-xs font-black"
+                            ? "bg-crimson text-paper shadow-xs font-black"
                             : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                         }`}
                         aria-pressed={isSelected}

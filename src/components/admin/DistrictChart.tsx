@@ -14,18 +14,18 @@ interface DistrictChartProps {
   data: Array<{ district: string; count: number }>;
 }
 
-// Calibrated OKLCH color palette matching BloodOS system tokens
+// Theme-consistent color palette matching BloodOS system tokens in globals.css
 const COLORS = [
-  "oklch(0.55 0.22 25)", // crimson
-  "oklch(0.52 0.14 175)", // teal
-  "oklch(0.65 0.15 75)", // ochre
-  "oklch(0.45 0.18 25)", // crimson dark
-  "oklch(0.42 0.12 175)", // teal dark
-  "oklch(0.55 0.12 75)", // ochre dark
-  "oklch(0.60 0.08 260)", // slate
-  "oklch(0.35 0.14 25)", // crimson deep
-  "oklch(0.32 0.10 175)", // teal deep
-  "oklch(0.50 0.05 260)", // muted slate
+  "var(--crimson)",
+  "var(--teal)",
+  "var(--ochre)",
+  "var(--slate)",
+  "var(--primary)",
+  "var(--secondary)",
+  "var(--muted-foreground)",
+  "var(--ring)",
+  "var(--foreground)",
+  "var(--accent-foreground)",
 ];
 
 export function DistrictChart({ data }: DistrictChartProps) {
@@ -69,11 +69,11 @@ export function DistrictChart({ data }: DistrictChartProps) {
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: "var(--color-card, #ffffff)",
-                borderColor: "var(--color-border, #e5e7eb)",
+                backgroundColor: "var(--card)",
+                borderColor: "var(--border)",
                 borderRadius: "12px",
                 fontSize: "12px",
-                color: "var(--color-foreground, #000000)",
+                color: "var(--foreground)",
               }}
               formatter={(value) => [
                 `${value} requests (${(((value as number) / (total || 1)) * 100).toFixed(1)}%)`,

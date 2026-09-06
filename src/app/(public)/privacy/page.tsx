@@ -141,7 +141,7 @@ export default function PrivacyPage() {
             {/* Safeguard 3 */}
             <div className="p-5 rounded-2xl border border-border bg-card shadow-xs flex flex-col justify-between">
               <div className="space-y-3">
-                <div className="h-10 w-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                <div className="h-10 w-10 rounded-xl bg-ochre/10 flex items-center justify-center text-ochre">
                   <HeartHandshake className="h-5 w-5" />
                 </div>
                 <h3 className="font-heading font-semibold text-base text-foreground">
@@ -151,7 +151,7 @@ export default function PrivacyPage() {
                   We never buy, sell, broker, or monetize blood or donor records. Commercial exchange of blood is strictly illegal and blocked on our platform.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-border text-[11px] font-mono text-amber-600 dark:text-amber-400 flex items-center gap-1">
+              <div className="mt-4 pt-3 border-t border-border text-[11px] font-mono text-ochre flex items-center gap-1">
                 <span>100% Free Public Good</span>
               </div>
             </div>
@@ -392,7 +392,7 @@ export default function PrivacyPage() {
               <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                 6. Zero Brokerage & Non-Commercialization
               </h2>
-              <div className="p-5 rounded-2xl border border-amber-500/20 bg-amber-500/5 space-y-3 text-sm">
+              <div className="p-5 rounded-2xl border border-ochre/20 bg-ochre/5 space-y-3 text-sm">
                 <p className="text-foreground font-medium">
                   Blood is a humanitarian gift, not a commodity.
                 </p>

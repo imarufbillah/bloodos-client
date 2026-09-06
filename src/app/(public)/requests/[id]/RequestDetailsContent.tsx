@@ -241,7 +241,7 @@ export default function RequestDetailsContent({
                       isCritical
                         ? "bg-destructive/10 text-destructive border border-destructive/20"
                         : isUrgent
-                        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                        ? "bg-ochre/10 text-ochre border border-ochre/20"
                         : "bg-teal/10 text-teal border border-teal/20"
                     }`}
                   >
@@ -295,7 +295,7 @@ export default function RequestDetailsContent({
                 <div className="p-3.5 rounded-xl bg-muted/40 border border-border/60 space-y-1 col-span-2 sm:col-span-2">
                   <span className="text-[11px] text-muted-foreground block font-medium">Transfusion Target</span>
                   <div className="flex items-center gap-1.5 text-sm sm:text-base font-bold text-foreground">
-                    <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                    <Clock className="h-4 w-4 text-ochre shrink-0" />
                     <span className={isCritical ? "text-destructive" : ""}>{getTimeLabel()}</span>
                   </div>
                 </div>

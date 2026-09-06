@@ -441,7 +441,7 @@ export default function DonorDirectoryContent({
                         aria-label={`Blood group ${bg}`}
                         className={`h-8 px-2.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer select-none shrink-0 ${
                           isSelected
-                            ? "bg-crimson text-white shadow-xs font-black"
+                            ? "bg-crimson text-paper shadow-xs font-black"
                             : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                         }`}
                       >
@@ -763,7 +763,7 @@ export default function DonorDirectoryContent({
               </div>
 
               <div className="rounded-lg bg-muted/50 border border-border p-2.5 flex items-start gap-2 text-[11px] text-muted-foreground">
-                <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-amber-500" />
+                <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-ochre" />
                 <p className="leading-relaxed">
                   <strong>Privacy & Safety Notice:</strong> All disclosures are logged. Contact donors strictly for urgent medical blood donation coordination.
                 </p>

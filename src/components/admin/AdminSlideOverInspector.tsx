@@ -187,7 +187,7 @@ export function AdminSlideOverInspector({
                   {item.data.urgency && (
                     <div className="flex justify-between items-center py-2.5 text-xs">
                       <span className="text-muted-foreground">Urgency Level</span>
-                      <span className="capitalize font-medium text-amber-600">
+                      <span className="capitalize font-medium text-ochre">
                         {item.data.urgency}
                       </span>
                     </div>
@@ -334,7 +334,7 @@ export function AdminSlideOverInspector({
                   variant="outline"
                   onClick={() => onRejectRequest(item.data as ModerationRequest)}
                   disabled={isProcessing}
-                  className="flex-1 text-xs h-9 min-h-[36px] text-amber-600 border-amber-600/30 hover:bg-amber-500/10 touch-manipulation"
+                  className="flex-1 text-xs h-9 min-h-[36px] text-ochre border-ochre/30 hover:bg-ochre/10 touch-manipulation"
                 >
                   <XCircle className="h-3.5 w-3.5 mr-1" />
                   Reject Request

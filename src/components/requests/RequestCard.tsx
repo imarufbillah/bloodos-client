@@ -59,7 +59,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
         isCritical
           ? "border-destructive/40 hover:border-destructive bg-destructive/[0.02]"
           : isUrgent
-          ? "border-amber-500/30 hover:border-amber-500/60"
+          ? "border-ochre/30 hover:border-ochre/60"
           : "border-border hover:border-foreground/20"
       }`}
       style={{
@@ -80,7 +80,7 @@ export function RequestCard({ request, staggerIndex = 0 }: RequestCardProps) {
               isCritical
                 ? "bg-destructive/10 text-destructive border border-destructive/20"
                 : isUrgent
-                ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                ? "bg-ochre/10 text-ochre border border-ochre/20"
                 : "bg-teal/10 text-teal border border-teal/20"
             }`}
           >

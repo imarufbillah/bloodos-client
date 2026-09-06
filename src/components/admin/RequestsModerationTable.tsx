@@ -340,7 +340,7 @@ export function RequestsModerationTable({
                               variant="ghost"
                               onClick={() => openRejectDialog(request)}
                               disabled={isProcessing}
-                              className="h-8 w-8 p-0 text-amber-600 hover:text-amber-700 hover:bg-amber-500/10 touch-manipulation"
+                              className="h-8 w-8 p-0 text-ochre hover:text-ochre hover:bg-ochre/10 touch-manipulation"
                               aria-label={`Reject request for ${request.patientName}`}
                               title="Reject Request"
                             >
@@ -434,7 +434,7 @@ export function RequestsModerationTable({
                       variant="outline"
                       onClick={() => openRejectDialog(request)}
                       disabled={isProcessing}
-                      className="w-full text-xs h-9 min-h-[36px] text-amber-600 border-amber-600/30 hover:bg-amber-500/10 flex items-center justify-center gap-1.5 touch-manipulation"
+                      className="w-full text-xs h-9 min-h-[36px] text-ochre border-ochre/30 hover:bg-ochre/10 flex items-center justify-center gap-1.5 touch-manipulation"
                       aria-label={`Reject ${request.patientName}'s request`}
                     >
                       <XCircle className="h-3.5 w-3.5" />
@@ -472,7 +472,7 @@ export function RequestsModerationTable({
         >
           <div className="bg-card border border-border rounded-xl max-w-lg w-full p-6 space-y-4 shadow-xl text-foreground">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0">
+              <div className="h-10 w-10 rounded-full bg-ochre/10 flex items-center justify-center text-ochre shrink-0">
                 <AlertTriangle className="h-5 w-5" />
               </div>
               <div>
@@ -548,7 +548,7 @@ export function RequestsModerationTable({
                 size="sm"
                 onClick={handleReject}
                 disabled={isProcessing}
-                className="bg-amber-600 hover:bg-amber-700 text-white"
+                className="bg-ochre hover:bg-ochre/90 text-primary-foreground font-semibold"
               >
                 {isProcessing ? "Rejecting..." : "Reject Request"}
               </Button>

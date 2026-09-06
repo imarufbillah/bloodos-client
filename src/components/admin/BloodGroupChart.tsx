@@ -54,11 +54,11 @@ export function BloodGroupChart({ data }: BloodGroupChartProps) {
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "var(--color-card, #ffffff)",
-                borderColor: "var(--color-border, #e5e7eb)",
+                backgroundColor: "var(--card)",
+                borderColor: "var(--border)",
                 borderRadius: "12px",
                 fontSize: "12px",
-                color: "var(--color-foreground, #000000)",
+                color: "var(--foreground)",
               }}
               cursor={{ fill: "currentColor", className: "text-muted/30" }}
               formatter={(value) => [`${value} requests`, "Broadcast Demand"]}
@@ -71,7 +71,7 @@ export function BloodGroupChart({ data }: BloodGroupChartProps) {
             />
             <Bar
               dataKey="count"
-              fill="oklch(0.55 0.22 25)"
+              fill="var(--crimson)"
               name="Active Broadcasts"
               radius={[6, 6, 0, 0]}
             />

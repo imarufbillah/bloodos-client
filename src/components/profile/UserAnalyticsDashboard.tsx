@@ -49,11 +49,11 @@ export interface UserAnalytics {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  open: "oklch(0.65 0.17 175)",
-  in_progress: "oklch(0.75 0.15 75)",
-  fulfilled: "oklch(0.65 0.17 175)",
-  cancelled: "oklch(0.55 0.02 260)",
-  expired: "oklch(0.65 0.05 260)",
+  open: "var(--teal)",
+  in_progress: "var(--ochre)",
+  fulfilled: "var(--teal)",
+  cancelled: "var(--slate)",
+  expired: "var(--muted-foreground)",
 };
 
 const MONTH_NAMES = [
@@ -241,17 +241,17 @@ export function UserAnalyticsDashboard({
                     {statusData.map((entry) => (
                       <Cell
                         key={entry.name}
-                        fill={STATUS_COLORS[entry.name.toLowerCase().replace(" ", "_")] || "oklch(0.55 0.02 260)"}
+                        fill={STATUS_COLORS[entry.name.toLowerCase().replace(" ", "_")] || "var(--slate)"}
                       />
                     ))}
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "var(--color-card, #ffffff)",
-                      borderColor: "var(--color-border, #e5e7eb)",
+                      backgroundColor: "var(--card)",
+                      borderColor: "var(--border)",
                       borderRadius: "12px",
                       fontSize: "12px",
-                      color: "var(--color-foreground, #000000)",
+                      color: "var(--foreground)",
                     }}
                   />
                   <Legend
@@ -301,19 +301,19 @@ export function UserAnalyticsDashboard({
                   />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "var(--color-card, #ffffff)",
-                      borderColor: "var(--color-border, #e5e7eb)",
+                      backgroundColor: "var(--card)",
+                      borderColor: "var(--border)",
                       borderRadius: "12px",
                       fontSize: "12px",
-                      color: "var(--color-foreground, #000000)",
+                      color: "var(--foreground)",
                     }}
                   />
                   <Line
                     type="monotone"
                     dataKey="count"
-                    stroke="oklch(0.55 0.22 25)"
+                    stroke="var(--crimson)"
                     strokeWidth={2.5}
-                    dot={{ fill: "oklch(0.55 0.22 25)", r: 3 }}
+                    dot={{ fill: "var(--crimson)", r: 3 }}
                     activeDot={{ r: 5 }}
                     name="Activities"
                   />

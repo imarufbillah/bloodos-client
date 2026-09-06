@@ -83,7 +83,7 @@ export default function AboutPage() {
                 <p className="text-xs text-muted-foreground">100% Free & Voluntary</p>
               </div>
               <div className="space-y-1">
-                <p className="font-mono text-2xl sm:text-3xl font-bold text-amber-600 dark:text-amber-400">&lt;15m</p>
+                <p className="font-mono text-2xl sm:text-3xl font-bold text-ochre">&lt;15m</p>
                 <p className="text-xs text-muted-foreground">STAT Dispatch Target</p>
               </div>
             </div>
@@ -132,7 +132,7 @@ export default function AboutPage() {
 
             {/* Pillar 3 */}
             <div className="rounded-2xl border border-border bg-card p-6 space-y-3.5 shadow-xs">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-ochre/10 text-ochre">
                 <MapPin className="h-5 w-5" />
               </div>
               <h3 className="font-heading text-lg font-bold text-foreground">
@@ -197,7 +197,7 @@ export default function AboutPage() {
             </div>
 
             <div className="space-y-2.5 rounded-2xl border border-border bg-card p-6">
-              <span className="font-mono text-xs font-semibold text-amber-600 dark:text-amber-400">
+              <span className="font-mono text-xs font-semibold text-ochre">
                 Stage 3 • Connection
               </span>
               <h3 className="font-heading text-base font-bold text-foreground">

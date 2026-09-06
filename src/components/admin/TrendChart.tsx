@@ -62,11 +62,11 @@ export function TrendChart({ data }: TrendChartProps) {
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "var(--color-card, #ffffff)",
-                borderColor: "var(--color-border, #e5e7eb)",
+                backgroundColor: "var(--card)",
+                borderColor: "var(--border)",
                 borderRadius: "12px",
                 fontSize: "12px",
-                color: "var(--color-foreground, #000000)",
+                color: "var(--foreground)",
               }}
               labelFormatter={(label) => `Date: ${label}`}
               formatter={(value) => [`${value} requests`, "Broadcast Demand"]}
@@ -80,9 +80,9 @@ export function TrendChart({ data }: TrendChartProps) {
             <Line
               type="monotone"
               dataKey="count"
-              stroke="oklch(0.55 0.22 25)"
+              stroke="var(--crimson)"
               strokeWidth={2.5}
-              dot={{ fill: "oklch(0.55 0.22 25)", r: 3 }}
+              dot={{ fill: "var(--crimson)", r: 3 }}
               activeDot={{ r: 5 }}
               name="Daily Broadcasts"
             />
