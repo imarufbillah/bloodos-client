@@ -53,6 +53,7 @@ export function AdminDashboardContent({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [inspectedItem, setInspectedItem] = useState<InspectorItem | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [activeTab, setActiveTab] = useState<"overview" | "moderation" | "users">("overview");
 
   // Use server data directly
   const stats = initialStats;
@@ -192,49 +193,134 @@ export function AdminDashboardContent({
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <Tabs defaultValue="overview" className="space-y-6">
-          {/* Segmented Command Tabs */}
-          <div className="flex items-center justify-between overflow-x-auto pb-1 no-scrollbar">
-            <TabsList className="p-1.5 bg-muted/60 dark:bg-muted/40 rounded-2xl border border-border/80 inline-flex h-auto gap-1 shadow-xs">
-              <TabsTrigger
-                value="overview"
-                onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
-                className="gap-2 px-4 py-2.5 text-xs sm:text-sm rounded-xl font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs hover:text-foreground touch-manipulation"
+        <Tabs
+          value={activeTab}
+          onValueChange={(val) => {
+            triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+            setActiveTab(val as "overview" | "moderation" | "users");
+          }}
+          className="space-y-6"
+        >
+          {/* Executive Command Switcher Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-2 rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md shadow-xs">
+            {/* Tactical Segmented Pills */}
+            <div
+              role="tablist"
+              aria-label="Admin operations console navigation"
+              className="flex items-center gap-1.5 overflow-x-auto no-scrollbar -mx-1 px-1 sm:mx-0 sm:px-0"
+            >
+              {/* Tab 1: Telemetry */}
+              <button
+                type="button"
+                role="tab"
+                id="tab-admin-overview"
+                aria-selected={activeTab === "overview"}
+                aria-controls="panel-admin-overview"
+                onClick={() => {
+                  triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+                  setActiveTab("overview");
+                }}
+                className={`group relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer select-none shrink-0 ${
+                  activeTab === "overview"
+                    ? "bg-background text-foreground shadow-sm ring-1 ring-border/80"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
               >
-                <BarChart3 className="h-4 w-4 text-crimson" />
-                <span>Telemetry</span>
-              </TabsTrigger>
+                <div
+                  className={`flex h-6 w-6 items-center justify-center rounded-lg transition-colors ${
+                    activeTab === "overview"
+                      ? "bg-crimson/15 text-crimson font-bold"
+                      : "bg-muted text-muted-foreground group-hover:text-foreground"
+                  }`}
+                >
+                  <BarChart3 className="h-3.5 w-3.5" />
+                </div>
+                <span>Platform Telemetry</span>
+                <span className="hidden md:inline-flex items-center gap-1 text-[10px] font-mono font-medium px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground">
+                  Overview
+                </span>
+              </button>
 
-              <TabsTrigger
-                value="moderation"
-                onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
-                className="gap-2 px-4 py-2.5 text-xs sm:text-sm rounded-xl font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs hover:text-foreground touch-manipulation"
+              {/* Tab 2: Moderation Queue */}
+              <button
+                type="button"
+                role="tab"
+                id="tab-admin-moderation"
+                aria-selected={activeTab === "moderation"}
+                aria-controls="panel-admin-moderation"
+                onClick={() => {
+                  triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+                  setActiveTab("moderation");
+                }}
+                className={`group relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer select-none shrink-0 ${
+                  activeTab === "moderation"
+                    ? "bg-background text-foreground shadow-sm ring-1 ring-border/80"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
               >
-                <Shield className="h-4 w-4 text-amber-500" />
+                <div
+                  className={`flex h-6 w-6 items-center justify-center rounded-lg transition-colors ${
+                    activeTab === "moderation"
+                      ? "bg-amber-500/15 text-amber-500 font-bold"
+                      : "bg-muted text-muted-foreground group-hover:text-foreground"
+                  }`}
+                >
+                  <Shield className="h-3.5 w-3.5" />
+                </div>
                 <span>Moderation Queue</span>
                 {pendingRequestsCount > 0 ? (
-                  <span className="ml-1 flex h-4.5 min-w-4.5 px-1.5 items-center justify-center rounded-full bg-crimson text-[10px] font-bold text-white tabular-nums animate-pulse">
-                    {pendingRequestsCount}
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-crimson text-[10px] font-bold text-white tabular-nums shadow-xs">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white animate-ping" />
+                    {pendingRequestsCount} Pending
                   </span>
                 ) : (
-                  <span className="ml-1 flex h-4.5 min-w-4.5 px-1.5 items-center justify-center rounded-full bg-muted-foreground/15 text-[10px] font-mono tabular-nums text-muted-foreground">
-                    {requests.length}
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 text-[10px] font-mono font-semibold">
+                    <CheckCircle2 className="h-3 w-3" />
+                    All Clear ({requests.length})
                   </span>
                 )}
-              </TabsTrigger>
+              </button>
 
-              <TabsTrigger
-                value="users"
-                onClick={() => triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT)}
-                className="gap-2 px-4 py-2.5 text-xs sm:text-sm rounded-xl font-semibold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs hover:text-foreground touch-manipulation"
+              {/* Tab 3: User Accounts */}
+              <button
+                type="button"
+                role="tab"
+                id="tab-admin-users"
+                aria-selected={activeTab === "users"}
+                aria-controls="panel-admin-users"
+                onClick={() => {
+                  triggerTactileFeedback(HAPTIC_PATTERNS.LIGHT);
+                  setActiveTab("users");
+                }}
+                className={`group relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer select-none shrink-0 ${
+                  activeTab === "users"
+                    ? "bg-background text-foreground shadow-sm ring-1 ring-border/80"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
               >
-                <Users className="h-4 w-4 text-primary" />
-                <span>User Accounts</span>
-                <span className="ml-1 flex h-4.5 min-w-4.5 px-1.5 items-center justify-center rounded-full bg-muted-foreground/15 text-[10px] font-mono tabular-nums text-muted-foreground">
-                  {users.length}
+                <div
+                  className={`flex h-6 w-6 items-center justify-center rounded-lg transition-colors ${
+                    activeTab === "users"
+                      ? "bg-primary/15 text-primary font-bold"
+                      : "bg-muted text-muted-foreground group-hover:text-foreground"
+                  }`}
+                >
+                  <Users className="h-3.5 w-3.5" />
+                </div>
+                <span>User Directory</span>
+                <span className="flex items-center px-2 py-0.5 rounded-full bg-muted-foreground/10 text-[10px] font-mono font-semibold text-muted-foreground tabular-nums">
+                  {users.length} registered
                 </span>
-              </TabsTrigger>
-            </TabsList>
+              </button>
+            </div>
+
+            {/* Right: Telemetry Quick Status Pill */}
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/40 border border-border/50 text-[11px] font-mono text-muted-foreground shrink-0">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Gateway: Online</span>
+              <span className="text-border">•</span>
+              <span>64 Districts Synced</span>
+            </div>
           </div>
 
           {/* Tab 1: Overview & Telemetry */}
