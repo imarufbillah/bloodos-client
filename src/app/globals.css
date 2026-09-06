@@ -57,6 +57,13 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  --shadow-subtle: 0 1px 2px 0 oklch(0.19 0.02 260 / 4%);
+  --shadow-tactile: 0 1px 2px 0 oklch(0.19 0.02 260 / 5%), 0 1px 3px 1px oklch(0.19 0.02 260 / 3%);
+  --shadow-card: 0 4px 12px -2px oklch(0.19 0.02 260 / 6%), 0 2px 6px -1px oklch(0.19 0.02 260 / 4%);
+  --shadow-elevated: 0 10px 24px -4px oklch(0.19 0.02 260 / 8%), 0 4px 10px -2px oklch(0.19 0.02 260 / 5%);
+  --shadow-glow-crimson: 0 0 20px -4px oklch(0.51 0.19 25 / 25%);
+  --shadow-glow-teal: 0 0 20px -4px oklch(0.42 0.08 175 / 25%);
 }
 
 :root {
@@ -134,8 +141,8 @@
   --accent-foreground: var(--ink);
   --destructive: oklch(0.56 0.2 20);
   --destructive-foreground: oklch(0.16 0.015 260);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
   --ring: var(--teal);
 
   --chart-1: var(--crimson);
@@ -150,7 +157,7 @@
   --sidebar-primary-foreground: oklch(0.16 0.015 260);
   --sidebar-accent: var(--surface-accent);
   --sidebar-accent-foreground: var(--ink);
-  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-border: oklch(1 0 0 / 12%);
   --sidebar-ring: var(--teal);
 }
 
@@ -279,5 +286,42 @@
     .animate-chip-pop {
       animation: none !important;
     }
+  }
+
+  /* Atmospheric Emergency & Verified Mesh Gradients */
+  .bg-mesh-emergency {
+    background-image:
+      radial-gradient(at 100% 0%, oklch(0.51 0.19 25 / 7%) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, oklch(0.68 0.14 70 / 4%) 0px, transparent 50%);
+  }
+
+  .bg-mesh-verified {
+    background-image:
+      radial-gradient(at 100% 0%, oklch(0.42 0.08 175 / 8%) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, oklch(0.42 0.08 175 / 4%) 0px, transparent 50%);
+  }
+
+  .bg-mesh-command {
+    background-image:
+      radial-gradient(at 50% 0%, oklch(0.42 0.08 175 / 5%) 0px, transparent 60%),
+      radial-gradient(at 100% 100%, oklch(0.51 0.19 25 / 4%) 0px, transparent 50%);
+  }
+
+  .dark .bg-mesh-emergency {
+    background-image:
+      radial-gradient(at 100% 0%, oklch(0.62 0.19 25 / 12%) 0px, transparent 55%),
+      radial-gradient(at 0% 100%, oklch(0.72 0.14 70 / 6%) 0px, transparent 55%);
+  }
+
+  .dark .bg-mesh-verified {
+    background-image:
+      radial-gradient(at 100% 0%, oklch(0.58 0.09 175 / 12%) 0px, transparent 55%),
+      radial-gradient(at 0% 100%, oklch(0.58 0.09 175 / 6%) 0px, transparent 55%);
+  }
+
+  .dark .bg-mesh-command {
+    background-image:
+      radial-gradient(at 50% 0%, oklch(0.58 0.09 175 / 8%) 0px, transparent 65%),
+      radial-gradient(at 100% 100%, oklch(0.62 0.19 25 / 6%) 0px, transparent 55%);
   }
 }
