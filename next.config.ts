@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const rawBackendUrl =
-  process.env.BACKEND_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
+  process.env.BACKEND_URL ||
   "http://localhost:5000";
 
 // Normalize: remove trailing slashes and trailing /api to avoid duplicate /api/api
